@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Class Computed Fields</title>
+    <meta name="color-scheme" content="light dark">
+    <meta name="viewport" content="width=device-width">
+    <link rel="icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <h2>Class Computed Fields</h2>
+    <address>Last updated at <time>2021-08-15</time></address>
+    <p>For typescript: see <a href="https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-7.html#the-usedefineforclassfields-flag-and-the-declare-property-modifier">useDefineForClassFields</a>.</p>
+    <pre><code>var foo = 'foo'
+
+class A {
+  [foo] = bar      // [foo] === 'foo', bar is calculated at `new ()`
+}
+
+foo = 'bar'
+var bar = 1
+
+console.log(new A) // A { foo: 1 }
+
+class B {
+  [foo]            // equals to: [foo] = undefined
+}
+
+console.log(new B) // B { bar: undefined }
+</code></pre>
+</body>
+</html>

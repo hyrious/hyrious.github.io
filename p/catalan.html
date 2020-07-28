@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh-Hans-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>卡特兰数</title>
+    <meta name="color-scheme" content="light dark">
+    <meta name="viewport" content="width=device-width">
+    <link rel="icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex/dist/contrib/copy-tex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body,{trust:true,strict:false});"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex/dist/contrib/copy-tex.min.js"></script>
+</head>
+<body>
+    <h2>卡特兰数</h2>
+    <address>最后更新于 <time>2021-02-06</time></address>
+    <p>\( C_n=1,1,2,5,14,42,132,429,1430,4862,\href{https://oeis.org/A000108}{\cdots} \) (n 从 0 开始)</p>
+    <ul>
+      <li>n 个不同的数入栈，有 \( C_n \) 种出栈顺序</li>
+      <li>n 对括号 <q><code>()</code></q>，有 \( C_n \) 种合法的排列</li>
+      <li>n 个节点组成的二叉树，有 \( C_n \) 种方案</li>
+      <li>n\( \times \)n 的格子中，有 \( C_n \) 条路径不越过对角线到达对角点</li>
+      <li>n + 2 个顶点的凸多边形，有 \( C_n \) 种方法不交叉地连接顶点来划分成三角形</li>
+      <li>\( \cdots \)</li>
+    </ul>
+    <p>常见公式：$$\begin{aligned}
+      C_n&=\frac{4n-2}{n+1}C_{n-1} \\
+      C_n&=C_0C_{n-1}+C_1C_{n-2}+\cdots+C_{n-1}C_0 \\
+      C_n&={2n\choose n}-{2n\choose n+1} \\
+         &=\frac{1}{n+1}{2n\choose n}=\frac{(2n)!}{(n+1)!n!}
+    \end{aligned}$$</p>
+    <h3>例题 1. 2n 个高矮不同的人，排成两排，每排必须是从矮到高排列，而且第二排比对应的第一排的人高，问排列方式有多少种？</h3>
+    <p>答：\( C_n \) 种。</p>
+    <h3>例题 2. Trees Made to Order (POJ 1095)</h3>
+    <p>定义二叉树按以下顺序排列：</p>
+    <ol>
+      <li>0 个节点，编号为 0</li>
+      <li>1 个节点，编号为 1</li>
+      <li>m + 1 个节点的编号比 m 个节点的大</li>
+      <li>右子树节点多的编号更小</li>
+    </ol>
+    <p>以 <code>(左子树)X(右子树)</code> 来表示一棵二叉树，前 10 个表示为：</p>
+    <pre><code>id expr        simp   left right
+ 1 X             X       0     0
+ 2 X(X)          X(1)    0     1
+ 3 (X)X       (1)X       1     0
+ 4 X(X(X))       X(2)    0     2  5 = 2+1+2 = C(0)*C(2)+C(1)*C(1)+C(2)*C(0)
+ 5 X((X)X)       X(3)    0     3
+ 6 (X)X(X)    (1)X(1)    1     1
+ 7 (X(X))X    (2)X       2     0
+ 8 ((X)X)X    (3)X       3     0
+ 9 X(X(X(X)))    X(4)    0     4
+10 X(X((X)X))    X(5)    0     5</code></pre>
+    <p>现在输入编号，要求输出对应的 <code>(左子树)X(右子树)</code> 表达</p>
+    <p>答：首先可以直接用卡特兰数计算出节点数和在同层编号（同节点数内的编号），关键是如何找到左右子树在该顺序下的编号。</p>
+    <p>不妨先观察节点数为 3 时，右子树先经历 2 个节点的 2 种情况，然后 1 个节点的 1 种情况……刚好对应上文的一个递推式。即右子树每变化 \( C_{左子树节点数}\times C_{右子树节点数} \) 次就会发生右节点给一个节点给左节点的情况，左子树节点数初始化为 0，右子树节点数为<code>总节点数-1-左子树节点数</code>，于是我们可以算出左子树的节点数和剩下的同层编号。</p>
+    <p>记卡特兰数的求和数列为 \( S_n=1,2,4,9,23,\cdots \)，我们有 n 个节点的编号从 \( S_n \) 开始：1 个节点的编号从 1 开始，2 个节点的从 2 开始，3 个节点的从 4 开始……</p>
+    <p>当存在左子树时（观察上图编号 6, 7, 8 的情况），右子树每变化 \( C_{右子树节点数} \) 次就会发生<code>左子树编号+1</code>，即<code>剩下的同层编号=左子树同层编号</code> \( \times C_{右子树节点数} \) <code>+右子树同层编号</code>，简单整除取余就可以得到左右子树同层编号。</p>
+    <p>于是我们可以算出<code>左子树编号=</code> \( S_{左子树节点数} \) <code>+左子树同层编号</code>，右子树同理。</p>
+    <h4>代码.</h4>
+    <pre><code class="language-js">// JS 打表
+const C = n => n <= 1 ? 1 : (4 * n - 2) * C(n - 1) / (n + 1)
+const CC = Array(20).fill().map((_, i) => C(i))
+const S = n => CC.slice(0, n).reduce((a, b) => a + b, 0)
+const SS = Array(20).fill().map((_, i) => S(i))
+</code></pre>
+    <pre><code class="language-c">// C[i] = 有 i 个节点的树有多少种形态
+int C[] = { 1,       1,       2,        5,         14,        42,        132,
+            429,     1430,    4862,     16796,     58786,     208012,    742900,
+            2674440, 9694845, 35357670, 129644790, 477638700, 1767263190 };
+
+// S[i] = 有 i 个节点的树编号从几开始
+int S[] = { 0,       1,       2,        4,        9,         23,       65,
+            197,     626,     2056,     6918,     23714,     82500,    290512,
+            1033412, 3707852, 13402697, 48760367, 178405157, 656043857 };
+
+// S 中小于等于 sum 的最大元素的下标
+// 也就是编号为 sum 的二叉树的节点数
+int S_max_index_less_equal(int sum) {
+    int index;
+    for (index = 0; S[index] <= sum; ++index)
+        ;
+    return index - 1;
+}
+
+// 输出编号为 id 的二叉树
+void f(int id) {
+    if (id == 0) return;
+    if (id == 1) return (void)printf("X");
+    // 树的总节点数
+    int root_size = S_max_index_less_equal(id);
+    // 同节点数的树列里的内部序号，从 0 开始
+    int inner_id = id - S[root_size];
+    // 求左子树节点数：右子树每变化 C[left] * C[right] 次，左子树节点数 + 1
+    int left_size = 0;
+#define right_size (root_size - 1 - left_size)
+    while (inner_id >= C[left_size] * C[right_size]) {
+        inner_id -= C[left_size] * C[right_size];
+        left_size++;
+    }
+    // 此时 inner_id 是 (左子树同层编号 * C[right] + 右子树同层编号)
+    // 因此可以整除得到左右子树真实编号
+    int left_id  = inner_id / C[right_size] + S[left_size];
+    int right_id = inner_id % C[right_size] + S[right_size];
+    // 输出左子树
+    if (left_size) {
+        printf("(");
+        f(left_id);
+        printf(")");
+    }
+    printf("X");
+    // 输出右子树
+    if (right_size) {
+        printf("(");
+        f(right_id);
+        printf(")");
+    }
+#undef right_size
+}</code></pre>
+    <h3>例题 3. 括号生成 (LeetCode 22)</h3>
+    <p>数字 n 代表生成括号的对数，请你设计一个函数，用于能够生成所有可能的并且有效的括号组合。例如 n = 3 时，输出 <code class="language-py">["((()))","(()())","()(())","(())()","()()()"]</code> (不要求有序)。</p>
+    <pre><code class="language-py">class Solution:
+    def generateParenthesis(self, n: int) -> List[str]:
+        if n == 0: return ['']
+        a = []
+        for c in range(n):
+            for left in self.generateParenthesis(c):
+                for right in self.generateParenthesis(n - 1 - c):
+                    a.append("{}({})".format(left, right))
+        return a</code></pre>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs/components/prism-c.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs/components/prism-python.min.js"></script>
+</body>
+</html>

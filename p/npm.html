@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh-Hans-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>扔掉 yarn，用回 npm</title>
+    <meta name="color-scheme" content="light dark">
+    <meta name="viewport" content="width=device-width">
+    <link rel="icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        .t {
+            display: grid;
+            grid-template-columns: repeat(3, auto);
+        }
+        @media screen and (max-width: 400px) {
+            .t {
+                grid-template-columns: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h2>扔掉 yarn，用回 npm</h2>
+    <address>最后更新于 <time>2021-03-20</time></address>
+    <h3>TL; DR</h3>
+    <p>Yarn1 接近停止维护，而 Yarn2 扔掉了 node_modules (改变了运行代码的方式，需要整个生态一起努力才能勉强能用)。NPM 作为官方维护的主流包管理工具，一直在迭代新功能和修复 bug，从各种方面建议用回 npm。</p>
+    <h3>常见命令 yarn &rarr; npm</h3>
+    <p class="t">
+        <span><code>yarn</code> / <code>yarn install</code></span><span> &rarr; </span><code>npm i</code>
+        <span><code>yarn add</code></span><span> &rarr; </span><code>npm i</code>
+        <span><code>yarn remove</code></span><span> &rarr; </span><code>npm r</code>
+        <code>yarn install --frozen-lockfile</code><span> &rarr; </span><code>npm ci</code>
+        <code>yarn why xxx</code><span> &rarr; </span><code>npm why xxx</code>
+        <code>yarn &lt;script&gt;</code><span> &rarr; </span><code>npm run &lt;script&gt;</code>
+        <code>不存在</code><span> &rarr; </span><code>npx &lt;package&gt;</code>
+    </p>
+    <h4>常见功能</h4>
+    <p><a href="https://docs.npmjs.com/cli/v7/using-npm/workspaces/">workspace</a></p>
+    <h4>附赠</h4>
+    <p><code>npm help &lt;command&gt;</code> 可以查看一个 command 的帮助文档，在 Windows 等系统上他可以直接打开网页版的文档。</p>
+    <p><code>npm folders</code> 可以阅读一份详尽的 npm 工作方式解释。</p>
+    <h3>遗留问题</h3>
+    <h4>打平 node_modules 后遗症</h4>
+    <p>例如某项目的一个依赖 A 的依赖里含有 C，那么就会存在 node_modules/C，假设在项目里写 <code>require('C')</code>，他也能正常运行。这其实仔细思考一下就会发现不合理：倘若项目存在两个依赖 A、B，他们一个依赖 C@1，一个依赖 C@2，此时如果写 <code>require('C')</code>，到底拿到的是什么版本的。</p>
+    <p>而且这并不直观：为什么一个库需要知道依赖的依赖(的依赖……)才能运行。</p>
+    <p>因此，最好的处理办法是每个库的依赖放在自己里面，别提到最上层。而这就带来了最开始的问题（也就是打平 node_modules 的目的）：相同依赖不能合并、目录太深等等。所以说根本没有银弹，目前最好的解决办法是使用 symlink，或者在 Windows 上使用 Junction 来做到合并依赖（仍然会产生一定的链接文件占用，不过已经比占整个包小很多了），以及 Windows 用户去打开 [组策略 - 计算机配置 - 管理模板 -系统 - 文件系统 - 启用 Win32 长路径]。这一方案使 pnpm 诞生了，有兴趣可以去尝试一下。</p>
+</body>
+</html>

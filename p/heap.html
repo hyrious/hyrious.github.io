@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Heap (Data Structure)</title>
+    <meta name="color-scheme" content="light dark">
+    <meta name="viewport" content="width=device-width">
+    <link rel="icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <h2>Heap (Data Structure)</h2>
+    <address>Last updated at <time>2021-02-06</time></address>
+    <p><strong>Heap</strong> is a tree-based data structure. It is often used to implement priority queue. Here I take a note of a basic implementation of it in C. Other languages may use their standard library:</p>
+    <ul>
+        <li>C++ <a href="https://en.cppreference.com/w/cpp/container/priority_queue/priority_queue">priority_queue</a> / <a href="https://en.cppreference.com/w/cpp/algorithm/make_heap">make_heap</a> <a href="http://en.cppreference.com/w/cpp/algorithm/push_heap">push_heap</a> <a href="http://en.cppreference.com/w/cpp/algorithm/pop_heap">pop_heap</a></li>
+        <li>Java <a href="https://docs.oracle.com/javase/8/docs/api/java/util/PriorityQueue.html">PriorityQueue</a></li>
+        <li>Python <a href="https://docs.python.org/3/library/heapq.html">heapq</a></li>
+    </ul>
+    <h3>Implement Heap in C (as Binary Tree in Array)</h3>
+    <pre class="language-c"><code>#define ROOT 0
+#define LEFT(i)   (2 * (i) + 1)
+#define RIGHT(i)  (2 * (i) + 2)
+#define PARENT(i) ((i - 1) / 2)
+
+int heap[4096];
+int n = ROOT; // size of the heap
+#define ORDER(p, c) ((p) <= (c))</code></pre>
+    <h4>Insert</h4>
+    <p>Firstly put the element to be inserted to the end of the tree, then heap up (swap it with its parent node) to satisfy the heap rule. The swap will be performed at most <code>O(logn)</code> times.</p>
+  <pre class="language-c"><code>void heap_up(int i) {
+    int p = PARENT(i);
+    if (!ORDER(heap[p], heap[i])) {
+        swap(p, i);
+        heap_up(p);
+    }
+}
+
+void insert(int value) {
+    heap[n++] = value;
+    heap_up(n - 1);
+}</code></pre>
+    <h4>Delete Root</h4>
+    <p>Swap the root element with the last element of the tree, then heap down (swap it with its child elements) to satisfy the heap rule. The swap will be performed at most <code>O(logn)</code> times.</p>
+    <pre class="language-c"><code>void heap_down(int i) {
+    int l = LEFT(i), r = RIGHT(i), p = i;
+    if (l < n && !ORDER(heap[p], heap[l])) p = l;
+    if (r < n && !ORDER(heap[p], heap[r])) p = r;
+    if (p != i) {
+        swap(p, i);
+        heap_down(p);
+    }
+}
+
+int pop(void) {
+    int value = heap[ROOT];
+    heap[ROOT] = heap[--n];
+    heap_down(ROOT);
+    return value;
+}</code></pre>
+    <h4>Build</h4>
+    <p>Do heap down from the end to the root, <code>O(n)</code>.</p>
+    <pre><code class="language-c">void build(void) {
+    for (int i = PARENT(n); i >= ROOT; --i) {
+        heap_down(i);
+    }
+}</code></pre>
+    <p>If we loop popping the root element, we will get the <strong>heap sort</strong> algorithm.</p>
+    <h4>Merge</h4>
+    <p>Do concat them and build again, <code>O(n)</code>.</p>
+    <h3>Implement Heap in C (as Binary Tree in Pointers)</h3>
+    <p>Merging them can be <code>O(1)</code>.</p>
+    <pre class="language-c"><code>#define ORDER(p, c) ((p) <= (c))
+typedef struct Node Node;
+struct Node {               //   p---s
+    int value;              //  /
+    Node *child, *sibling;  // c
+};
+
+Node *merge(Node *a, Node *b) {
+    if (!a) return b; if (!b) return a;
+    if (!ORDER(a->value, b->value)) swap(a, b);
+    b->sibling = a->child; a->child = b;
+    return a;
+}
+
+Node *insert(Node *root, int value) {
+    Node *p = malloc(sizeof(Node));
+    *p = (Node) { value, NULL, NULL };
+    return merge(root, p);
+}
+
+Node *merges(Node *x) {
+    if (!x || !x->sibling) return x;
+    Node *a = x->sibling, *b = a->sibling;
+    x->sibling = a->sibling = NULL;
+    return merge(merge(x, a), merges(b));
+}
+
+Node *pop(Node *root) {
+    Node *p = merges(root->child);
+    free(root);
+    return p;
+}</code></pre>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs/components/prism-c.min.js"></script>
+</body>
+</html>

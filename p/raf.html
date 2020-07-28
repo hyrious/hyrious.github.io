@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Properly Use rAF</title>
+    <meta name="color-scheme" content="light dark">
+    <meta name="viewport" content="width=device-width">
+    <link rel="icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        .example {
+            border: 1px solid; height: 5em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            user-select: none;
+        }
+        @keyframes ripple-out {
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <h2>Properly Use rAF</h2>
+    <address>Last updated at <time>2021-02-12</time></address>
+    <blockquote>
+        Ref:<br><a href="https://developer.mozilla.org/en-US/docs/Games/Anatomy" target="_blank">Anatomy of a video game - MDN</a><br><a href="https://gist.github.com/faressoft/36cdd64faae21ed22948b458e6bf04d5">DOM Performance (Reflow & Repaint)</a><br><a href="https://javascript.info/js-animation">JavaScript Animations</a>
+    </blockquote>
+    <p><code>requestAnimationFrame</code> is the API to replace <code>setTimeout/setInterval</code> when code affects the DOM, which makes the reflow/repaint of the DOM look more smoothly (not always, but better). So how do we use it?</p>
+    <pre class="language-js"><code>window.requestAnimationFrame(function doSomethingJustBeforeNextFrame() {})</code></pre>
+    <p>Er&mldr; What is <strong>frame</strong>? It simply means when you recursively calling rAF, the browser will try to schedule your callback by VSync, which is about 60 FPS (60 calls per second) on most of the computers.</p>
+
+    <h3>Animations</h3>
+    <style>
+        .anim1 {
+            position: relative;
+            padding-bottom: 5px;
+        }
+        .anim1::after {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: .1em;
+            background: no-repeat var(--gray-color);
+            animation: anim1 2s infinite;
+        }
+        @keyframes anim1 {
+            0% { transform: translateX(-50%) scaleX(0); }
+            50% { transform: translateX(0) scaleX(1); }
+            100% { transform: translateX(50%) scaleX(0); }
+        }
+    </style>
+    <div class="anim1"></div>
+    <p>We can show animations which are more complex than CSS keyframes. (e.g. draw something on the canvas, change dom elements.) Which, in my opinion, means we should play most of the animations through CSS or the <code>element.animate()</code> API. Let&rsquo;s see it in action!</p>
+    <div class="ripple example">Click me to see the ripple.</div>
+    <script defer>
+        function addRipple(el) {
+            el.addEventListener('click', ({ clientX, clientY }) => {
+                el.textContent = 'Press ctrl+u (cmd+opt+u if mac) to read source code.'
+                const rect = el.getBoundingClientRect()
+                const diameter = Math.hypot(rect.width, rect.height) + 100
+                const { pageXOffset, pageYOffset } = window
+                const ripple = document.createElement('canvas')
+                ripple.style.cssText = `
+                    position: absolute;
+                    top: ${rect.top + pageYOffset}px;
+                    left: ${rect.left + pageXOffset}px;
+                    z-index: -1;
+                `
+                ripple.width = rect.width
+                ripple.height = rect.height
+                document.body.append(ripple)
+
+                const context = ripple.getContext('2d')
+                context.fillStyle = '#7f7f7f'
+
+                let beginTimeStamp
+                const [x, y] = [clientX - rect.left, clientY - rect.top]
+                requestAnimationFrame(function draw(ms) {
+                    if (!beginTimeStamp) {
+                        beginTimeStamp = ms
+                        requestAnimationFrame(draw)
+                    } else {
+                        const elapsed = ms - beginTimeStamp
+                        const radius = (diameter - 100) * elapsed / 800
+                        if (radius < diameter) {
+                            requestAnimationFrame(draw)
+                            context.clearRect(0, 0, context.canvas.width, context.canvas.height)
+                            context.beginPath()
+                            context.ellipse(x, y, radius, radius, 0, 0, 2 * Math.PI)
+                            context.globalAlpha = Math.max(diameter - radius, 0) / diameter
+                            context.fill()
+                        } else {
+                            ripple.remove()
+                        }
+                    }
+                })
+            })
+        }
+        Array.from(document.querySelectorAll('.ripple')).forEach(addRipple)
+    </script>
+
+    <h3>Games</h3>
+    <p>Our games may be made in the form of a <strong>game loop</strong>, which is discussed in this <a href="https://developer.mozilla.org/en-US/docs/Games/Anatomy" target="_blank">article</a>. I will copy the result here:</p>
+    <pre class="language-js"><code>const MyGame = {};
+function main(frame) {
+    MyGame.stopMain = window.requestAnimationFrame(main);
+    update(frame);
+    render(); // must be run in less than 16ms (10ms in general)
+}
+main(performance.now());</code></pre>
+    <p>Er&mldr; It will become difficult if we take these into consideration:</p>
+    <ol>
+        <li><code>update()</code> may be very slow</li>
+        <li><code>render()</code> may be very slow</li>
+        <li><code>requestAnimationFrame()</code> may not run at 60 FPS</li>
+        <li>Game may be <strong>paused</strong> when it is put in background pages</li>
+    </ol>
+    <p>We all know that there is no silver bullet. However, what could we do?</p>
+    <ol>
+        <li>don't call <code>update()</code> too often, move calculation tasks to workers</li>
+        <li>use cache, offscreen canvas and other optimizations</li>
+        <li>if the game is depending on real time, then don't rely on frames</li>
+        <li>either design a paused state or take care of resuming states</li>
+    </ol>
+
+    <h3>Throttle</h3>
+    <p>Since rAF can make the callback run at the rate of VSync. We could wrap it as a throttle helper:</p>
+    <pre class="language-js"><code>function throttle(fn) {
+    let timer
+    return (...args) => {
+        if (!timer) {
+            timer = requestAnimationFrame(() => {
+                timer = null
+                fn.apply(this, args)
+            })
+        }
+    }
+}</code></pre>
+    <p>Just note that the callback may not be called if the page is in background.</p>
+
+    <h3>Problems</h3>
+    <p>rAF does not solve any of the reflow/repaint performance problem. In fact, it is more like a throttle. You still have to take care of <a href="https://gist.github.com/faressoft/36cdd64faae21ed22948b458e6bf04d5" target="_blank">performances</a>. &mdash; cache computed attributes, batch changes to the DOM, etc.</p>
+    <p>Luckly, we will have <a href="https://caniuse.com/offscreencanvas">OffscreenCanvas</a> in the future (for now, all chromium based browsers have support it). Through which we could move some drawing work to workers and let main UI thread respond to user input.</p>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs"></script>
+</body>
+</html>

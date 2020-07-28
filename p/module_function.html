@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>module_function</title>
+    <meta name="color-scheme" content="light dark">
+    <meta name="viewport" content="width=device-width">
+    <link rel="icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <h2><code>module_function</code></h2>
+    <address>Last updated at <time>2021-03-14</time></address>
+    <p>I often incorrectly use the <code>module_function</code> method in Ruby. This post will look into this method's source code to understand it, which basically does these things:</p>
+    <ol>
+        <li>Set <q>module function</q> methods to be private.</li>
+        <li>
+            <div>For each <q>module function</q> methods:</div>
+            <ol>
+                <li><strong>Copy</strong> it to be the module's public singleton method.</li>
+            </ol>
+        </li>
+    </ol>
+    <p>The semantic meaning of a <code>module_function</code> is a <q>function</q>, which should be stateless, like some mathematical functions.</p>
+    <p>Since they are functions, we are not likely to put it to the public in the object world. That's why they are <strong>private</strong> instance methods. Also they are copied (different) objects in singleton and in instances, so it is safe to change one without affect another.</p>
+    <p>There are two more scenes to be considered:</p>
+    <p><strong>What if I want a global singleton object?</strong></p>
+    <p>There are at least 2 ways to do the right thing. If it provides functions with nothing to do with any object system, or you just don't like the <code>$</code> sign, you just create a constant name and define singleton methods in it:</p>
+    <pre><code>module Graphics end
+def Graphics.update() @_frame_count += 1 end
+# or
+class << Graphics
+  def update() @_frame_count += 1 end
+end</code></pre>
+    <p>If it means a global <strong>state</strong> that you have to store it, you can use the real global variable syntax:</p>
+    <pre><code>$game_system = Game_System.new</code></pre>
+    <p><strong>What if a helper module whose methods are always public?</strong></p>
+    <p><code>extend self</code> !</p>
+    <pre><code>module Animatable
+  extend self
+  def update
+    super if defined? super
+  end
+end</code></pre>
+    <p><strong>Bonus: what if patching the Object/String/Integer/... class?</strong></p>
+    <p><code>Object.include</code>, in old ruby versions (like in RGSS) this method is private, so you have to write <code>Object.send :include,</code>.</p>
+    <pre><code>module DefWithExtension
+  def def_with(...)
+  end
+  Object.include self
+end</code></pre>
+</body>
+</html>
