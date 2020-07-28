@@ -1,0 +1,69 @@
+@charset "UTF-8";
+@import url(https://cdn.jsdelivr.net/npm/modern-normalize);
+
+:root {
+  --color: #121212;
+  --background: #faf7d9;
+  --link: #c45c66;
+  height: 100%;
+  line-height: 1.35;
+}
+
+:root[data-theme=dark] {
+  --color: #f8f9fa;
+  --background: #121212;
+  --link: #3bc9db;
+}
+
+body {
+  max-width: 732px;
+  padding: 24px 0 24px 48px;
+  font-family: 'Palatino Linotype', serif;
+  color: var(--color);
+  background-color: var(--background);
+}
+
+@media screen and (max-width: 748px) {
+  body {
+    padding: 20px 12px;
+  }
+}
+
+h1, h2, h3, h4 {
+  font-weight: normal;
+  margin-bottom: 8px;
+}
+
+h1, h2, p, ul, pre {
+  margin-top: 0;
+}
+
+p {
+  text-align: justify;
+}
+
+pre, code {
+  font-family: monospace;
+}
+
+ul.log {
+  list-style: none;
+  padding-left: 0;
+}
+
+a {
+  color: var(--link);
+}
+
+.new {
+  text-decoration: none;
+}
+
+.copyright {
+  text-align: right;
+  margin-top: 2em;
+}
+
+.switch-theme {
+  cursor: default;
+}

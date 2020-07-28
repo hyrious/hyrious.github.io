@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="zh-Hans-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>如何监听点击元素外事件 - hyrious.log</title>
+  <meta name="viewport" content="width=device-width">
+  <link rel="icon" href="../favicon.ico">
+  <link rel="stylesheet" href="../style.css">
+  <script src="../main.js"></script>
+  <style>
+    .play{margin-bottom:1em;padding:50px;display:flex;align-items:center;justify-content:center}[data-theme=dark] .play{background-color:rgba(255,255,255,.12)}[data-theme=light] .play{background-color:rgba(0,0,0,.08)}.tip{opacity:.8;user-select:none;pointer-events:none}.hidden{display:none}.context-menu{position:absolute;padding:5px 1px;font-family:sans-serif;font-size:small;min-width:200px}[data-theme=dark] .context-menu{background-color:rgba(0,0,0,.95);outline:1px solid rgba(255,255,255,.55);box-shadow:2px 4px 4px 0 rgba(0,0,0,.9)}[data-theme=light] .context-menu{background-color:rgba(255,255,255,.95);outline:1px solid rgba(0,0,0,.1);box-shadow:2px 4px 4px 0 rgba(0,0,0,.2)}.context-menu .item{position:relative;padding:4px 80px 4px 25px;user-select:none}.context-menu .item::after{content:attr(data-shortcut);position:absolute;right:17px;opacity:.8}[data-theme=dark] .context-menu .item:hover{background-color:rgba(255,255,255,.2)}[data-theme=light] .context-menu .item:hover{background-color:rgba(0,0,0,.1)}
+  </style>
+</head>
+<body>
+  <h2>如何监听点击元素外事件</h2>
+  <p>很多时候我们会有这样的需求: 模拟右键菜单等组件时, 点击组件外将组件隐藏.</p>
+  <div id="play" class="play">
+    <span id="tip" class="tip">在这个区域内右击试试</span>
+  </div>
+  <p>传统的方案是在 document 上绑 click 事件, 例如 <a href="https://github.com/tj/react-click-outside">这个 React 组件</a> 或者 <a href="https://github.com/Andarist/use-onclickoutside">这个 React Hooks</a>.</p>
+  <p>但其实我们关注错了事件: 不是 <q>点击</q> (click), 而是 <q>失去焦点</q> (blur). 上面这个例子就是用了 blur 事件完成的. 可以在 <a href="https://github.com/Thinker-ljn/vue-outoffocus">这里</a> 看到使用焦点方案的更完整的封装.</p>
+  <p class="copyright"><a class="switch-theme">&copy;</a> 2020 hyrious</p>
+  <div id="context-menu" class="context-menu hidden">
+    <div class="item" data-shortcut="Ctrl+X">剪切</div>
+    <div class="item" data-shortcut="Ctrl+C">复制</div>
+    <div class="item" data-shortcut="Ctrl+V">粘贴</div>
+    <div class="item" data-shortcut="Ctrl+A">全选</div>
+    <div class="item" data-shortcut="NyaNyaNya">喵喵喵</div>
+  </div>
+  <script>
+    "use strict";
+    var container = document.querySelector('#play');
+    var contextmenu = document.querySelector('#context-menu');
+    container.addEventListener('contextmenu', function(event) {
+      event.preventDefault();
+      contextmenu.style.left = event.x + 'px';
+      contextmenu.style.top = event.y + 'px';
+      contextmenu.classList.remove('hidden');
+      contextmenu.setAttribute('tabindex', -1);
+      contextmenu.focus();
+    });
+    contextmenu.addEventListener('blur', function(e) {
+      e.target.classList.add('hidden');
+    }, true);
+    var contextmenuitems = Array.from(document.querySelectorAll('.item'));
+    var feedback = document.querySelector('#tip');
+    var defaultcontent = feedback.textContent;
+    var timer = null;
+    contextmenuitems.forEach(function(item) {
+      item.addEventListener('click', function(e) {
+        feedback.textContent = `你刚刚点击了\u00AB${e.target.textContent}\u00BB`;
+        contextmenu.blur();
+        if (timer != null) clearTimeout(timer);
+        timer = setTimeout(function() {
+          feedback.textContent = defaultcontent;
+        }, 1000);
+      });
+    });
+  </script>
+</body>
+</html>

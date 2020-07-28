@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh-Hans-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>堆 (数据结构) - hyrious.log</title>
+  <meta name="viewport" content="width=device-width">
+  <link rel="icon" href="../favicon.ico">
+  <link rel="stylesheet" href="../style.css">
+  <script src="../main.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs/themes/prism-tomorrow.css">
+  <script src="https://cdn.jsdelivr.net/npm/prismjs"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs/plugins/autoloader/prism-autoloader.min.js"></script>
+  <style>
+    pre[class*="language-"] {
+      border: 0;
+      border-radius: 0;
+      box-shadow: none;
+      font-size: .8em;
+    }
+    code[class*="language-"] {
+      font-family: monospace;
+    }
+  </style>
+</head>
+<body>
+  <h2>堆 (数据结构)</h2>
+  <p>堆 (heap) 是一种树状数据结构, 一般具有维护 O(logn), 查询顶点 O(1) 的复杂度, 通常用来解决调度算法等在线问题. 数据结构课没有把它作为考点, 但是日常还是挺常用的, 在此记录.</p>
+  <h3>调库 Man</h3>
+  <ul>
+    <li>C++ <a href="https://en.cppreference.com/w/cpp/container/priority_queue/priority_queue">priority_queue</a> / <a href="https://en.cppreference.com/w/cpp/algorithm/make_heap">make_heap</a> <a href="http://en.cppreference.com/w/cpp/algorithm/push_heap">push_heap</a> <a href="http://en.cppreference.com/w/cpp/algorithm/pop_heap">pop_heap</a></li>
+    <li>Java <a href="https://docs.oracle.com/javase/8/docs/api/java/util/PriorityQueue.html">PriorityQueue</a></li>
+    <li>Python <a href="https://docs.python.org/3/library/heapq.html">heapq</a></li>
+  </ul>
+  <h3>实现 (以底层是数组的二叉堆为例)</h3>
+  <h4>插入节点</h4>
+  <p>先将待插入元素放到树的末尾, 然后从它开始向上调整 (与父节点交换) 以满足堆的性质. 显然该调整不会超过 O(logn) 次.</p>
+  <p>对于数组实现, 可以直接取数组长度来索引到末尾位置；而简单链式实现中, 要取到末尾位置还需要 O(logn) 的搜索时间, 因此推荐使用数组实现, 如果要尽量使用少的内存, 可以使用倍增数组, 调整倍增系数来优化用时和空间.</p>
+  <pre class="language-c"><code>#define ROOT 0
+#define LEFT(i)   (2 * (i) + 1)
+#define RIGHT(i)  (2 * (i) + 2)
+#define PARENT(i) ((i - 1) / 2)
+
+int heap[4096];
+int n = ROOT; // 当前元素个数
+#define ORDER(p, c) ((p) <= (c))</code></pre>
+  <pre class="language-c"><code>void heap_up(int i) {
+    int p = PARENT(i);
+    if (!ORDER(heap[p], heap[i])) {
+        swap(p, i);
+        heap_up(p);
+    }
+}
+
+void insert(int value) {
+    heap[n++] = value;
+    heap_up(n - 1);
+}</code></pre>
+    <h4>删除根节点</h4>
+    <p>先将末尾节点塞到根节点, 然后从它开始向下调整以满足堆的性质. 显然复杂度仍为 O(logn).</p>
+    <pre class="language-c"><code>void heap_down(int i) {
+    int l = LEFT(i), r = RIGHT(i), p = i;
+    if (l < n && !ORDER(heap[p], heap[l])) p = l;
+    if (r < n && !ORDER(heap[p], heap[r])) p = r;
+    if (p != i) {
+        swap(p, i);
+        heap_down(p);
+    }
+}
+
+int pop(void) {
+    int value = heap[ROOT];
+    heap[ROOT] = heap[--n];
+    heap_down(ROOT);
+    return value;
+}</code></pre>
+  <h4>构造二叉堆</h4>
+  <p>假设已经有一列无序元素, 将其构造成符合堆的性质. 如果使用 n 次插入算法, 其时间复杂度为 O(nlogn). 而更优的算法是自底向上地对每个子树做上文提到的 <code>heap_down</code> 操作, 其时间复杂度为 O(n).</p>
+  <pre><code class="language-c">void build(void) {
+    for (int i = PARENT(n); i >= ROOT; --i) {
+        heap_down(i);
+    }
+}</code></pre>
+  <p>由此可以立刻得到一个 O(nlogn) 的堆排序算法, 而且还是原地的 (空间复杂度 O(1)) , 不再赘述.</p>
+  <h4>合并</h4>
+  <p>简单串联两个堆, 然后执行一遍构造即可, 复杂度为 O(n).</p>
+  <h3>实现 (以可并二叉堆为例)</h3>
+  <p>可并堆可以做到 O(1) 的合并效率, 见 <code>merge</code> 函数.</p>
+  <pre class="language-c"><code>#define ORDER(p, c) ((p) <= (c))
+typedef struct Node Node;
+struct Node {               //   p---s
+    int value;              //  /
+    Node *child, *sibling;  // c
+};
+
+Node *merge(Node *a, Node *b) {
+    if (!a) return b; if (!b) return a;
+    if (!ORDER(a->value, b->value)) swap(a, b);
+    b->sibling = a->child; a->child = b;
+    return a;
+}
+
+Node *insert(Node *root, int value) {
+    Node *p = malloc(sizeof(Node));
+    *p = (Node) { value, NULL, NULL };
+    return merge(root, p);
+}
+
+Node *merges(Node *x) {
+    if (!x || !x->sibling) return x;
+    Node *a = x->sibling, *b = a->sibling;
+    x->sibling = a->sibling = NULL;
+    return merge(merge(x, a), merges(b));
+}
+
+Node *pop(Node *root) {
+    Node *p = merges(root->child);
+    free(root);
+    return p;
+}</code></pre>
+  <p class="copyright"><a class="switch-theme">&copy;</a> 2020 hyrious</p>
+</body>
+</html>
