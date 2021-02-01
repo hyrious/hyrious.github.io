@@ -1,35 +1,21 @@
 <!DOCTYPE html>
 <html lang="zh-Hans-CN">
 <head>
-  <meta charset="UTF-8">
-  <title>卡特兰数 - hyrious.log</title>
-  <meta name="viewport" content="width=device-width">
-  <link rel="icon" href="../favicon.ico">
-  <link rel="stylesheet" href="../style.css">
-  <script src="../main.js"></script>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex/dist/contrib/copy-tex.min.css">
-  <script defer src="https://cdn.jsdelivr.net/npm/katex"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/katex/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body,{trust:true,strict:false});"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/katex/dist/contrib/copy-tex.min.js"></script>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs/themes/prism-tomorrow.css">
-  <script src="https://cdn.jsdelivr.net/npm/prismjs"></script>
-  <script src="https://cdn.jsdelivr.net/npm/prismjs/plugins/autoloader/prism-autoloader.min.js"></script>
-  <style>
-    pre[class*="language-"] {
-      border: 0;
-      border-radius: 0;
-      box-shadow: none;
-      font-size: .8em;
-    }
-    code[class*="language-"] {
-      font-family: monospace;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <title>卡特兰数</title>
+    <meta name="color-scheme" content="light dark">
+    <meta name="viewport" content="width=device-width">
+    <link rel="icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex/dist/contrib/copy-tex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body,{trust:true,strict:false});"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex/dist/contrib/copy-tex.min.js"></script>
 </head>
 <body>
-  <article>
     <h2>卡特兰数</h2>
+    <address>最后更新于 <time>2021-02-06</time></address>
     <p>\( C_n=1,1,2,5,14,42,132,429,1430,4862,\href{https://oeis.org/A000108}{\cdots} \) (n 从 0 开始)</p>
     <ul>
       <li>n 个不同的数入栈，有 \( C_n \) 种出栈顺序</li>
@@ -45,8 +31,7 @@
       C_n&={2n\choose n}-{2n\choose n+1} \\
          &=\frac{1}{n+1}{2n\choose n}=\frac{(2n)!}{(n+1)!n!}
     \end{aligned}$$</p>
-    <h3>例题 1.</h3>
-    <p>2n 个高矮不同的人，排成两排，每排必须是从矮到高排列，而且第二排比对应的第一排的人高，问排列方式有多少种？</p>
+    <h3>例题 1. 2n 个高矮不同的人，排成两排，每排必须是从矮到高排列，而且第二排比对应的第一排的人高，问排列方式有多少种？</h3>
     <p>答：\( C_n \) 种。</p>
     <h3>例题 2. Trees Made to Order (POJ 1095)</h3>
     <p>定义二叉树按以下顺序排列：</p>
@@ -145,7 +130,8 @@ void f(int id) {
                 for right in self.generateParenthesis(n - 1 - c):
                     a.append("{}({})".format(left, right))
         return a</code></pre>
-    <p class="copyright"><a class="switch-theme">&copy;</a> 2020 hyrious</p>
-  </article>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs/components/prism-c.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs/components/prism-python.min.js"></script>
 </body>
 </html>
