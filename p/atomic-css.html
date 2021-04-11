@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="zh-Hans-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>原子 CSS 的坑：简写属性</title>
+    <meta name="color-scheme" content="light dark">
+    <meta name="viewport" content="width=device-width">
+    <link rel="icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        style.visible {
+            display: block;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <h2>原子 CSS 的坑：简写属性</h2>
+    <address>最后更新于 <time>2021-04-11</time></address>
+    <blockquote>
+        Ref:<br>
+        <a href="https://weser.io/blog/the-shorthand-longhand-problem-in-atomic-css">The Shorthand-Longhand Problem in Atomic CSS</a>
+    </blockquote>
+    <p>我们都知道，同等级的 css class 应用顺序仅取决于其定义顺序，例如：</p>
+    <style class="visible">.red { color: red }
+.green { color: green }</style>
+    <pre><code>&lt;p class="red green"&gt;<span class="red green">I'm green.</span>&lt;/p&gt;
+&lt;p class="green red"&gt;<span class="green red">I'm green.</span>&lt;/p&gt;
+</code></pre>
+    <p><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Shorthand_properties">简写属性</a> 也不例外：</p>
+    <style class="visible">.pl-20 { padding-left: 20px }
+.pa-5 { padding: 5px }</style>
+    <pre><code>&lt;p class="pa-5 pl-20"&gt;<span class="pa-5 pl-20">I'm pa-5.</span>&lt;/p&gt;
+&lt;p class="pl-20 pa-5"&gt;<span class="pl-20 pa-5">I'm pa-5.</span>&lt;/p&gt;
+</code></pre>
+    <p>如果单纯看 class 内容，<code>pl-5 pl-20</code> 可能给人一种 <code>pl-20</code> 会生效的错觉。</p>
+</body>
+</html>
