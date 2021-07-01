@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-Hans-CN">
 <head>
     <meta charset="UTF-8">
     <title>Source Map - 原理与实现</title>
@@ -13,45 +13,6 @@
     <address>最后更新于 <time>2021-06-30</time></address>
     <p>最近想要手写 source map，于是研究了一下，以下是笔记。</p>
 
-    <p>我们先看一个输入等于输出的例子：</p>
-    <pre class="language-bash"><code>echo 'console.log(1);' | esbuild --minify --sourcemap</code></pre>
-    <p>输出的 js：<code>console.log(1);</code></p>
-    <p>输出的 source map：</p>
-    <pre class="language-json"><code>{
-  "version": 3,
-  "sources": ["&lt;stdin&gt;"],
-  "sourcesContent": ["console.log(1);\n"],
-  "mappings": "AAAA,QAAQ,IAAI",
-  "names": []
-}</code></pre>
-    <p>好吧，其他几个字段都挺直观的，这个 <code>mappings</code> 是什么玩意儿？这是 <strong>6 位 VLQ 编码的 Base64 表示</strong> ……</p>
-
-    <h3>Base64 VLQ</h3>
-
-    <h4>Base64</h4>
-    <p><select id="b64-basic"></select> &rarr; <output>A</output></p>
-
-
-<script>
-;(() => {
-    var $ = e => document.querySelector(e)
-    var h = (t, a, ...c) => {
-        const e = document.createElement(t)
-        Object.assign(e, a)
-        if (c.length) e.append(...c)
-        return e
-    }
-    var sel = $("#b64-basic")
-    var sel_out = $("#b64-basic + output")
-    for (let i = 0; i < 64; ++i) {
-        sel.append(h('option', null, i))
-    }
-    const B64 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
-    sel.onchange = () => {
-        console.log(sel.value)
-    }
-})();
-</script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.0.1/build/styles/github-dark.min.css">
 <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.0.1/build/highlight.min.js"></script>
 <style>pre code.hljs{background-color:initial;padding:initial}</style>
