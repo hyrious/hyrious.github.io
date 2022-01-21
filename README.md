@@ -1,3 +1,6 @@
-<p>&rarr; <samp>https://hyrious.me</samp></p>
+<samp><b><a href="https://hyrious.me">hyrious.me</a></b></samp>
 
-All posts, including their source code, are under the CC0 license.
+<p>
+  <samp>code is licensed under <a href="LICENSE.txt">MIT</a></samp>,<br>
+  <samp><a href="_src/posts">words</a> and images are licensed under <a href="http://creativecommons.org/publicdomain/zero/1.0/">CC0</a></samp>.<br>
+</p>

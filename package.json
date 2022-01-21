@@ -1,0 +1,21 @@
+{
+  "name": "hyrious.me",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node _src/index.js dev",
+    "build": "node _src/index.js build",
+    "preview": "node _src/index.js preview",
+    "new": "node _src/index.js new"
+  },
+  "devDependencies": {
+    "@hyrious/w7": "^0.1.8",
+    "esbuild": "^0.14.13",
+    "escape-goat": "^4.0.0",
+    "gray-matter": "^4.0.3",
+    "markdown-it": "^12.3.2"
+  },
+  "dependencies": {
+    "sanitize.css": "^13.0.0"
+  }
+}
