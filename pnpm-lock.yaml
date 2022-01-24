@@ -5,10 +5,13 @@ specifiers:
   esbuild: ^0.14.13
   escape-goat: ^4.0.0
   gray-matter: ^4.0.3
+  highlight.js: ^11.4.0
   markdown-it: ^12.3.2
+  markdown-it-highlightjs: ^3.6.0
   sanitize.css: ^13.0.0
 
 dependencies:
+  highlight.js: 11.4.0
   sanitize.css: 13.0.0
 
 devDependencies:
@@ -17,6 +20,7 @@ devDependencies:
   escape-goat: 4.0.0
   gray-matter: 4.0.3
   markdown-it: 12.3.2
+  markdown-it-highlightjs: 3.6.0
 
 packages:
 
@@ -312,6 +316,10 @@ packages:
       strip-bom-string: 1.0.0
     dev: true
 
+  /highlight.js/11.4.0:
+    resolution: {integrity: sha512-nawlpCBCSASs7EdvZOYOYVkJpGmAOKMYZgZtUqSRqodZE0GRVcFKwo1RcpeOemqh9hyttTdd5wDBwHkuSyUfnA==}
+    engines: {node: '>=12.0.0'}
+
   /is-binary-path/2.1.0:
     resolution: {integrity: sha512-ZMERYes6pDydyuGidse7OsHxtbI7WVeUEozgR/g7rd0xUimYNlvZRE/K2MgZTjWy725IfelLeVcEM97mmtRGXw==}
     engines: {node: '>=8'}
@@ -363,6 +371,17 @@ packages:
   /local-access/1.1.0:
     resolution: {integrity: sha512-XfegD5pyTAfb+GY6chk283Ox5z8WexG56OvM06RWLpAc/UHozO8X6xAxEkIitZOtsSMM1Yr3DkHgW5W+onLhCw==}
     engines: {node: '>=6'}
+    dev: true
+
+  /lodash.flow/3.5.0:
+    resolution: {integrity: sha1-h79AKSuM+D5OjOGjrkIJ4gBxZ1o=}
+    dev: true
+
+  /markdown-it-highlightjs/3.6.0:
+    resolution: {integrity: sha512-ex+Lq3cVkprh0GpGwFyc53A/rqY6GGzopPCG1xMsf8Ya3XtGC8Uw9tChN1rWbpyDae7tBBhVHVcMM29h4Btamw==}
+    dependencies:
+      highlight.js: 11.4.0
+      lodash.flow: 3.5.0
     dev: true
 
   /markdown-it/12.3.2:

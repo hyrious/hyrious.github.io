@@ -32,6 +32,7 @@ if (command === 'build') {
       bundle: true,
       minify: true,
       outfile: 'style.css',
+      legalComments: 'none',
     }),
     promises.writeFile('index.html', indexHTML),
     ...baked.map(({ contents, link }) => {

@@ -19,7 +19,7 @@ watch('_src/posts', { signal: controller.signal }, async (type, filename) => {
 function notifyIndexChange() {
   sendUpdate('update-index', {
     date: today,
-    posts: [...posts.values()].sort(sortByDate),
+    posts: sortByDate([...posts.values()]),
   })
 }
 

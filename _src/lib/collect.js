@@ -35,6 +35,9 @@ export const template = `<!DOCTYPE html>
   <h2>{{ title }}</h2>
   <address>最后更新于 <time>{{ date }}</time></address>
   {{ contents }}
+  <footer>
+    <p><a href="http://creativecommons.org/publicdomain/zero/1.0/">CC0</a> 2022 @ hyrious</p>
+  </footer>
 </body>
 </html>
 `

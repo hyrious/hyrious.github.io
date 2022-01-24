@@ -2,12 +2,15 @@ import { promises } from 'fs'
 import { basename } from 'path'
 import matter from 'gray-matter'
 import MarkdownIt from 'markdown-it'
+import highlightjs from 'markdown-it-highlightjs'
 
 const md = new MarkdownIt({
   html: true,
   linkify: true,
   typographer: true,
 })
+
+md.use(highlightjs)
 
 export async function renderMarkdown(path) {
   const text = await promises.readFile(path, 'utf8')

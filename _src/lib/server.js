@@ -42,6 +42,7 @@ route('/style.css', async (req, res) => {
     minify: true,
     sourcemap: 'inline',
     write: false,
+    legalComments: 'none',
   })
   res.writeHead(200, { 'Content-Type': 'text/css' })
   res.end(outputFiles[0].contents)
@@ -67,8 +68,8 @@ export const server = http.createServer(async (req, res) => {
   if (existsSync(path)) {
     res.writeHead(200, { 'Content-Type': 'text/html' })
     const data = await renderMarkdown(`_src/posts/${name}.md`)
-    const html = renderPost({ ...data, contents: '' })
-    return res.end(html.replace('</body>', scriptTag + '</body>'))
+    const html = renderPost({ ...data, contents: scriptTag })
+    return res.end(html)
   }
 
   return notFound(res)

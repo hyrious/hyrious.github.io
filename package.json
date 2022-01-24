@@ -13,9 +13,11 @@
     "esbuild": "^0.14.13",
     "escape-goat": "^4.0.0",
     "gray-matter": "^4.0.3",
-    "markdown-it": "^12.3.2"
+    "markdown-it": "^12.3.2",
+    "markdown-it-highlightjs": "^3.6.0"
   },
   "dependencies": {
+    "highlight.js": "^11.4.0",
     "sanitize.css": "^13.0.0"
   }
 }
