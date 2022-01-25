@@ -1,4 +1,4 @@
-import { promises } from 'fs'
+import { promises, statSync } from 'fs'
 import { basename } from 'path'
 import matter from 'gray-matter'
 import MarkdownIt from 'markdown-it'
@@ -16,10 +16,16 @@ export async function renderMarkdown(path) {
   const text = await promises.readFile(path, 'utf8')
   const { data, content } = matter(text)
   const contents = md.render(content)
-  return { ...data, contents, link: `p/${basename(path, '.md')}.html` }
+  return {
+    path,
+    mtime: statSync(path).mtime,
+    ...data,
+    contents,
+    link: `p/${basename(path, '.md')}.html`,
+  }
 }
 
 /** @param posts {{ date: Date }[]} */
 export function sortByDate(posts) {
-  return posts.sort((a, b) => b.date - a.date).reverse()
+  return posts.sort((a, b) => b.date - a.date || b.mtime - a.mtime)
 }

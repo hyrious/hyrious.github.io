@@ -1,6 +1,7 @@
 @charset "UTF-8";
 @import 'sanitize.css';
 @import 'highlight.js/styles/github.css';
+@import './hljs-dark.css';
 
 :root {
   --text-color: rgba(0, 0, 0, 0.8);
@@ -17,85 +18,6 @@
     --gray-color: #747d86;
     --underline-color: rgba(255, 255, 255, 0.78);
     --pre-color: rgba(255, 255, 255, 0.05);
-  }
-
-  /* highlight.js/styles/github-dark.css */
-  .hljs {
-    color: #c9d1d9;
-    background: #0d1117;
-  }
-  .hljs-doctag,
-  .hljs-keyword,
-  .hljs-meta .hljs-keyword,
-  .hljs-template-tag,
-  .hljs-template-variable,
-  .hljs-type,
-  .hljs-variable.language_ {
-    color: #ff7b72;
-  }
-  .hljs-title,
-  .hljs-title.class_,
-  .hljs-title.class_.inherited__,
-  .hljs-title.function_ {
-    color: #d2a8ff;
-  }
-  .hljs-attr,
-  .hljs-attribute,
-  .hljs-literal,
-  .hljs-meta,
-  .hljs-number,
-  .hljs-operator,
-  .hljs-selector-attr,
-  .hljs-selector-class,
-  .hljs-selector-id,
-  .hljs-variable {
-    color: #79c0ff;
-  }
-  .hljs-meta .hljs-string,
-  .hljs-regexp,
-  .hljs-string {
-    color: #a5d6ff;
-  }
-  .hljs-built_in,
-  .hljs-symbol {
-    color: #ffa657;
-  }
-  .hljs-code,
-  .hljs-comment,
-  .hljs-formula {
-    color: #8b949e;
-  }
-  .hljs-name,
-  .hljs-quote,
-  .hljs-selector-pseudo,
-  .hljs-selector-tag {
-    color: #7ee787;
-  }
-  .hljs-subst {
-    color: #c9d1d9;
-  }
-  .hljs-section {
-    color: #1f6feb;
-    font-weight: 700;
-  }
-  .hljs-bullet {
-    color: #f2cc60;
-  }
-  .hljs-emphasis {
-    color: #c9d1d9;
-    font-style: italic;
-  }
-  .hljs-strong {
-    color: #c9d1d9;
-    font-weight: 700;
-  }
-  .hljs-addition {
-    color: #aff5b4;
-    background-color: #033a16;
-  }
-  .hljs-deletion {
-    color: #ffdcd7;
-    background-color: #67060c;
   }
 }
 
@@ -182,9 +104,14 @@ p {
 
 blockquote {
   margin: 0 0 14px;
-  padding: 2ch;
+  padding: 1ch 2ch;
   border-radius: 0.5em;
   background-color: var(--pre-color, darkgray);
+  font-size: 90%;
+}
+
+blockquote > *:last-child {
+  margin: 0;
 }
 
 pre {
@@ -219,5 +146,14 @@ p > code[class*='language-'] {
 hr {
   margin: 22px 33%;
   border: 0;
-  border-top: 2px solid var(--gray-color, gray);
+  border-top: 1px solid currentColor;
+}
+
+/* modifiers */
+.half-shrink-left {
+  margin-left: -0.5em;
+}
+
+.half-shrink-right {
+  margin-right: -0.5em;
 }
