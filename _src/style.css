@@ -143,6 +143,11 @@ p > code[class*='language-'] {
   padding: 2px 4px;
 }
 
+ins {
+  text-decoration: none;
+  border-bottom: 1px solid;
+}
+
 hr {
   margin: 22px 33%;
   border: 0;
