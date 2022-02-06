@@ -1,8 +1,9 @@
+import { fileURLToPath } from 'url'
 import { readdirSync, promises, statSync } from 'fs'
-import { basename, dirname, join, resolve } from 'path'
+import { normalize, basename, dirname, join, resolve } from 'path'
 import { htmlEscape } from 'escape-goat'
 
-const __filename = new URL(import.meta.url).pathname
+const __filename = fileURLToPath(new URL(import.meta.url))
 const __dirname = dirname(__filename)
 
 const posts_folder = resolve(__dirname, '../posts')

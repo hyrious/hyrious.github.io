@@ -1,3 +1,4 @@
+import { fileURLToPath } from 'url'
 import { existsSync, promises } from 'fs'
 import { basename, dirname, resolve } from 'path'
 import http from 'http'
@@ -6,7 +7,7 @@ import crypto from 'crypto'
 import { indexHtmlTemplate, renderPost } from './collect.js'
 import { renderMarkdown } from './render.js'
 
-const __filename = new URL(import.meta.url).pathname
+const __filename = fileURLToPath(new URL(import.meta.url))
 const __dirname = dirname(__filename)
 
 const client = resolve(__dirname, './client.js')

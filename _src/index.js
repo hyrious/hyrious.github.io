@@ -42,7 +42,11 @@ if (command === 'build') {
 }
 if (command === 'preview') {
   const { spawnSync } = await import('child_process')
-  process.exit(spawnSync('w7', { stdio: 'inherit' }).status)
+  process.exit(
+    spawnSync(process.platform === 'win32' ? 'w7.cmd' : 'w7', {
+      stdio: 'inherit',
+    }).status,
+  )
 }
 if (command === 'new') {
   const [name] = args
