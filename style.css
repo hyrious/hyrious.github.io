@@ -1,6 +1,6 @@
 @charset "UTF-8";
 
-/* node_modules/.pnpm/sanitize.css@13.0.0/node_modules/sanitize.css/sanitize.css */
+/* node_modules/sanitize.css/sanitize.css */
 *,
 ::before,
 ::after {
@@ -148,7 +148,7 @@
   position: absolute;
 }
 
-/* node_modules/.pnpm/highlight.js@11.4.0/node_modules/highlight.js/styles/github.css */
+/* node_modules/highlight.js/styles/github.css */
 pre code.hljs {
   display: block;
   overflow-x: auto;
