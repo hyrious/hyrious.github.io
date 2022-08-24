@@ -430,13 +430,13 @@ blockquote > *:last-child {
   margin: 0;
 }
 pre {
-  margin: 1em 0;
+  margin: 1em -16px;
   background-color: var(--pre-color, darkgray);
   overflow-x: auto;
 }
-pre code[class*=language-] {
+pre code {
   display: block;
-  padding: 1ch 0;
+  padding: 1ch 16px;
 }
 pre[class*=language-],
 code[class*=language-] {
@@ -461,6 +461,47 @@ hr {
   margin: 22px 33%;
   border: 0;
   border-top: 1px solid currentColor;
+}
+sub,
+sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+sub {
+  bottom: -0.25em;
+}
+sup {
+  top: -0.5em;
+}
+.footnotes {
+  font-size: 12px;
+  color: var(--gray-color);
+  border-top: 1px solid currentColor;
+}
+.footnotes ol {
+  padding-left: 16px;
+}
+.footnotes li {
+  position: relative;
+}
+.footnotes li:target::before {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  bottom: -8px;
+  left: -24px;
+  pointer-events: none;
+  content: "";
+  border: 2px solid var(--text-color);
+  border-radius: 6px;
+}
+.footnotes li:target {
+  color: var(--text-color);
+}
+.footnotes .data-footnote-backref g-emoji {
+  font-family: monospace;
 }
 .half-shrink-left {
   margin-left: -0.5em;
