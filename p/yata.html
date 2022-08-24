@@ -12,14 +12,14 @@
   <h2>YATA：一种针对文本编辑优化的 CRDT 算法</h2>
   <address>最后更新于 <time>2022-01-26</time></address>
   <p>参考：<a href="https://juejin.cn/post/7030327499829542942">https://juejin.cn/post/7030327499829542942</a></p>
-<p>CRDT 是用来实现同步应用状态的<strong>一类</strong>数据结构（而且大多不需要中心服务器<span class="half-shrink-right">）</span>，其目的是为了让应用的状态在多方共同操作的时候通过<strong>不能保证顺序</strong>的广播消息机制和一套算法处理后能够保持一致。<small>虽然不保证消息顺序，但是仍然要求所有消息都能到达所有客户端，其实这个要求还是有点高了…</small></p>
+<p>CRDT 是用来实现同步应用状态的<strong>一类</strong>数据结构（而且大多不需要中心服务器<span class="half-shrink-right">）</span>，其目的是为了让应用的状态在多方共同操作的时候通过<strong>不能保证顺序</strong>的广播消息机制和一套算法处理后能够保持一致。<small>虽然不保证消息顺序，但是仍然要求所有消息都能到达所有客户端，其实这个要求还是有点高了&hellip;</small></p>
 <p>那么，如何设计数据结构，才能表达一段同步的文本呢？YATA 使用了双链表，每一项都可能包含一些文本段或者为空（例如被删除<span class="half-shrink-right">）</span>，用户的操作都基于链表进行。例如，我们可能存在这些操作：</p>
-<pre><code class="hljs language-swift"><span class="hljs-keyword">func</span> <span class="hljs-title function_">向某个节点后插入新文本节点</span>(参考节点, 新文本节点);
+<pre><code class="language-swift"><span class="hljs-keyword">func</span> <span class="hljs-title function_">向某个节点后插入新文本节点</span>(参考节点, 新文本节点);
 <span class="hljs-keyword">func</span> <span class="hljs-title function_">删除某个节点</span>(要删除的节点);
 <span class="hljs-comment">// 注意：不存在 &quot;修改&quot; 操作</span>
 </code></pre>
 <p>除了操作本身以外，我们还需要一种机制可以对操作排序，保证本地的有序只需要一个 counter，而涉及多端同步时，还需要加一个唯一的 id：</p>
-<pre><code class="hljs language-ts"><span class="hljs-keyword">interface</span> <span class="hljs-title class_">Operation</span> {
+<pre><code class="language-ts"><span class="hljs-keyword">interface</span> <span class="hljs-title class_">Operation</span> {
   <span class="hljs-attr">id</span>: <span class="hljs-built_in">string</span>; <span class="hljs-comment">// 或者 number，只要满足唯一需求就行</span>
   <span class="hljs-attr">clock</span>: <span class="hljs-built_in">number</span>;
   <span class="hljs-attr">type</span>: <span class="hljs-built_in">string</span>;
@@ -27,14 +27,14 @@
 }
 </code></pre>
 <p>接着，我们按这种方式更新 clock：</p>
-<pre><code class="hljs language-rb"><span class="hljs-comment"># 发生本地事件时</span>
+<pre><code class="language-rb"><span class="hljs-comment"># 发生本地事件时</span>
 local_clock = local_clock + <span class="hljs-number">1</span>
 <span class="hljs-comment"># 收到远程事件时</span>
 local_clock = max(local_clock, remote_clock) + <span class="hljs-number">1</span>
 </code></pre>
 <p>再配合比较 id，我们就可以把所有操作排序了。</p>
 <p>考虑到本地操作：<q>在节点 A 后面插入 B</q> 和远程操作：<q>在节点 C 后面插入 D</q>，我们需要设计一套算法来使得无论他们按什么顺序到达客户端，都能使客户端到达一个一致的状态。</p>
-<h4>解决冲突</h4>
+<h4 id="解决冲突">解决冲突</h4>
 <p>YATA 算法的核心是：如果我们把<q>参考节点</q>一起发出去，新节点和参考节点之间连线，那么所有的这种连线都不能<q>交叉</q>。</p>
 <p>两种合法的插入结果（假设 A B C 已知，D 是当前要插入的<span class="half-shrink-right">）</span>：</p>
 <svg preserveAspectRatio='xMidYMid meet' viewBox='0 0 200 100'>
@@ -50,9 +50,10 @@ local_clock = max(local_clock, remote_clock) + <span class="hljs-number">1</span
   <text x="150" y="50" text-anchor="middle" dominant-baseline="hanging">B</text>
   <text x="170" y="50" text-anchor="middle" dominant-baseline="hanging" color="#FF4136">D</text>
 </svg>
+
 <p>只要设计的算法能满足这个要求，就可以达到一致性需求（证明见<a href="https://www.researchgate.net/publication/310212186_Near_Real-Time_Peer-to-Peer_Shared_Editing_on_Extensible_Data_Types">论文</a><span class="half-shrink-right">）</span>。如何实现呢？我们分情况看看不同的操作应该如何合并：</p>
 <p>首先定义操作：</p>
-<pre><code class="hljs language-js">state = [<span class="hljs-title function_">node</span>(<span class="hljs-string">&#x27;A&#x27;</span>)]
+<pre><code class="language-js">state = [<span class="hljs-title function_">node</span>(<span class="hljs-string">&#x27;A&#x27;</span>)]
 <span class="hljs-keyword">let</span> op1 = { <span class="hljs-attr">type</span>: <span class="hljs-string">&#x27;insert&#x27;</span>, <span class="hljs-attr">left</span>: <span class="hljs-title function_">node</span>(<span class="hljs-string">&#x27;A&#x27;</span>), <span class="hljs-attr">content</span>: <span class="hljs-title function_">node</span>(<span class="hljs-string">&#x27;B&#x27;</span>) };
 <span class="hljs-keyword">let</span> op2 = { <span class="hljs-attr">type</span>: <span class="hljs-string">&#x27;insert&#x27;</span>, <span class="hljs-attr">left</span>: <span class="hljs-title function_">node</span>(<span class="hljs-string">&#x27;C&#x27;</span>), <span class="hljs-attr">content</span>: <span class="hljs-title function_">node</span>(<span class="hljs-string">&#x27;D&#x27;</span>) };
 <span class="hljs-title function_">apply</span>(op1) <span class="hljs-comment">// state = [node(&#x27;A&#x27;), node(&#x27;B&#x27;)]</span>
@@ -61,18 +62,16 @@ local_clock = max(local_clock, remote_clock) + <span class="hljs-number">1</span
 <p>由于我们的底层数据结构是双链表，node 之间是可以排序的。先引入一个记号：<code>a &lt; b</code> 表示 a 紧跟在 b 左边，<code>a &lt;&lt; b</code> 表示 a 在 b 左边不知道多远的地方。</p>
 <ul>
 <li>如果 <code>A &lt;&lt; B &lt;&lt; C</code>，显然 D 应该直接插入到 C 右边。</li>
-<li>如果 <code>A &lt;&lt; C &lt;&lt; B</code>，此时存在两种情况：
-<ul>
-<li>如果 <code>A &lt;&lt; C</code> →  <code>B &lt;&lt; D</code>，注意这里的 → 表示我们假设推导出这种结果，此时有可能实际情况是 <code>A &lt;&lt; C &lt; D &lt;&lt; B</code>，就无法保证一致了。</li>
-<li>所以，这里我们要假设 <code>A &lt;&lt; C</code> →  <code>D &lt;&lt; B</code>，也就是 <code>A &lt;&lt; C &lt;&lt; D &lt;&lt; B</code>，这个结果是唯一的。写成代码就是（对应上图右<span class="half-shrink-right">）</span>：<pre><code class="hljs language-js"><span class="hljs-keyword">if</span> (<span class="hljs-title function_">node</span>(<span class="hljs-string">&#x27;A&#x27;</span>).<span class="hljs-title function_">isLeftOf</span>(<span class="hljs-title function_">node</span>(<span class="hljs-string">&#x27;C&#x27;</span>))) {
+<li>如果 <code>A &lt;&lt; C &lt;&lt; B</code>，此时存在两种情况：<ul>
+<li>如果 <code>A &lt;&lt; C</code> &rarr;  <code>B &lt;&lt; D</code>，注意这里的 &rarr; 表示我们假设推导出这种结果，此时有可能实际情况是 <code>A &lt;&lt; C &lt; D &lt;&lt; B</code>，就无法保证一致了。</li>
+<li>所以，这里我们要假设 <code>A &lt;&lt; C</code> &rarr;  <code>D &lt;&lt; B</code>，也就是 <code>A &lt;&lt; C &lt;&lt; D &lt;&lt; B</code>，这个结果是唯一的。写成代码就是（对应上图右<span class="half-shrink-right">）</span>：<pre><code class="language-js"><span class="hljs-keyword">if</span> (<span class="hljs-title function_">node</span>(<span class="hljs-string">&#x27;A&#x27;</span>).<span class="hljs-title function_">isLeftOf</span>(<span class="hljs-title function_">node</span>(<span class="hljs-string">&#x27;C&#x27;</span>))) {
   <span class="hljs-title function_">node</span>(<span class="hljs-string">&#x27;B&#x27;</span>).<span class="hljs-title function_">insertBefore</span>(<span class="hljs-title function_">node</span>(<span class="hljs-string">&#x27;D&#x27;</span>))
 }
 </code></pre>
 </li>
 </ul>
 </li>
-<li>如果 <code>C &lt;&lt; A</code>，我们看 C 右边第一个元素 X，注意到 <code>X.left &lt;&lt;= C</code>，
-<ul>
+<li>如果 <code>C &lt;&lt; A</code>，我们看 C 右边第一个元素 X，注意到 <code>X.left &lt;&lt;= C</code>，<ul>
 <li>如果 <code>X.left == C</code>，那么 X 和 D 都在 C 的右侧且 left 都是 C，此时等价于他们发生了冲突，下面会介绍一种算法来解决它。</li>
 <li>如果 <code>X.left &lt;&lt; C</code>，此时有 <code>X.left &lt;&lt; C &lt; X &lt;&lt;= A</code>，此时 D 必然插入到 <code>C &lt; D &lt; X</code>（见上面关于 <code>A(X.left) &lt;&lt; C &lt;&lt; B(A)</code> 的推理<span class="half-shrink-right">）</span>。</li>
 </ul>
@@ -82,24 +81,24 @@ local_clock = max(local_clock, remote_clock) + <span class="hljs-number">1</span
 <hr>
 <p>虽然我上面说了一堆，其实实现并不复杂，只要保持上面提到的<q>依赖连线不交叉</q>的性质就行，下面我们来看看实现（摘自 <a href="https://github.com/yjs/yjs/blob/main/src/structs/Item.js#L409">Yjs</a><span class="half-shrink-right">）</span>：</p>
 <p>还是以上面的 <code>ABCD</code> 为例，我们看插入 D 时发生了什么：</p>
-<pre><code class="hljs language-js"><span class="hljs-comment">// constructor() {</span>
+<pre><code class="language-js"><span class="hljs-comment">// constructor() {</span>
 <span class="hljs-variable language_">this</span>.<span class="hljs-property">left</span> = origin
 <span class="hljs-variable language_">this</span>.<span class="hljs-property">right</span> = originRight
 </code></pre>
 <p>首先，将 D 的 left 和 right 设为他的参考元素，即 C。此时链表长这样：</p>
-<pre><code class="hljs language-text">--C.left--C--C.right--D.right--
+<pre><code class="language-text">--C.left--C--C.right--D.right--
            \         /
             D  =  this
 </code></pre>
 <p>我们的目的是找到一个位置 <code>left</code> 让 D 插入，使得最终所有端的链表一致。</p>
-<pre><code class="hljs language-js"><span class="hljs-comment">// integrate (transaction, offset) {</span>
+<pre><code class="language-js"><span class="hljs-comment">// integrate (transaction, offset) {</span>
 <span class="hljs-keyword">if</span> (
   (!<span class="hljs-variable language_">this</span>.<span class="hljs-property">left</span> &amp;&amp; (!<span class="hljs-variable language_">this</span>.<span class="hljs-property">right</span> || <span class="hljs-variable language_">this</span>.<span class="hljs-property">right</span>.<span class="hljs-property">left</span> !== <span class="hljs-literal">null</span>)) ||
   (<span class="hljs-variable language_">this</span>.<span class="hljs-property">left</span> &amp;&amp; <span class="hljs-variable language_">this</span>.<span class="hljs-property">left</span>.<span class="hljs-property">right</span> !== <span class="hljs-variable language_">this</span>.<span class="hljs-property">right</span>)
 ) {
 </code></pre>
 <p>如果 <code>C.right</code> 不等于 <code>D.right</code> <span class="half-shrink-left">（第二个条件<span class="half-shrink-right">）</span>，说明从 <code>C.right</code> 开始产生了冲突，需要走接下来的冲突处理。如果 D 前面没有元素，但是 <code>D.right.left</code> 存在，说明 D 前面<strong>其实有</strong>元素，从 D 开始产生了冲突。</p>
-<pre><code class="hljs language-js"><span class="hljs-keyword">let</span> left = <span class="hljs-variable language_">this</span>.<span class="hljs-property">left</span>
+<pre><code class="language-js"><span class="hljs-keyword">let</span> left = <span class="hljs-variable language_">this</span>.<span class="hljs-property">left</span>
 <span class="hljs-comment">// set o to the first conflicting item</span>
 <span class="hljs-keyword">let</span> o = left?.<span class="hljs-property">right</span>                    <span class="hljs-comment">// 不考虑 parent 后的简化代码</span>
 <span class="hljs-keyword">const</span> conflictingItems = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Set</span>()
@@ -108,35 +107,35 @@ local_clock = max(local_clock, remote_clock) + <span class="hljs-number">1</span
 <span class="hljs-comment">// ***{origin}bbbb{this}{c,b}{c,b}{o}***</span>
 </code></pre>
 <p>考虑遍历所有的冲突元素，我们从 <code>o = C.right</code> 遍历到 <code>D.right</code>。这里还拿了两个 Set，不知道做什么用，我暂且蒙在鼓里。</p>
-<pre><code class="hljs language-js"><span class="hljs-keyword">while</span> (o !== <span class="hljs-literal">null</span> &amp;&amp; o !== <span class="hljs-variable language_">this</span>.<span class="hljs-property">right</span>) {
+<pre><code class="language-js"><span class="hljs-keyword">while</span> (o !== <span class="hljs-literal">null</span> &amp;&amp; o !== <span class="hljs-variable language_">this</span>.<span class="hljs-property">right</span>) {
   itemsBeforeOrigin.<span class="hljs-title function_">add</span>(o)
   conflictingItems.<span class="hljs-title function_">add</span>(o)
 </code></pre>
 <p>当<q>当前考察的元素<code>o</code></q>存在而且不是 <code>D.right</code>，</p>
-<pre><code class="hljs language-js"><span class="hljs-keyword">if</span> (<span class="hljs-title function_">compareIDs</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">origin</span>, o.<span class="hljs-property">origin</span>)) {
+<pre><code class="language-js"><span class="hljs-keyword">if</span> (<span class="hljs-title function_">compareIDs</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">origin</span>, o.<span class="hljs-property">origin</span>)) {
 </code></pre>
 <p>如果当前元素的参考元素 <code>o.origin</code> 和 <code>D.origin</code> 相等，也就是说 o 和 D 期望插入到同一个位置，</p>
-<pre><code class="hljs language-js"><span class="hljs-comment">// case 1</span>
+<pre><code class="language-js"><span class="hljs-comment">// case 1</span>
 <span class="hljs-keyword">if</span> (o.<span class="hljs-property">id</span>.<span class="hljs-property">client</span> &lt; <span class="hljs-variable language_">this</span>.<span class="hljs-property">id</span>.<span class="hljs-property">client</span>) {
   left = o
   conflictingItems.<span class="hljs-title function_">clear</span>()
 }
 </code></pre>
 <p>此时用 id 排一下 o 和 D 的顺序，如果 o 应该在 D 前面，将 D 的 left 设为 o <span class="half-shrink-left">（</span>但是没有真的设<span class="half-shrink-right">）</span>，并且清空一个 Set <span class="half-shrink-left">（</span>暂且蒙在鼓里<span class="half-shrink-right">）</span>。</p>
-<pre><code class="hljs language-text">C.right--o-?-D.right--
+<pre><code class="language-text">C.right--o-?-D.right--
           \ /
            D
 </code></pre>
-<pre><code class="hljs language-js"><span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-title function_">compareIDs</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">rightOrigin</span>, o.<span class="hljs-property">rightOrigin</span>)) {
+<pre><code class="language-js"><span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-title function_">compareIDs</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">rightOrigin</span>, o.<span class="hljs-property">rightOrigin</span>)) {
   <span class="hljs-comment">// this and o are conflicting and point to the same integration points. The id decides which item comes first.</span>
   <span class="hljs-comment">// Since this is to the left of o, we can break here</span>
   <span class="hljs-keyword">break</span>
 } <span class="hljs-comment">// else, o might be integrated before an item that this conflicts with. If so, we will find it in the next iterations</span>
 </code></pre>
 <p>如果 <code>o.rightOrigin</code> 和 <code>D.rightOrigin</code> 相等，也就是说 o 和 D 不止期望插入同一个位置后，也期望插入到同一个位置前，此时 D 一定在 o 前面，所以可以直接停止遍历。</p>
-<pre><code class="hljs language-text">--C--D--o--
+<pre><code class="language-text">--C--D--o--
 </code></pre>
-<pre><code class="hljs language-js">} <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (
+<pre><code class="language-js">} <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (
   o.<span class="hljs-property">origin</span> !== <span class="hljs-literal">null</span> &amp;&amp;
   itemsBeforeOrigin.<span class="hljs-title function_">has</span>(<span class="hljs-title function_">getItem</span>(transaction.<span class="hljs-property">doc</span>.<span class="hljs-property">store</span>, o.<span class="hljs-property">origin</span>))
 ) {
@@ -147,11 +146,11 @@ local_clock = max(local_clock, remote_clock) + <span class="hljs-number">1</span
   }
 </code></pre>
 <p>如果 <code>o.origin</code> 和 <code>D.origin</code> 不相等，且 <code>o.origin</code> 不在 C 左边，且从最后一次调整 <code>D.left</code> 开始到当前的 o 不含有 <code>o.origin</code>，将 <code>D.left</code> 设为 o。</p>
-<pre><code class="hljs language-text">--C-D.left-o.origin--o--
+<pre><code class="language-text">--C-D.left-o.origin--o--
      \                \
       D (previous)     D (now)
 </code></pre>
-<pre><code class="hljs language-js">} <span class="hljs-keyword">else</span> {
+<pre><code class="language-js">} <span class="hljs-keyword">else</span> {
   <span class="hljs-keyword">break</span>
 }
 o = o.<span class="hljs-property">right</span> <span class="hljs-comment">// 紧接着上面调整 left = o 之后执行</span>
@@ -159,6 +158,7 @@ o = o.<span class="hljs-property">right</span> <span class="hljs-comment">// 紧
 <p>否则不存在冲突，可以直接停止遍历。</p>
 <p>现在我们知道 <code>conflictingItems</code> 其实就是 <code>D.left</code> 到当前遍历节点之间的所有元素、<code>itemsBeforeOrigin</code> 其实就是 <code>C</code> 到当前遍历节点之间的所有元素。这个算法通过调整 <code>D.left</code> 到冲突节点前后来达到<q>消除交叉</q>的效果。</p>
 <p>最后，我们成功的到了理想的 <code>D.left</code>，再将 D 真正插入到链表中即可。</p>
+
   <footer>
     <p><a href="http://creativecommons.org/publicdomain/zero/1.0/">CC0</a> 2022 @ hyrious</p>
   </footer>

@@ -67,15 +67,15 @@ Sublime Text 里也有一个针对插件的热更新机制，也是直接重新�
 
 ```js
 // global.js
-export let state = []
+export let state = [];
 
 // a.js
-import { state } from './global.js'
-state.push('a')
+import { state } from "./global.js";
+state.push("a");
 
 // b.js
-import { state } from './global.js'
-state.push('b')
+import { state } from "./global.js";
+state.push("b");
 ```
 
 如果 a.js 发生了热更新，他能否在更新期间拿到和 b.js 一样的 `state`？

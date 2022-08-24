@@ -14,41 +14,43 @@
   <p>问：如何分析并删除无用的 JS 代码？Tree-Shaking 给了打包器们一个简单的方法：只需要删除每个闭包里的没有<strong>使用</strong>且没有<strong>副作用</strong>的变量声明/表达式即可。剩下的就是需要给代码块（语法节点）标上有没有被使用、有没有副作用的信息。</p>
 <p>怎么知道一段代码的副作用呢？<span class="half-shrink-left">（</span>换句话说，是不是<q>纯</q>的）</p>
 <p>首先，纯字面量（数字，字符串等表达式）肯定没有副作用：</p>
-<pre><code class="hljs language-js"><span class="hljs-number">42</span>
+<pre><code class="language-js"><span class="hljs-number">42</span>
 <span class="hljs-string">&#x27;hello&#x27;</span>
 { <span class="hljs-attr">a</span>: [] }
 <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>){} <span class="hljs-comment">// 函数本身也是没有副作用的 -- 除非你调他</span>
 </code></pre>
-<p><s>其次，</s> 没有其次了，仅此而已。光有上面这些信息就足够 shake 掉这个例子：</p>
-<pre><code class="hljs language-js"><span class="hljs-keyword">function</span> <span class="hljs-title function_">add</span>(<span class="hljs-params">a, b</span>) { <span class="hljs-keyword">return</span> a + b }
+<p><del>其次，</del> 没有其次了，仅此而已。光有上面这些信息就足够 shake 掉这个例子：</p>
+<pre><code class="language-js"><span class="hljs-keyword">function</span> <span class="hljs-title function_">add</span>(<span class="hljs-params">a, b</span>) { <span class="hljs-keyword">return</span> a + b }
 <span class="hljs-keyword">function</span> <span class="hljs-title function_">mul</span>(<span class="hljs-params">a, b</span>) { <span class="hljs-keyword">return</span> a * b }
 <span class="hljs-keyword">export</span> <span class="hljs-keyword">let</span> sum = <span class="hljs-title function_">add</span>(<span class="hljs-number">3</span>, <span class="hljs-number">5</span>)
 </code></pre>
 <p align=center>&darr; &darr; &darr;</p>
-<pre><code class="hljs language-js"><span class="hljs-keyword">function</span> <span class="hljs-title function_">add</span>(<span class="hljs-params">a, b</span>) { <span class="hljs-keyword">return</span> a + b }
+
+<pre><code class="language-js"><span class="hljs-keyword">function</span> <span class="hljs-title function_">add</span>(<span class="hljs-params">a, b</span>) { <span class="hljs-keyword">return</span> a + b }
 <span class="hljs-keyword">export</span> <span class="hljs-keyword">let</span> sum = <span class="hljs-title function_">add</span>(<span class="hljs-number">3</span>, <span class="hljs-number">5</span>)
 </code></pre>
 <p>但是——你一拍大腿——能不能把函数调用也删掉呢？例如，假如我最终没有用上面的 <code>sum</code>，能不能把它连同 <code>add</code> 的定义一起删掉呢？——是可以的，用 Pure Annotation：</p>
-<pre><code class="hljs language-js"><span class="hljs-keyword">export</span> <span class="hljs-keyword">let</span> sum = <span class="hljs-comment">/* @__PURE__ */</span> <span class="hljs-title function_">add</span>(<span class="hljs-number">3</span>, <span class="hljs-number">5</span>)
+<pre><code class="language-js"><span class="hljs-keyword">export</span> <span class="hljs-keyword">let</span> sum = <span class="hljs-comment">/* @__PURE__ */</span> <span class="hljs-title function_">add</span>(<span class="hljs-number">3</span>, <span class="hljs-number">5</span>)
 </code></pre>
 <p>这个注释在告诉打包器：本次函数调用是<q>纯</q>的，其返回值和 <code>123</code> 差不多，如果没人用的话可以把这个调用删了。</p>
 <p><strong>陷阱</strong>：但是你不能删掉函数括号里的东西。这是因为参数本身可能是由别的副作用产生的，兴许有人依赖这个副作用呢。例如：</p>
-<pre><code class="hljs language-js"><span class="hljs-comment">/* @__PURE__ */</span> <span class="hljs-title function_">debugPrint</span>(<span class="hljs-title function_">createApp</span>())
+<pre><code class="language-js"><span class="hljs-comment">/* @__PURE__ */</span> <span class="hljs-title function_">debugPrint</span>(<span class="hljs-title function_">createApp</span>())
 </code></pre>
 <p align=center>&darr; &darr; &darr;</p>
-<pre><code class="hljs language-js"><span class="hljs-title function_">createApp</span>()
+
+<pre><code class="language-js"><span class="hljs-title function_">createApp</span>()
 </code></pre>
 <p>这个标记对下面这种调用也有效：</p>
-<pre><code class="hljs language-js"><span class="hljs-comment">/* @__PURE__ */</span> <span class="hljs-title class_">React</span>.<span class="hljs-title function_">createElement</span>(<span class="hljs-string">&#x27;div&#x27;</span>, {}, <span class="hljs-string">&#x27;Hello&#x27;</span>)  <span class="hljs-comment">// =&gt; nothing</span>
+<pre><code class="language-js"><span class="hljs-comment">/* @__PURE__ */</span> <span class="hljs-title class_">React</span>.<span class="hljs-title function_">createElement</span>(<span class="hljs-string">&#x27;div&#x27;</span>, {}, <span class="hljs-string">&#x27;Hello&#x27;</span>)  <span class="hljs-comment">// =&gt; nothing</span>
 <span class="hljs-comment">/* @__PURE__ */</span> <span class="hljs-keyword">new</span> A.<span class="hljs-property">b</span>.<span class="hljs-property">c</span>.<span class="hljs-title function_">d</span>()                            <span class="hljs-comment">// =&gt; nothing</span>
 </code></pre>
 <p>细心的你已经发现了：你无法对访问下标（<code>a.b</code>）标记是否含有副作用。实际上 esbuild 会认为所有的 getter setter 都是有副作用的。所以下面这段代码不能被 shake 掉：</p>
-<pre><code class="hljs language-js"><span class="hljs-keyword">let</span> a = {}
+<pre><code class="language-js"><span class="hljs-keyword">let</span> a = {}
 a.<span class="hljs-property">b</span> = <span class="hljs-number">1</span>
 <span class="hljs-comment">// 即使没有用到 a，这段代码也不能被删掉</span>
 </code></pre>
 <p>如果有一些复杂的初始化函数，你可以使用下面这个写法来规避这个问题：</p>
-<pre><code class="hljs language-js"><span class="hljs-keyword">let</span> a = <span class="hljs-comment">/* @__PURE__ */</span> (<span class="hljs-function">() =&gt;</span> {
+<pre><code class="language-js"><span class="hljs-keyword">let</span> a = <span class="hljs-comment">/* @__PURE__ */</span> (<span class="hljs-function">() =&gt;</span> {
   <span class="hljs-keyword">let</span> a = {}
   a.<span class="hljs-property">b</span> = <span class="hljs-number">1</span>
   <span class="hljs-keyword">return</span> a
@@ -58,13 +60,13 @@ a.<span class="hljs-property">b</span> = <span class="hljs-number">1</span>
 <hr>
 <p><strong>附赠：如何在打出的包里区分 dev/prod 环境？</strong></p>
 <p>虽然 Node.js 推出了 conditional exports 并建议大家用这样的形式导出不同的包：</p>
-<pre><code class="hljs language-json"><span class="hljs-attr">&quot;exports&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+<pre><code class="language-json"><span class="hljs-attr">&quot;exports&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
   <span class="hljs-attr">&quot;development&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;./dist/index.dev.js&quot;</span><span class="hljs-punctuation">,</span>
   <span class="hljs-attr">&quot;production&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;./dist/index.prod.js&quot;</span>
 <span class="hljs-punctuation">}</span>
 </code></pre>
 <p>但是前端生态可等不到他推广这个 feature，反而是使用了一个非常 cjs 的方法：</p>
-<pre><code class="hljs language-js"><span class="hljs-keyword">if</span> (process.<span class="hljs-property">env</span>.<span class="hljs-property">NODE_ENV</span> === <span class="hljs-string">&#x27;production&#x27;</span>) {
+<pre><code class="language-js"><span class="hljs-keyword">if</span> (process.<span class="hljs-property">env</span>.<span class="hljs-property">NODE_ENV</span> === <span class="hljs-string">&#x27;production&#x27;</span>) {
   <span class="hljs-variable language_">module</span>.<span class="hljs-property">exports</span> = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;./dist/index.prod.js&#x27;</span>)
 } <span class="hljs-keyword">else</span> {
   <span class="hljs-variable language_">module</span>.<span class="hljs-property">exports</span> = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;./dist/index.dev.js&#x27;</span>)
@@ -73,6 +75,7 @@ a.<span class="hljs-property">b</span> = <span class="hljs-number">1</span>
 <p>你可以在 React 和 Vue3 的包里看到这种写法，而且现代打包器都对这种写法做了预处理。</p>
 <hr>
 <p>总之，理解了 Tree-Shaking 是如何工作的，才能让打包结果符合你的预期。</p>
+
   <footer>
     <p><a href="http://creativecommons.org/publicdomain/zero/1.0/">CC0</a> 2022 @ hyrious</p>
   </footer>

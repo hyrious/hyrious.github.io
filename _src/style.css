@@ -1,7 +1,7 @@
 @charset "UTF-8";
-@import 'sanitize.css';
-@import 'highlight.js/styles/github.css';
-@import './hljs-dark.css';
+@import "sanitize.css";
+@import "highlight.js/styles/github.css";
+@import "./hljs-dark.css";
 
 :root {
   --text-color: rgba(0, 0, 0, 0.8);
@@ -22,18 +22,18 @@
 }
 
 html {
-  font-family: system-ui, 'Segoe UI', 'Roboto', 'Ubuntu', 'Noto Sans',
-    sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
-    'Noto Color Emoji';
+  font-family: system-ui, "Segoe UI", "Roboto", "Ubuntu", "Noto Sans",
+    sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+    "Noto Color Emoji";
 }
 
 code,
 kbd,
 samp,
 pre {
-  font-family: ui-monospace, 'Cascadia Mono', 'Consolas', 'Roboto Mono',
-    'Ubuntu Monospace', 'Noto Mono', monospace, 'Apple Color Emoji',
-    'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  font-family: ui-monospace, "Cascadia Mono", "Consolas", "Roboto Mono",
+    "Ubuntu Monospace", "Noto Mono", monospace, "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   font-size: 90%;
 }
 
@@ -115,31 +115,31 @@ blockquote > *:last-child {
 }
 
 pre {
-  margin: 1em -2ch;
+  margin: 1em 0;
   background-color: var(--pre-color, darkgray);
   overflow-x: auto;
-  font-size: 0.9em;
 }
 
-pre code.hljs {
-  padding: 1ch 2ch;
+pre code[class*="language-"] {
+  display: block;
+  padding: 1ch 0;
 }
 
-pre[class*='language-'],
-code[class*='language-'] {
+pre[class*="language-"],
+code[class*="language-"] {
   color: #24292e;
   background: #fff;
 }
 
 @media (prefers-color-scheme: dark) {
-  pre[class*='language-'],
-  code[class*='language-'] {
+  pre[class*="language-"],
+  code[class*="language-"] {
     color: #c9d1d9;
     background: #0d1117;
   }
 }
 
-p > code[class*='language-'] {
+p > code[class*="language-"] {
   padding: 2px 4px;
 }
 

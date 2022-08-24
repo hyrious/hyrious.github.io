@@ -10,7 +10,7 @@
 </head>
 <body>
   <h2>hyrious.log</h2>
-  <address>最后更新于 <time>2022-02-19</time></address>
+  <address>最后更新于 <time>{ site.date }</time></address>
   <h3>友链</h3>
   <p>
     <a href="https://taroxd.github.io" title="taroxd" target="_blank">Taroxd</a>
@@ -20,13 +20,12 @@
     <a href="https://pigeons.icu" title="猫猫" target="_blank">Caviar-X</a>
   </p>
   <h3>瞎写</h3>
-  <p><a href="p/hmr.html">热更新是怎么工作的</a></p>
-  <p><a href="p/sublime-plugin-tips.html">Sublime Text 插件踩坑</a></p>
-  <p><a href="p/fast-js.html">如何编写更快的 JS</a></p>
-  <p><a href="p/yata.html">YATA：一种针对文本编辑优化的 CRDT 算法</a></p>
-  <p><a href="p/tree-shaking.html">简单理解 Tree Shaking</a></p>
-  <p><a href="p/hello-world.html">Hello, world!</a></p>
-  
+  {#each posts.slice(0, 10) as post}
+    <p><a href="p/{ post.id }.html">{ post.title }</a></p>
+  {/each}
+  {#if posts.length > 10}
+    <p><a href="p/index.html">更多&hellip;</a></p>
+  {/if}
   <footer>
     <p><a href="http://creativecommons.org/publicdomain/zero/1.0/">CC0</a> 2022 @ hyrious</p>
   </footer>

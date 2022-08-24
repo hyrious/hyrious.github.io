@@ -15,18 +15,18 @@
 <hr>
 <p>几年前我玩 RPG Maker 的时候也想过这个问题，每次修改过脚本后都要重新启动游戏才能测试效果，有没有什么办法可以不重启呢？</p>
 <p>简单地想，如果直接重新执行被修改的那一页脚本，那么只需要他能保证执行后是想要的效果就行了。由于大部分脚本插件都是<q>插件</q>式的，他们通常是使用 <code>alias</code> 修改一些个默认系统里的方法以及定义一些新模块，由于 Ruby 有<q>打开类</q>的元编程特性，所以重新执行一段类/模块定义并不会出错，那么只需要能让一段基于 <code>alias</code> 写的插件执行两遍等于只执行第二遍就行了！</p>
-<pre><code class="hljs language-rb"><span class="hljs-keyword">alias</span> old_meth meth
-<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">meth</span></span>
+<pre><code class="language-rb"><span class="hljs-keyword">alias</span> old_meth meth
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">meth</span>
   <span class="hljs-keyword">return</span> old_meth + <span class="hljs-number">1</span>
 <span class="hljs-keyword">end</span>
 </code></pre>
 <p>假设有这样的插件代码。仔细观察，我们需要让 <code>old_meth</code> 第二次执行的时候仍然是<q>原方法</q>。怎么做呢？可以换成一个自定义的 <code>alias</code>：</p>
-<pre><code class="hljs language-rb">magic_alias <span class="hljs-symbol">:old_meth</span>, <span class="hljs-symbol">:meth</span>
+<pre><code class="language-rb">magic_alias <span class="hljs-symbol">:old_meth</span>, <span class="hljs-symbol">:meth</span>
 ...
 </code></pre>
 <p>如果上下文里已经有 <code>old_meth</code>，说明已经执行过一次，什么都不做就行：</p>
-<pre><code class="hljs language-rb"><span class="hljs-class"><span class="hljs-keyword">class</span> &lt;&lt; self</span>
-  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">magic_alias</span><span class="hljs-params">(name, value)</span></span>
+<pre><code class="language-rb"><span class="hljs-keyword">class</span> &lt;&lt; <span class="hljs-variable language_">self</span>
+  <span class="hljs-keyword">def</span> <span class="hljs-title function_">magic_alias</span>(<span class="hljs-params">name, value</span>)
     <span class="hljs-keyword">return</span> <span class="hljs-keyword">if</span> method_defined? name
     alias_method name, value <span class="hljs-comment"># 否则正常使用原 alias 效果</span>
   <span class="hljs-keyword">end</span>
@@ -48,8 +48,7 @@
 <ol>
 <li>后端扫描代码文件，理清依赖关系，把代码里包含 <code>hot.accept()</code> 的文件视为<q>热更新模块边界</q></li>
 <li>有文件发生变化时，通过 1 的依赖关系查找到变化文件的公共热更新边界，通知前端刷新这个文件</li>
-<li>前端依次执行：
-<ol>
+<li>前端依次执行：<ol>
 <li>调用所有相关文件的 <code>hot.dispose()</code> 回调</li>
 <li>下载执行 2 找到的边界文件</li>
 <li>调用该文件的 <code>hot.accept()</code> 回调</li>
@@ -57,16 +56,16 @@
 </li>
 </ol>
 <p>不过，这里存在一个陷阱：你能保证除了更新的文件以外的模块不变吗？</p>
-<pre><code class="hljs language-js"><span class="hljs-comment">// global.js</span>
-<span class="hljs-keyword">export</span> <span class="hljs-keyword">let</span> state = []
+<pre><code class="language-js"><span class="hljs-comment">// global.js</span>
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">let</span> state = [];
 
 <span class="hljs-comment">// a.js</span>
-<span class="hljs-keyword">import</span> { state } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;./global.js&#x27;</span>
-state.<span class="hljs-title function_">push</span>(<span class="hljs-string">&#x27;a&#x27;</span>)
+<span class="hljs-keyword">import</span> { state } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;./global.js&quot;</span>;
+state.<span class="hljs-title function_">push</span>(<span class="hljs-string">&quot;a&quot;</span>);
 
 <span class="hljs-comment">// b.js</span>
-<span class="hljs-keyword">import</span> { state } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;./global.js&#x27;</span>
-state.<span class="hljs-title function_">push</span>(<span class="hljs-string">&#x27;b&#x27;</span>)
+<span class="hljs-keyword">import</span> { state } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;./global.js&quot;</span>;
+state.<span class="hljs-title function_">push</span>(<span class="hljs-string">&quot;b&quot;</span>);
 </code></pre>
 <p>如果 a.js 发生了热更新，他能否在更新期间拿到和 b.js 一样的 <code>state</code>？</p>
 <p>如果不能，那么此时运行时出现了两个 <code>state</code>，可能会出现一些 bug。</p>
@@ -81,6 +80,7 @@ state.<span class="hljs-title function_">push</span>(<span class="hljs-string">&
 </ul>
 <p>前者不难理解，本身已经对<q>即插即用</q>下了一些功夫。后者可以理解为，组件的副作用恰好是热更新的目标——因为组件本身存在生命周期，只需要调用前组件的卸载和新组件的挂载就行。这些组件就类似我一开篇提到的用 alias 编写的 RM 插件，因为符合某种规范所以恰好运行良好。</p>
 <p>除此以外，适当缩小业务范围也不难定义出适合热更新的目标。比如我的博客<a href="https://github.com/hyrious/hyrious.github.io/blob/main/_src/lib/server.js">本身</a>，就编写了一个非常简陋的热更新机制（我甚至手撸了一个小后端 WebSocket）。</p>
+
   <footer>
     <p><a href="http://creativecommons.org/publicdomain/zero/1.0/">CC0</a> 2022 @ hyrious</p>
   </footer>
