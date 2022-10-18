@@ -79,7 +79,7 @@ state.<span class="hljs-title function_">push</span>(<span class="hljs-string">&
 <li>前端组件库，包括 CSS 样式</li>
 </ul>
 <p>前者不难理解，本身已经对<q>即插即用</q>下了一些功夫。后者可以理解为，组件的副作用恰好是热更新的目标——因为组件本身存在生命周期，只需要调用前组件的卸载和新组件的挂载就行。这些组件就类似我一开篇提到的用 alias 编写的 RM 插件，因为符合某种规范所以恰好运行良好。</p>
-<p>除此以外，适当缩小业务范围也不难定义出适合热更新的目标。比如我的博客<a href="https://github.com/hyrious/hyrious.github.io/blob/main/_src/lib/server.js">本身</a>，就编写了一个非常简陋的热更新机制（我甚至手撸了一个小后端 WebSocket）。</p>
+<p>除此以外，适当缩小业务范围也不难定义出适合热更新的目标。</p>
 
   <footer>
     <p><a href="http://creativecommons.org/publicdomain/zero/1.0/">CC0</a> 2022 @ hyrious</p>
