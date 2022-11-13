@@ -1,14 +1,14 @@
 @charset "UTF-8";
 
-/* node_modules/sanitize.css/sanitize.css */
+/* http-url:https://cdn.jsdelivr.net/npm/sanitize.css */
 *,
-::before,
-::after {
+::after,
+::before {
   box-sizing: border-box;
   background-repeat: no-repeat;
 }
-::before,
-::after {
+::after,
+::before {
   text-decoration: inherit;
   vertical-align: inherit;
 }
@@ -26,7 +26,7 @@
 }
 :where(h1) {
   font-size: 2em;
-  margin: 0.67em 0;
+  margin: .67em 0;
 }
 :where(dl, ol, ul) :where(dl, ol, ul) {
   margin: 0;
@@ -39,7 +39,7 @@
   list-style-type: none;
   padding: 0;
 }
-:where(nav li)::before {
+:where(navli)::before {
   content: "\200b";
   float: left;
 }
@@ -79,7 +79,7 @@
 :where(button, input, select) {
   margin: 0;
 }
-:where(button, [type="button" i], [type="reset" i], [type="submit" i]) {
+:where(button, [type=button i], [type=reset i], [type=submit i]) {
   -webkit-appearance: button;
 }
 :where(fieldset) {
@@ -92,7 +92,7 @@
   margin: 0;
   resize: vertical;
 }
-:where([type="search" i]) {
+:where([type=search i]) {
   -webkit-appearance: textfield;
   outline-offset: -2px;
 }
@@ -102,7 +102,7 @@
 }
 ::-webkit-input-placeholder {
   color: inherit;
-  opacity: 0.54;
+  opacity: .54;
 }
 ::-webkit-search-decoration {
   -webkit-appearance: none;
@@ -112,9 +112,9 @@
   font: inherit;
 }
 :where(dialog) {
-  background-color: white;
+  background-color: #fff;
   border: solid;
-  color: black;
+  color: #000;
   height: -moz-fit-content;
   height: fit-content;
   left: 0;
@@ -128,27 +128,27 @@
 :where(dialog:not([open])) {
   display: none;
 }
-:where(details > summary:first-of-type) {
+:where(details>summary:first-of-type) {
   display: list-item;
 }
-:where([aria-busy="true" i]) {
+:where([aria-busy=true i]) {
   cursor: progress;
 }
 :where([aria-controls]) {
   cursor: pointer;
 }
-:where([aria-disabled="true" i], [disabled]) {
+:where([aria-disabled=true i], [disabled]) {
   cursor: not-allowed;
 }
-:where([aria-hidden="false" i][hidden]) {
+:where([aria-hidden=false i][hidden]) {
   display: initial;
 }
-:where([aria-hidden="false" i][hidden]:not(:focus)) {
+:where([aria-hidden=false i][hidden]:not(:focus)) {
   clip: rect(0, 0, 0, 0);
   position: absolute;
 }
 
-/* node_modules/highlight.js/styles/github.css */
+/* http-url:https://cdn.jsdelivr.net/npm/highlight.js@11.6.0/styles/github.css */
 pre code.hljs {
   display: block;
   overflow-x: auto;
@@ -235,7 +235,7 @@ code.hljs {
   background-color: #ffeef0;
 }
 
-/* _src/hljs-dark.css */
+/* _src/style.css */
 @media (prefers-color-scheme: dark) {
   .hljs {
     color: #c9d1d9;
@@ -315,8 +315,6 @@ code.hljs {
     background-color: #67060c;
   }
 }
-
-/* _src/style.css */
 :root {
   --text-color: rgba(0, 0, 0, 0.8);
   --bg-color: #fff;

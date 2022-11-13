@@ -11,7 +11,8 @@
 <body>
   <h2>热更新是怎么工作的</h2>
   <address>最后更新于 <time>2022-02-19</time></address>
-  <p>注：并非指线上软件不重启更新，而是指开发阶段能够获得更好的开发体验。</p>
+
+<p>注：并非指线上软件不重启更新，而是指开发阶段能够获得更好的开发体验。</p>
 <hr>
 <p>几年前我玩 RPG Maker 的时候也想过这个问题，每次修改过脚本后都要重新启动游戏才能测试效果，有没有什么办法可以不重启呢？</p>
 <p>简单地想，如果直接重新执行被修改的那一页脚本，那么只需要他能保证执行后是想要的效果就行了。由于大部分脚本插件都是<q>插件</q>式的，他们通常是使用 <code>alias</code> 修改一些个默认系统里的方法以及定义一些新模块，由于 Ruby 有<q>打开类</q>的元编程特性，所以重新执行一段类/模块定义并不会出错，那么只需要能让一段基于 <code>alias</code> 写的插件执行两遍等于只执行第二遍就行了！</p>
@@ -43,7 +44,7 @@
 </ol>
 <p>这样一来，等于将热更新逻辑交给写插件的人实现。</p>
 <hr>
-<p>前端开发也有一套热更新方法，你可以在 <a href="https://webpack.js.org/concepts/hot-module-replacement/">webpack</a>、<a href="https://github.com/rixo/rollup-plugin-hot">rollup</a>、<a href="https://github.com/PepsRyuu/nollup/blob/master/docs/nollup-hooks.md">nollup</a>、<a href="https://vitejs.dev/guide/features.html#hot-module-replacement">vite</a> 里看到一套 HMR 接口，其基本思路和上面提到的其实也是一回事，每个模块（文件）可以注册退出 <code>hot.dispose()</code> 和进入 <code>hot.accept()</code> 时干的事情，从而达到热更新效果。</p>
+<p>前端开发也有一套热更新方法，你可以在 <a target="_blank" rel="noopener" href="https://webpack.js.org/concepts/hot-module-replacement/">webpack</a>、<a target="_blank" rel="noopener" href="https://github.com/rixo/rollup-plugin-hot">rollup</a>、<a target="_blank" rel="noopener" href="https://github.com/PepsRyuu/nollup/blob/master/docs/nollup-hooks.md">nollup</a>、<a target="_blank" rel="noopener" href="https://vitejs.dev/guide/features.html#hot-module-replacement">vite</a> 里看到一套 HMR 接口，其基本思路和上面提到的其实也是一回事，每个模块（文件）可以注册退出 <code>hot.dispose()</code> 和进入 <code>hot.accept()</code> 时干的事情，从而达到热更新效果。</p>
 <p>以 Vite 为例，他的热更新流程如下：</p>
 <ol>
 <li>后端扫描代码文件，理清依赖关系，把代码里包含 <code>hot.accept()</code> 的文件视为<q>热更新模块边界</q></li>

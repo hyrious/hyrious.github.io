@@ -11,12 +11,13 @@
 <body>
   <h2>Sublime Text 插件踩坑</h2>
   <address>最后更新于 <time>2022-02-06</time></address>
-  <p>春节花了几天写了一个 <a href="https://github.com/hyrious/prettierd">Sublime Text 插件</a>，这里大概记录一下关于它（主要是 python 部分）的小知识。</p>
-<h3 id="sampsublimeset_timeoutsamp-和-sampsublimeset_timeout_asyncsamp"><samp>sublime.set_timeout()</samp> 和 <samp>sublime.set_timeout_async()</samp></h3>
+
+<p>春节花了几天写了一个 <a target="_blank" rel="noopener" href="https://github.com/hyrious/prettierd">Sublime Text 插件</a>，这里大概记录一下关于它（主要是 python 部分）的小知识。</p>
+<h3 id="sublimeset_timeout-和-sublimeset_timeout_async"><samp>sublime.set_timeout()</samp> 和 <samp>sublime.set_timeout_async()</samp></h3>
 <p>文档上说 <q><samp>_async</samp></q> 会放在另一个线程里执行，听着似乎等于 <samp>threading<wbr>.Thread()<wbr>.start()</samp>？其实不然！这里文档没有明说的是，sublime 一共只有两个线程 —— 主渲染线程和 worker 线程。<q><samp>_async</samp></q> 的意思是把一个函数放到 worker 线程里跑 —— worker 线程里的任务还是会互相阻塞。所以一旦我们需要实现一些长时间阻塞的任务（如 <samp>process<wbr>.stdout<wbr>.readline()</samp>，假设你要做一个使用 tsserver 的插件<span class="half-shrink-right">）</span>，最好还是自己拿 Thread 搞事。</p>
 <p>只有那些短时间且符合用户操作目的的单任务（例如格式化一下文本，当用户按下快捷键时，他期望编辑器做一些工作，但是又不希望整个程序像卡死了一样）适合在 worker 线程工作。</p>
-<h3 id="sampasync-awaitsamp-span-classhalf-shrink-leftspanpy37"><samp>async await</samp> <span class="half-shrink-left">（</span>py3.7+）</h3>
-<p>Sublime Text 4 提供了 python3.8 给新的插件，这意味着你可以写 <code>if a := 1</code> 和 <code>async def</code> 了。说到 <code>async</code> 我就不困了，我立马搬出《<a href="https://journal.stuffwithstuff.com/2015/02/01/what-color-is-your-function/">函数染色问题</a>》。另外，在 sublime 里你总不能让一个 async 函数占着主线程，所以有了下面这段代码：</p>
+<h3 id="async-await-py37"><samp>async await</samp> <span class="half-shrink-left">（</span>py3.7+）</h3>
+<p>Sublime Text 4 提供了 python3.8 给新的插件，这意味着你可以写 <code>if a := 1</code> 和 <code>async def</code> 了。说到 <code>async</code> 我就不困了，我立马搬出《<a target="_blank" rel="noopener" href="https://journal.stuffwithstuff.com/2015/02/01/what-color-is-your-function/">函数染色问题</a>》。另外，在 sublime 里你总不能让一个 async 函数占着主线程，所以有了下面这段代码：</p>
 <pre><code class="language-py"><span class="hljs-comment"># Run a callback (-&gt; coroutine) in a new `threading.Thread()`. Refer to</span>
 <span class="hljs-comment"># https://gist.github.com/dmfigol/3e7d5b84a16d076df02baa9f53271058</span>
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">run_in_new_thread</span>(<span class="hljs-params">function, *args, **kwargs</span>):
@@ -41,7 +42,7 @@
     <span class="hljs-keyword">return</span> future
 </code></pre>
 <p>虽然他是 thread-safe 的，不过手操 thread 还是让我有点不爽。而且这抽象泄露也太严重了，直接给你一个 <samp>loop</samp> <span class="half-shrink-left">（</span>约等于 generator 函数给你的那个对象<span class="half-shrink-right">）</span>。</p>
-<h3 id="sampsubprocesspopensamp-和僵尸进程"><samp>subprocess.Popen</samp> 和僵尸进程</h3>
+<h3 id="subprocesspopen-和僵尸进程"><samp>subprocess.Popen</samp> 和僵尸进程</h3>
 <p>你可以在任何 python 环境下（包括 REPL）试试这段代码：</p>
 <pre><code class="language-py"><span class="hljs-keyword">import</span> subprocess
 <span class="hljs-comment"># 启动一个子进程，只要能一直跑随便用啥都行</span>

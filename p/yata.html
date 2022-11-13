@@ -11,7 +11,8 @@
 <body>
   <h2>YATA：一种针对文本编辑优化的 CRDT 算法</h2>
   <address>最后更新于 <time>2022-01-26</time></address>
-  <p>参考：<a href="https://juejin.cn/post/7030327499829542942">https://juejin.cn/post/7030327499829542942</a></p>
+
+<p>参考：<a target="_blank" rel="noopener" href="https://juejin.cn/post/7030327499829542942">https://juejin.cn/post/7030327499829542942</a></p>
 <p>CRDT 是用来实现同步应用状态的<strong>一类</strong>数据结构（而且大多不需要中心服务器<span class="half-shrink-right">）</span>，其目的是为了让应用的状态在多方共同操作的时候通过<strong>不能保证顺序</strong>的广播消息机制和一套算法处理后能够保持一致。<small>虽然不保证消息顺序，但是仍然要求所有消息都能到达所有客户端，其实这个要求还是有点高了&hellip;</small></p>
 <p>那么，如何设计数据结构，才能表达一段同步的文本呢？YATA 使用了双链表，每一项都可能包含一些文本段或者为空（例如被删除<span class="half-shrink-right">）</span>，用户的操作都基于链表进行。例如，我们可能存在这些操作：</p>
 <pre><code class="language-swift"><span class="hljs-keyword">func</span> <span class="hljs-title function_">向某个节点后插入新文本节点</span>(参考节点, 新文本节点);
@@ -51,7 +52,7 @@ local_clock = max(local_clock, remote_clock) + <span class="hljs-number">1</span
   <text x="170" y="50" text-anchor="middle" dominant-baseline="hanging" color="#FF4136">D</text>
 </svg>
 
-<p>只要设计的算法能满足这个要求，就可以达到一致性需求（证明见<a href="https://www.researchgate.net/publication/310212186_Near_Real-Time_Peer-to-Peer_Shared_Editing_on_Extensible_Data_Types">论文</a><span class="half-shrink-right">）</span>。如何实现呢？我们分情况看看不同的操作应该如何合并：</p>
+<p>只要设计的算法能满足这个要求，就可以达到一致性需求（证明见<a target="_blank" rel="noopener" href="https://www.researchgate.net/publication/310212186_Near_Real-Time_Peer-to-Peer_Shared_Editing_on_Extensible_Data_Types">论文</a><span class="half-shrink-right">）</span>。如何实现呢？我们分情况看看不同的操作应该如何合并：</p>
 <p>首先定义操作：</p>
 <pre><code class="language-js">state = [<span class="hljs-title function_">node</span>(<span class="hljs-string">&#x27;A&#x27;</span>)]
 <span class="hljs-keyword">let</span> op1 = { <span class="hljs-attr">type</span>: <span class="hljs-string">&#x27;insert&#x27;</span>, <span class="hljs-attr">left</span>: <span class="hljs-title function_">node</span>(<span class="hljs-string">&#x27;A&#x27;</span>), <span class="hljs-attr">content</span>: <span class="hljs-title function_">node</span>(<span class="hljs-string">&#x27;B&#x27;</span>) };
@@ -79,7 +80,7 @@ local_clock = max(local_clock, remote_clock) + <span class="hljs-number">1</span
 </ul>
 <p>如果有两个新元素的参考元素是同一个，这意味着发生了冲突，此时 YATA 算法引入了一个新的属性：right，表示参考元素右侧的元素。当发生冲突时，我们先切换到比较右侧元素上来，当右侧元素也一样时，再通过 id 排序决定。</p>
 <hr>
-<p>虽然我上面说了一堆，其实实现并不复杂，只要保持上面提到的<q>依赖连线不交叉</q>的性质就行，下面我们来看看实现（摘自 <a href="https://github.com/yjs/yjs/blob/main/src/structs/Item.js#L409">Yjs</a><span class="half-shrink-right">）</span>：</p>
+<p>虽然我上面说了一堆，其实实现并不复杂，只要保持上面提到的<q>依赖连线不交叉</q>的性质就行，下面我们来看看实现（摘自 <a target="_blank" rel="noopener" href="https://github.com/yjs/yjs/blob/main/src/structs/Item.js#L409">Yjs</a><span class="half-shrink-right">）</span>：</p>
 <p>还是以上面的 <code>ABCD</code> 为例，我们看插入 D 时发生了什么：</p>
 <pre><code class="language-js"><span class="hljs-comment">// constructor() {</span>
 <span class="hljs-variable language_">this</span>.<span class="hljs-property">left</span> = origin

@@ -11,7 +11,8 @@
 <body>
   <h2>简单理解 Tree Shaking</h2>
   <address>最后更新于 <time>2022-01-25</time></address>
-  <p>问：如何分析并删除无用的 JS 代码？Tree-Shaking 给了打包器们一个简单的方法：只需要删除每个闭包里的没有<strong>使用</strong>且没有<strong>副作用</strong>的变量声明/表达式即可。剩下的就是需要给代码块（语法节点）标上有没有被使用、有没有副作用的信息。</p>
+
+<p>问：如何分析并删除无用的 JS 代码？Tree-Shaking 给了打包器们一个简单的方法：只需要删除每个闭包里的没有<strong>使用</strong>且没有<strong>副作用</strong>的变量声明/表达式即可。剩下的就是需要给代码块（语法节点）标上有没有被使用、有没有副作用的信息。</p>
 <p>怎么知道一段代码的副作用呢？<span class="half-shrink-left">（</span>换句话说，是不是<q>纯</q>的）</p>
 <p>首先，纯字面量（数字，字符串等表达式）肯定没有副作用：</p>
 <pre><code class="language-js"><span class="hljs-number">42</span>
