@@ -441,9 +441,17 @@ code[class*=language-] {
   color: #24292e;
   background: #fff;
 }
+pre:has([class*="language-"]) {
+  color: #24292e;
+  background: #fff;
+}
 @media (prefers-color-scheme: dark) {
   pre[class*=language-],
   code[class*=language-] {
+    color: #c9d1d9;
+    background: #0d1117;
+  }
+  pre:has([class*="language-"]) {
     color: #c9d1d9;
     background: #0d1117;
   }
@@ -472,6 +480,10 @@ sub {
 }
 sup {
   top: -0.5em;
+}
+th,
+td {
+  padding: 6px 13px;
 }
 .footnotes {
   font-size: 12px;
