@@ -319,7 +319,6 @@ code.hljs {
   --text-color: rgba(0, 0, 0, 0.8);
   --bg-color: #fff;
   --gray-color: #79828b;
-  --underline-color: rgba(0, 0, 0, 0.7);
   --pre-color: rgba(0, 0, 0, 0.05);
 }
 @media (prefers-color-scheme: dark) {
@@ -327,7 +326,6 @@ code.hljs {
     --text-color: rgba(255, 255, 255, 0.8);
     --bg-color: #0d1117;
     --gray-color: #747d86;
-    --underline-color: rgba(255, 255, 255, 0.78);
     --pre-color: rgba(255, 255, 255, 0.05);
   }
 }
@@ -376,7 +374,7 @@ body {
 }
 a {
   color: inherit;
-  text-decoration: underline solid var(--underline-color, gray);
+  text-decoration: underline solid inherit;
 }
 h1,
 h2 {
