@@ -1,7 +1,15 @@
 ---
 title: "NPM Browser: 在线浏览 NPM 包内容"
-date: 2022-08-24
+date: 2022-12-14
 ---
+
+<time>2022-12-14</time> 更新
+
+最近 npm 官网上线了一个查看包内容的 tab https://www.npmjs.com/package/npm?activeTab=explore, https://github.blog/changelog/2022-12-06-explore-the-content-of-your-npm-packages-with-the-new-code-explorer/
+
+---
+
+<time>2022-08-24</time> 更新
 
 我以前经常使用 [jsdelivr](https://cdn.jsdelivr.net/npm/lib0/) 和 [unpkg](https://unpkg.com/lib0/) 来查看一些 NPM 包的源码，这么做有几个好处：
 

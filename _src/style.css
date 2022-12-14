@@ -99,6 +99,12 @@
   }
 }
 
+@property --offset {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0;
+}
+
 html {
   font-family: system-ui, "Segoe UI", "Roboto", "Ubuntu", "Noto Sans",
     sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
@@ -131,7 +137,27 @@ body {
 
 a {
   color: inherit;
-  text-decoration: underline solid inherit;
+  text-decoration: underline solid;
+  text-decoration-color: var(--pre-color);
+  text-decoration-thickness: 2px;
+  text-underline-offset: var(--offset, 0.1em);
+  transition: text-decoration-color 0.2s, --offset 0.2s;
+}
+
+a:hover,
+a:focus {
+  text-decoration-color: inherit;
+  --offset: 0.2em;
+}
+
+@supports not (background: paint(something)) {
+  a {
+    transition: text-decoration-color 0.2s, text-underline-offset 0.2s;
+  }
+  a:hover,
+  a:focus {
+    text-underline-offset: 0.2em;
+  }
 }
 
 h1,

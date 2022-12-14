@@ -1,6 +1,7 @@
 {
   "scripts": {
-    "watch": "chokidar _src -c \"npm run build\" --initial",
-    "build": "node ../telegraph/bin.js"
+    "watch": "tg -w",
+    "build": "tg",
+    "new": "echo usage: tg new title"
   }
 }
