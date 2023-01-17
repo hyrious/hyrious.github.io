@@ -1,7 +1,5 @@
 {
   "scripts": {
-    "watch": "tg -w",
-    "build": "tg",
-    "new": "echo usage: tg new title"
+    "dev": "conc w7 \"tg build -w\""
   }
 }

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh-Hans-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>JS 作用域碎碎念</title>
+  <meta name="color-scheme" content="light dark">
+  <meta name="viewport" content="width=device-width">
+  <link rel="icon" href="../favicon.ico">
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+  <h2>JS 作用域碎碎念</h2>
+  <address>最后更新于 <time>2023-01-17</time></address>
+
+<p>JS 里存在两类<q>块</q>，一种是 block <code>{}</code>，另一种是 function body <code>(){}</code>（包括 method），这两种块对不同的变量声明会有不同的作用域效果，下面就来看看。</p>
+<h4 id="var"><code>var</code></h4>
+<pre><code class="language-js"><span class="hljs-keyword">if</span> (<span class="hljs-literal">false</span>) {
+  <span class="hljs-keyword">var</span> a = <span class="hljs-number">1</span>;
+}
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(a); <span class="hljs-comment">// undefined</span>
+</code></pre>
+<p><code>var</code> 是一种历史悠久的变量，他不认识 block <code>{}</code>，会直接提升到第一个 function body 区，即使是 Dead-code 也不例外。</p>
+<h4 id="let-const"><code>let</code>, <code>const</code></h4>
+<pre><code class="language-js"><span class="hljs-keyword">let</span> a = <span class="hljs-number">1</span>;
+<span class="hljs-keyword">if</span> (<span class="hljs-literal">true</span>) {
+  <span class="hljs-keyword">const</span> a = <span class="hljs-number">2</span>;
+}
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(a); <span class="hljs-comment">// 1</span>
+</code></pre>
+<p><code>let</code> 和 <code>const</code> 严格存在于当前 block 内，不会发生任何变量提升。</p>
+<h4 id="function"><code>function</code></h4>
+<pre><code class="language-js"><span class="hljs-keyword">if</span> (<span class="hljs-literal">false</span>) {
+  <span class="hljs-keyword">function</span> <span class="hljs-title function_">foo</span>(<span class="hljs-params"></span>) {}
+}
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(foo); <span class="hljs-comment">// undefined</span>
+</code></pre>
+<p><code>function</code> 也是一种定义变量的方式，他和 <code>var</code> 一样悠久，提升规则和 <code>var</code> 几乎一样，但有两点不同：</p>
+<pre><code class="language-js"><span class="hljs-keyword">const</span> a = <span class="hljs-number">1</span>;
+<span class="hljs-keyword">if</span> (<span class="hljs-literal">false</span>) {
+  <span class="hljs-keyword">var</span> a = <span class="hljs-number">2</span>; <span class="hljs-comment">// SyntaxError: Identifier &#x27;a&#x27; has already been declared</span>
+}
+</code></pre>
+<pre><code class="language-js"><span class="hljs-keyword">const</span> foo = <span class="hljs-number">1</span>;
+<span class="hljs-keyword">if</span> (<span class="hljs-literal">true</span>) {
+  <span class="hljs-keyword">function</span> <span class="hljs-title function_">foo</span>(<span class="hljs-params"></span>) {}
+}
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(foo); <span class="hljs-comment">// 1</span>
+</code></pre>
+<ol>
+<li><code>var</code> 会不择手段地提升，碰到 <code>const</code>, <code>let</code> 之类硬茬就会爆炸；而 <code>function</code> 则温和很多。</li>
+</ol>
+<pre><code class="language-js"><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(a, <span class="hljs-title function_">foo</span>()); <span class="hljs-comment">// undefined, 2</span>
+<span class="hljs-keyword">var</span> a = <span class="hljs-number">1</span>;
+<span class="hljs-keyword">function</span> <span class="hljs-title function_">foo</span>(<span class="hljs-params"></span>) {
+  <span class="hljs-keyword">return</span> <span class="hljs-number">2</span>;
+}
+</code></pre>
+<ol start="2">
+<li>和 <code>var</code> 只送一个 <code>undefined</code> 不同，<code>function</code> 会连着定义一起送出去，我们可以 <em>看起来</em> 在定义之前就使用他。实际上，可以认为 <code>function</code> 连着内容一起被提升到了当前函数块的顶部执行。</li>
+</ol>
+<p>另外，当整个 <code>function</code> 作为表达式而不是语句存在时，其名称只会被限定在函数体内可以访问：</p>
+<pre><code class="language-js">$button.<span class="hljs-property">onclick</span> = <span class="hljs-keyword">function</span> <span class="hljs-title function_">hello</span>(<span class="hljs-params"></span>) {
+  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(hello.<span class="hljs-property">name</span>); <span class="hljs-comment">// &#x27;hello&#x27;</span>
+};
+
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(hello); <span class="hljs-comment">// ReferenceError: hello is not defined</span>
+</code></pre>
+<h4 id="class"><code>class</code></h4>
+<pre><code class="language-js"><span class="hljs-keyword">const</span> A = <span class="hljs-number">1</span>;
+<span class="hljs-keyword">if</span> (<span class="hljs-literal">true</span>) {
+  <span class="hljs-keyword">class</span> <span class="hljs-title class_">A</span> {}
+  A = <span class="hljs-number">2</span>;
+}
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(A); <span class="hljs-comment">// 1</span>
+</code></pre>
+<p><code>class</code> 创造的变量约等于 <code>let</code>，不过需要注意的是，在 <code>class</code> 的静态表达式中是可以直接访问到其类名的，而 <code>let</code> 需要先执行完 <code>class</code>，反而不能这么使用：</p>
+<pre><code class="language-js"><span class="hljs-keyword">class</span> <span class="hljs-title class_">A</span> {
+  <span class="hljs-keyword">static</span> a = A.<span class="hljs-property">name</span>; <span class="hljs-comment">// &#x27;A&#x27;</span>
+  <span class="hljs-keyword">static</span> b = <span class="hljs-variable language_">this</span>.<span class="hljs-property">name</span>; <span class="hljs-comment">// can also use `this`</span>
+}
+</code></pre>
+<pre><code class="language-js"><span class="hljs-keyword">let</span> A = <span class="hljs-keyword">class</span> {
+  <span class="hljs-keyword">static</span> a = A.<span class="hljs-property">name</span>; <span class="hljs-comment">// ReferenceError: A is not defined</span>
+  <span class="hljs-keyword">static</span> b = <span class="hljs-variable language_">this</span>.<span class="hljs-property">name</span>; <span class="hljs-comment">// &#x27;A&#x27;</span>
+};
+</code></pre>
+<p>注意到最后一个例子，<code>A.b</code> 可以拿到 <code>&#39;A&#39;</code>，这是因为匿名类会被自动赋予左边的变量名。当左边不是一个变量的时候该类的名字就是空了：</p>
+<pre><code class="language-js"><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(
+  <span class="hljs-keyword">class</span> {
+    <span class="hljs-keyword">static</span> b = <span class="hljs-variable language_">this</span>.<span class="hljs-property">name</span>;
+  }.<span class="hljs-property">b</span>
+); <span class="hljs-comment">// &#x27;&#x27;</span>
+</code></pre>
+
+  <footer>
+    <p><a href="http://creativecommons.org/publicdomain/zero/1.0/">CC0</a> 2022 @ hyrious</p>
+  </footer>
+</body>
+</html>
