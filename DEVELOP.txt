@@ -1,0 +1,11 @@
+
+npm i -g @hyrious/telegraph
+
+# start a live reload server
+tg -w
+
+# new post
+tg new "title"
+
+# build
+tg

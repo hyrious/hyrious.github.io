@@ -1,5 +1,0 @@
-{
-  "scripts": {
-    "dev": "conc w7 \"tg build -w\""
-  }
-}
