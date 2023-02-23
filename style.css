@@ -413,6 +413,13 @@ h4 {
   line-height: 22px;
   margin: 18px 0 7px;
 }
+:is(h2, h3, h4, a[href^="p/"]) > code::before,
+:is(h2, h3, h4, a[href^="p/"]) > code::after {
+  content: "`";
+}
+:is(h2, h3, h4, a[href^="p/"]) > code {
+  background: var(--pre-color);
+}
 footer {
   padding: 2ch 0;
   color: var(--gray-color);
@@ -447,7 +454,12 @@ blockquote > *:last-child {
 pre {
   margin: 1em -16px;
   background-color: var(--pre-color, darkgray);
-  overflow-x: auto;
+  overflow: visible;
+}
+@media (max-width: 66ch) {
+  pre {
+    overflow-x: auto;
+  }
 }
 pre code {
   display: block;
