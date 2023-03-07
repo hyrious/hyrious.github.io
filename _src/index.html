@@ -8,7 +8,7 @@
   <link rel="icon" href="favicon.ico">
   <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="home">
   <h2>hyrious.log</h2>
   <address>最后更新于 <time>{ site.date }</time></address>
   <h3>友链</h3>
@@ -19,7 +19,7 @@
     <a href="https://ulysseszh.github.io" title="芳芳" target="_blank">Ulysses</a>
     <a href="https://pigeons.icu" title="猫猫" target="_blank">Caviar-X</a>
   </p>
-  <h3>瞎写</h3>{#each posts.slice(0, 10) as post}
+  <h3>瞎写</h3>{#each posts.slice(0, 5) as post}
   <p><a href="p/{ post.id }">{ post.title }</a></p>{/each}{#if posts.length > 10}
   <p><a href="p/">更多&hellip;</a></p>{/if}
   <footer>
