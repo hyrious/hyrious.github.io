@@ -333,9 +333,25 @@ code.hljs {
     --pre-color: rgba(255, 255, 255, 0.05);
   }
 }
-@property --offset { syntax: "<length>"; inherits: false; initial-value: 0; }
+@font-face {
+  font-family: "Chinese Quotes";
+  src:
+    local("PingFang SC Regular"),
+    local("PingFang SC"),
+    local("SimHei"),
+    local("Source Han Sans SC");
+  unicode-range:
+    U+2018,
+    U+2019,
+    U+201C,
+    U+201D;
+}
 html {
   font-family:
+    "Chinese Quotes",
+    "Inter var",
+    "Inter",
+    ui-sans-serif,
     system-ui,
     "Segoe UI",
     "Roboto",
@@ -377,6 +393,7 @@ body {
   background-color: var(--bg-color, white);
   line-height: 1.58;
 }
+@property --offset { syntax: "<length>"; inherits: false; initial-value: 0; }
 a {
   color: var(--link-color, black);
   text-decoration: underline solid;

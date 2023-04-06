@@ -103,14 +103,16 @@
   }
 }
 
-@property --offset {
-  syntax: "<length>";
-  inherits: false;
-  initial-value: 0;
+/* Fix chinese quotes “”‘’ */
+@font-face {
+  font-family: 'Chinese Quotes';
+  src: local('PingFang SC Regular'), local('PingFang SC'), local('SimHei'), local('Source Han Sans SC');
+  unicode-range: U+2018, U+2019, U+201C, U+201D;
 }
 
 html {
-  font-family: system-ui, "Segoe UI", "Roboto", "Ubuntu", "Noto Sans",
+  font-family: 'Chinese Quotes', 'Inter var', 'Inter', ui-sans-serif,
+    system-ui, "Segoe UI", "Roboto", "Ubuntu", "Noto Sans",
     sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
     "Noto Color Emoji";
 }
@@ -137,6 +139,12 @@ body {
   color: var(--text-color, black);
   background-color: var(--bg-color, white);
   line-height: 1.58;
+}
+
+@property --offset {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0;
 }
 
 a {
