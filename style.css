@@ -402,6 +402,9 @@ a {
   text-underline-offset: var(--offset, 0.1em);
   transition: text-decoration-color 0.2s, --offset 0.2s;
 }
+a:hover {
+  cursor: pointer;
+}
 a:hover,
 a:focus {
   text-decoration-color: var(--link-color, black);
@@ -576,4 +579,18 @@ td {
 }
 .home p > a {
   color: inherit;
+}
+.toys {
+}
+.toys a {
+  color: inherit;
+  font-size: 1.125rem;
+}
+.toys dt:not(:first-child) {
+  padding-top: 0.8rem;
+}
+.toys dd {
+  color: var(--gray-color);
+  font-size: 0.875rem;
+  margin-inline-start: 0;
 }

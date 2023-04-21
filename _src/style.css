@@ -105,16 +105,16 @@
 
 /* Fix chinese quotes “”‘’ */
 @font-face {
-  font-family: 'Chinese Quotes';
-  src: local('PingFang SC Regular'), local('PingFang SC'), local('SimHei'), local('Source Han Sans SC');
+  font-family: "Chinese Quotes";
+  src: local("PingFang SC Regular"), local("PingFang SC"), local("SimHei"),
+    local("Source Han Sans SC");
   unicode-range: U+2018, U+2019, U+201C, U+201D;
 }
 
 html {
-  font-family: 'Chinese Quotes', 'Inter var', 'Inter', ui-sans-serif,
-    system-ui, "Segoe UI", "Roboto", "Ubuntu", "Noto Sans",
-    sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
-    "Noto Color Emoji";
+  font-family: "Chinese Quotes", "Inter var", "Inter", ui-sans-serif, system-ui,
+    "Segoe UI", "Roboto", "Ubuntu", "Noto Sans", sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 
 code,
@@ -154,6 +154,10 @@ a {
   text-decoration-thickness: 2px;
   text-underline-offset: var(--offset, 0.1em);
   transition: text-decoration-color 0.2s, --offset 0.2s;
+}
+
+a:hover {
+  cursor: pointer;
 }
 
 a:hover,
@@ -354,7 +358,25 @@ td {
   margin-right: -0.5em;
 }
 
-/* layouts  */
+/* whatever */
 .home p > a {
   color: inherit;
+}
+
+.toys {
+}
+
+.toys a {
+  color: inherit;
+  font-size: 1.125rem;
+}
+
+.toys dt:not(:first-child) {
+  padding-top: 0.8rem;
+}
+
+.toys dd {
+  color: var(--gray-color);
+  font-size: 0.875rem;
+  margin-inline-start: 0;
 }
