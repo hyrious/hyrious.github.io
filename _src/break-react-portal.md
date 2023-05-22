@@ -3,7 +3,7 @@ title: 打破 React Portal
 date: 2023-03-01
 ---
 
-[Portal](https://zh-hans.reactjs.org/docs/portals.html) 是 React 的 <q>DOM 传送门</q>，它可以把虚拟 DOM 转移到其他真实 DOM 下渲染，同时还会保持虚拟 DOM 树的事件冒泡。但实际使用时我们可能反而不想要事件冒泡被<q>传送</q>走，只需要两行 CSS 即可达到这个目的，下面就来看看。
+[Portal](https://zh-hans.react.dev/reference/react-dom/createPortal) 是 React 的 <q>DOM 传送门</q>，它可以把虚拟 DOM 转移到其他真实 DOM 下渲染，同时还会保持虚拟 DOM 树的事件冒泡。但实际使用时我们可能反而不想要事件冒泡被<q>传送</q>走，只需要两行 CSS 即可达到这个目的，下面就来看看。
 
 ### TL;DR
 
@@ -18,10 +18,10 @@ date: 2023-03-01
 
 ### Portal 的真身
 
-众所周知，[React DOM 包装了一套合成事件](https://zh-hans.reactjs.org/docs/events.html)来打平不同浏览器的区别，但是不仅仅如此，它还负责以下两个重要任务：
+众所周知，[React DOM 包装了一套合成事件](https://zh-hans.react.dev/reference/react-dom/components/common#react-event-object)来打平不同浏览器的区别，但是不仅仅如此，它还负责以下两个重要任务：
 
 - 减少对真实 DOM 的 `addEventListener` 的调用，避免性能问题
-- [捕捉所有 Portal 里的事件，传送到对应的组件里处理](https://zh-hans.reactjs.org/docs/portals.html#event-bubbling-through-portals)
+- [捕捉所有 Portal 里的事件，传送到对应的组件里处理](https://zh-hans.react.dev/reference/react-dom/createPortal)
 
 除了第一个纯粹是自作自受以外，第二个具体是怎么实现的呢？我们观察 Portal 元素，会发现上面挂了所有可能的事件监听器，大概就可以猜到他是怎么转移这些事件的了。
 

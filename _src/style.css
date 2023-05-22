@@ -85,7 +85,8 @@
 
 :root {
   --title-color: #0d1117;
-  --link-color: #000;
+  --link-color: #0057ab;
+  --link-bg-color: #deefff;
   --text-color: rgba(0, 0, 0, 0.8);
   --bg-color: #fff;
   --gray-color: #79828b;
@@ -95,7 +96,8 @@
 @media (prefers-color-scheme: dark) {
   :root {
     --title-color: #dddddc;
-    --link-color: #f3f4f6;
+    --link-color: #79c0ff;
+    --link-bg-color: #263441;
     --text-color: rgba(255, 255, 255, 0.8);
     --bg-color: #0d1117;
     --gray-color: #747d86;
@@ -150,10 +152,22 @@ body {
 a {
   color: var(--link-color, black);
   text-decoration: underline solid;
-  text-decoration-color: var(--pre-color, silver);
+  text-decoration-color: transparent;
   text-decoration-thickness: 2px;
   text-underline-offset: var(--offset, 0.1em);
   transition: text-decoration-color 0.2s, --offset 0.2s;
+  position: relative;
+}
+
+a::before {
+  content: "";
+  position: absolute;
+  top: 0.5em;
+  bottom: 0;
+  left: 4px;
+  right: -4px;
+  z-index: -1;
+  background-color: var(--link-bg-color, #deefff);
 }
 
 a:hover {
@@ -359,16 +373,15 @@ td {
 }
 
 /* whatever */
-.home p > a {
+.home a {
   color: inherit;
 }
-
-.toys {
+.home a::before {
+  background-color: transparent;
 }
-
-.toys a {
-  color: inherit;
-  font-size: 1.125rem;
+.home a:hover,
+.home a:focus {
+  text-decoration-color: inherit;
 }
 
 .toys dt:not(:first-child) {
