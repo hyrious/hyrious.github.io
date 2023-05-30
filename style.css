@@ -608,3 +608,85 @@ td {
   font-size: 0.875rem;
   margin-inline-start: 0;
 }
+@keyframes slide-enter {
+  0% {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 100;
+  }
+}
+.post > * {
+  --stagger: 0;
+  --delay: 90ms;
+  --start: 0ms;
+  animation: none;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .post > * {
+    animation: slide-enter 1s both 1;
+    animation-delay: calc(var(--start) + var(--stagger) * var(--delay));
+  }
+}
+.post > *:nth-child(1) {
+  --stagger: 1;
+}
+.post > *:nth-child(2) {
+  --stagger: 2;
+}
+.post > *:nth-child(3) {
+  --stagger: 3;
+}
+.post > *:nth-child(4) {
+  --stagger: 4;
+}
+.post > *:nth-child(5) {
+  --stagger: 5;
+}
+.post > *:nth-child(6) {
+  --stagger: 6;
+}
+.post > *:nth-child(7) {
+  --stagger: 7;
+}
+.post > *:nth-child(8) {
+  --stagger: 8;
+}
+.post > *:nth-child(9) {
+  --stagger: 9;
+}
+.post > *:nth-child(10) {
+  --stagger: 10;
+}
+.post > *:nth-child(11) {
+  --stagger: 11;
+}
+.post > *:nth-child(12) {
+  --stagger: 12;
+}
+.post > *:nth-child(13) {
+  --stagger: 13;
+}
+.post > *:nth-child(14) {
+  --stagger: 14;
+}
+.post > *:nth-child(15) {
+  --stagger: 15;
+}
+.post > *:nth-child(16) {
+  --stagger: 16;
+}
+.post > *:nth-child(17) {
+  --stagger: 17;
+}
+.post > *:nth-child(18) {
+  --stagger: 18;
+}
+.post > *:nth-child(19) {
+  --stagger: 19;
+}
+.post > *:nth-child(20) {
+  --stagger: 20;
+}
