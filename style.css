@@ -453,6 +453,12 @@ h4 {
   margin: 1.6rem 0 0.6rem;
   color: var(--title-color, black);
 }
+h1,
+h2,
+h3,
+h4 {
+  text-wrap: balance;
+}
 :is(h2, h3, h4, a[href^="p/"]) > code::before,
 :is(h2, h3, h4, a[href^="p/"]) > code::after {
   content: "`";
