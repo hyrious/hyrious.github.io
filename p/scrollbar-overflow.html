@@ -10,7 +10,7 @@
 </head>
 <body class="post">
   <h2>为什么网页在 Windows 上溢出了</h2>
-  <address>最后更新于 <time>2023-03-25</time></address>
+  <address>最后更新于 <time>2023-06-26</time></address>
 
 <p>不知道你们是否有过这种体验：网页在 Windows 浏览器上（或者插了鼠标的 Mac 上）出现了莫名其妙的内容溢出，即横向或纵向多了一些滚动区域。这通常是因为错误地使用了 <code>vw</code>、<code>vh</code> 等 CSS 单位，下面就来看看如何解决这类问题。</p>
 <h3 id="如何让元素撑满窗口">如何让元素撑满窗口？</h3>
@@ -61,6 +61,8 @@
 <h3 id="其他思考">其他思考</h3>
 <p>现在的网页越来越从“像报纸”到“像软件”，起手铺满屏幕看似基操，实则可能会失去一些原来像报纸那样的体验。例如，在网页上搜索内容时，chrome 会在滚动条上显示出高亮的线方便定位。但这仅限于原来网页确实有这么高的内容的情况，如果一开始就是 <code>height: 100vh</code>，那这个功能很有可能失效。</p>
 <p>GitHub 这方面就做得很好，利用好 <code>position: fixed</code>，也可以在制造出像应用的体验的同时保留原来像报纸一样静态内容的优势。</p>
+<hr>
+<p>2023-06-26 更新：<code>height: 100%</code> 并非一个内容网站最好的实现思路，因为一切超出它的元素都是以 <code>overflow: visible</code> 显示的。这就会导致一个问题：当选中文本时，如果选到 <code>&lt;html&gt;</code> 外面的 margin 区，那么 <code>::selection</code> 可能会落回到 <code>&lt;html&gt;</code> 内，导致选择区域闪动。</p>
 
   <footer>
     <p><a href="http://creativecommons.org/publicdomain/zero/1.0/">CC0</a> 2022 @ hyrious</p>
