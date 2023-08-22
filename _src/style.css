@@ -1,6 +1,6 @@
 @charset "UTF-8";
-@import "https://cdn.jsdelivr.net/npm/sanitize.css";
-@import "https://cdn.jsdelivr.net/npm/highlight.js@11.6.0/styles/github.css";
+@import "https://unpkg.com/sanitize.css";
+@import "https://unpkg.com/highlight.js@11.6.0/styles/github.css";
 
 /* highlight.js/styles/github-dark.css */
 @media (prefers-color-scheme: dark) {
@@ -150,7 +150,9 @@ a {
   text-decoration-color: transparent;
   text-decoration-thickness: 2px;
   text-underline-offset: var(--offset, 0.1em);
-  transition: text-decoration-color 0.2s, --offset 0.2s;
+  transition:
+    text-decoration-color 0.2s,
+    --offset 0.2s;
   position: relative;
 }
 
@@ -177,7 +179,9 @@ a:focus {
 
 @supports not (background: paint(something)) {
   a {
-    transition: text-decoration-color 0.2s, text-underline-offset 0.2s;
+    transition:
+      text-decoration-color 0.2s,
+      text-underline-offset 0.2s;
   }
   a:hover,
   a:focus {

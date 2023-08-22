@@ -54,7 +54,7 @@ exit()
 <p>出于操作的同步性考虑，插件必须在一次 <samp>TextCommand</samp> 回调里同步地完成对 view 的修改。一旦这个回调执行的同步代码太多，编辑器就会卡住，体验很不好。那么如何实现异步的修改呢？这里有一个小技巧，就是在异步任务结束的时候再触发一遍 <samp>TextCommand</samp> 并且把必要的参数传进去。一旦有新的用户操作会打断这次异步任务的，就加个标记不去触发即可。</p>
 
   <footer>
-    <p><a href="http://creativecommons.org/publicdomain/zero/1.0/">CC0</a> 2022 @ hyrious</p>
+    <p><a href="http://creativecommons.org/publicdomain/zero/1.0/">CC0</a> 2023 @ hyrious</p>
   </footer>
 </body>
 </html>

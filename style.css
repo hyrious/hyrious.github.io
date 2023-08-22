@@ -1,14 +1,14 @@
 @charset "UTF-8";
 
-/* http-url:https://cdn.jsdelivr.net/npm/sanitize.css */
+/* http-url:https://unpkg.com/sanitize.css */
 *,
-::after,
-::before {
+::before,
+::after {
   box-sizing: border-box;
   background-repeat: no-repeat;
 }
-::after,
-::before {
+::before,
+::after {
   text-decoration: inherit;
   vertical-align: inherit;
 }
@@ -26,7 +26,7 @@
 }
 :where(h1) {
   font-size: 2em;
-  margin: .67em 0;
+  margin: 0.67em 0;
 }
 :where(dl, ol, ul) :where(dl, ol, ul) {
   margin: 0;
@@ -39,7 +39,7 @@
   list-style-type: none;
   padding: 0;
 }
-:where(navli)::before {
+:where(nav li)::before {
   content: "\200b";
   float: left;
 }
@@ -102,7 +102,7 @@
 }
 ::-webkit-input-placeholder {
   color: inherit;
-  opacity: .54;
+  opacity: 0.54;
 }
 ::-webkit-search-decoration {
   -webkit-appearance: none;
@@ -112,9 +112,9 @@
   font: inherit;
 }
 :where(dialog) {
-  background-color: #fff;
+  background-color: white;
   border: solid;
-  color: #000;
+  color: black;
   height: -moz-fit-content;
   height: fit-content;
   left: 0;
@@ -128,7 +128,7 @@
 :where(dialog:not([open])) {
   display: none;
 }
-:where(details>summary:first-of-type) {
+:where(details > summary:first-of-type) {
   display: list-item;
 }
 :where([aria-busy=true i]) {
@@ -148,7 +148,7 @@
   position: absolute;
 }
 
-/* http-url:https://cdn.jsdelivr.net/npm/highlight.js@11.6.0/styles/github.css */
+/* http-url:https://unpkg.com/highlight.js@11.6.0/styles/github.css */
 pre code.hljs {
   display: block;
   overflow-x: auto;
@@ -510,7 +510,7 @@ code[class*=language-] {
   color: #24292e;
   background: #fff;
 }
-pre:has([class*="language-"]) {
+pre:has([class*=language-]) {
   color: #24292e;
   background: #fff;
 }
@@ -520,7 +520,7 @@ pre:has([class*="language-"]) {
     color: #c9d1d9;
     background: #0d1117;
   }
-  pre:has([class*="language-"]) {
+  pre:has([class*=language-]) {
     color: #c9d1d9;
     background: #0d1117;
   }
