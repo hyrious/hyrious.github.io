@@ -153,18 +153,7 @@ a {
   transition:
     text-decoration-color 0.2s,
     --offset 0.2s;
-  position: relative;
-}
-
-a::before {
-  content: "";
-  position: absolute;
-  top: 0.5em;
-  bottom: 0;
-  left: 4px;
-  right: -4px;
-  z-index: -1;
-  background-color: var(--link-bg-color, #deefff);
+  box-shadow: 0 -0.7em var(--link-bg-color, #deefff) inset;
 }
 
 a:hover {
@@ -378,9 +367,9 @@ td {
 footer a {
   color: inherit;
 }
-.home a::before,
-footer a::before {
-  background-color: transparent;
+.home a,
+footer a {
+  box-shadow: unset;
 }
 .home a:hover,
 .home a:focus,
