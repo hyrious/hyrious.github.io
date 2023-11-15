@@ -1,0 +1,14 @@
+<head>
+  <title>{ strip_html(post.title) }</title>
+</head>
+<body class="post">{#if katex}
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css">{/if}
+  <h2>{ post.title }</h2>
+  <address>最后更新于 <time>{ post.date }</time></address>
+
+{ post.html }
+
+  <footer>
+    <p><a href="http://creativecommons.org/publicdomain/zero/1.0/">CC0</a> 2023 @ hyrious</p>
+  </footer>
+</body>

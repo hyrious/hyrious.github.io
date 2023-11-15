@@ -1,0 +1,15 @@
+diff --git a/src/index.js b/src/index.js
+index b267e4d87dfb45bbb387a0c8290cba485f1ffbae..6c6b1e755d8279ebfdc80e17cde138fea206cb79 100644
+--- a/src/index.js
++++ b/src/index.js
+@@ -39,7 +39,9 @@ export function markedHighlight(options) {
+           ? ` class="${options.langPrefix}${escape(lang)}"`
+           : '';
+         code = code.replace(/\n$/, '');
+-        return `<pre><code${classAttr}>${escaped ? code : escape(code, true)}\n</code></pre>`;
++        const html = escaped ? code : escape(code, true);
++        if (html.startsWith('<pre')) return html;
++        else return `<pre><code${classAttr}>${html}</code></pre>`;
+       }
+     }
+   };

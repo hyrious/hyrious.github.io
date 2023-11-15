@@ -1,6 +1,12 @@
-<samp><b><a href="https://hyrious.me">hyrious.me</a></b></samp>
+<a href="https://hyrious.me">
+  <img width="64px" height="64px" src="public/favicon.svg" align="left" />
+</a>
 
-<p>
-  <samp>code is licensed under <a href="LICENSE.txt">MIT</a>,</samp><br>
-  <samp><a href="_src">words</a> and images are licensed under <a href="http://creativecommons.org/publicdomain/zero/1.0/">CC0</a>.</samp><br>
-</p>
+<samp>
+
+### **[hyrious.me](https://hyrious.me)**
+
+code is licensed under [MIT](LICENSE.txt),\
+words and images are licensed under [CC0](LICENSE.CC0.txt).
+
+</samp>

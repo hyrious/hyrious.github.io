@@ -1,0 +1,19 @@
+{
+  "include": ["src"],
+  "compilerOptions": {
+    "strict": true,
+    "target": "esnext",
+    "moduleResolution": "bundler",
+    "verbatimModuleSyntax": true,
+    "module": "esnext",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "lib": ["esnext", "dom", "dom.iterable"],
+    "noEmit": true,
+    "resolveJsonModule": true,
+    "noImplicitOverride": true,
+    "noUnusedLocals": true,
+    "useUnknownInCatchVariables": false,
+    "types": ["vite/client"]
+  }
+}
