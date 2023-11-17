@@ -9,7 +9,7 @@
     <a href="https://ulysseszh.github.io" title="芳芳" target="_blank">Ulysses</a>
   </p>
   <h3>瞎写</h3>{#each posts.slice(0, 5) as post}
-  <p><a href="/p/{ post.id }">{ post.title }</a></p>{/each}{#if posts.length > 10}
+  <p><a href="/p/{ post.id }">{ post.title }</a></p>{/each}{#if posts.length > 5}
   <p><a href="/p/">更多&hellip;</a></p>{/if}
   <h3 onclick="$toys.hidden ^= true"><a>玩具</a></h3>{@const base = 'https://hyrious.me'}
   <dl id="$toys" class="toys" hidden>
