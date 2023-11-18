@@ -182,17 +182,11 @@ pre:not(.shiki) {
   padding: 1ch 16px;
   border-radius: 6px;
   background-color: var(--pre-color) !important;
+  overflow: visible;
 
   > code {
     display: block;
     padding: 0;
-  }
-
-  @media (prefers-color-scheme: dark) {
-    &,
-    & span {
-      color: var(--s-dark) !important;
-    }
   }
 }
 

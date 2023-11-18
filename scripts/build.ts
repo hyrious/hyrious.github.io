@@ -81,7 +81,7 @@ async function build() {
 
   fs.mkdirSync(join(out, 'p'), { recursive: true })
 
-  const serverEntry = join(ssrOut, 'main.js')
+  const serverEntry = join(process.platform === 'win32' ? 'file://' : '', ssrOut, 'main.js')
   const { templates: templates_, posts: posts_ } = (await import(serverEntry)) as {
     templates: { [path: string]: string }
     posts: { [path: string]: { readonly default: Required<Post> } }
@@ -90,16 +90,16 @@ async function build() {
   const templates = compileTemplates(indexHTML, templates_)
   const posts = Object.values(posts_).map((mod) => mod.default)
 
-  const critters = await import('critters').then((mod) => {
-    const Critters = mod.default
-    return new Critters({
-      path: out,
-      logLevel: 'error',
-      external: true,
-      inlineFonts: true,
-      preloadFonts: true,
-    })
-  })
+  // const critters = await import('critters').then((mod) => {
+  //   const Critters = mod.default
+  //   return new Critters({
+  //     path: out,
+  //     logLevel: 'error',
+  //     external: true,
+  //     inlineFonts: true,
+  //     preloadFonts: true,
+  //   })
+  // })
 
   // const manifest: Manifest = JSON.parse(fs.readFileSync(join(out, 'ssr-manifest.json'), 'utf8'))
   // TODO Preload assets using manifest
@@ -109,8 +109,8 @@ async function build() {
   const output = async (file: string, html: string) => {
     outFiles.push(file)
     const filename = join(out, file)
-    const transformed = await critters.process(html)
-    const formatted = await formatHTML(transformed)
+    // const transformed = await critters.process(html)
+    const formatted = await formatHTML(html)
     await fs.promises.writeFile(filename, formatted)
   }
 

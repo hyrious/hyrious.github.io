@@ -26,6 +26,7 @@ if (import.meta.env.SSR || import.meta.hot) {
       const { pathname } = location
       const posts_ = Object.values(p).map((e) => e.default)
       const argsStr = '{ site, posts, post, strip_html, katex }'
+      console.debug({ t, p })
 
       // update /index.html
       if (['/', '/index', '/index.html'].includes(pathname)) {

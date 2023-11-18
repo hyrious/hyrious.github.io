@@ -139,7 +139,44 @@ marked.use({
       return html
     },
   },
+  hooks: {
+    preprocess: (a) => a,
+    postprocess: optimizeShiki,
+  },
 })
+
+function optimizeShiki(html: string): string {
+  const colorRe = /style="color:#[0-9a-f]{6};--s-dark:#[0-9a-f]{6}"/gi
+  let seen = new Set<string>()
+  html.replaceAll(colorRe, (s) => {
+    seen.add(s)
+    return ''
+  })
+  if (seen.size > 0) {
+    const colors = new Map<string, number>()
+    const darks: string[] = []
+    let style = ''
+    for (const color of seen) {
+      const light = color.slice(13, 20)
+      const dark = color.slice(30, 37)
+      darks.push(dark)
+      const i = colors.size
+      style += `.μ${i}{color:${light}}`
+      colors.set(color, i)
+    }
+    style += '@media(prefers-color-scheme:dark){'
+    darks.forEach((dark, i) => {
+      style += `.μ${i}{color:${dark}}`
+    })
+    style += '}'
+    html = `<style>${style}</style>${html}`
+    html = html.replaceAll(colorRe, (s) => {
+      const i = colors.get(s)!
+      return `class="μ${i}"`
+    })
+  }
+  return html
+}
 
 export async function markdownToJs(file: string, raw: string): Promise<Parsed> {
   file = file.replace(/[\\]+/g, '/')
