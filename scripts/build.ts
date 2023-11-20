@@ -153,4 +153,7 @@ async function build() {
   }, waitInSeconds * 1000).unref()
 }
 
-build().catch(console.error)
+await build()
+
+// Now './dist' exists, write feed.xml there
+await import('./rss')
