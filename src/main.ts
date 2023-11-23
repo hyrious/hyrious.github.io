@@ -17,7 +17,7 @@ if (import.meta.env.SSR || import.meta.hot) {
 
     function refresh(html: string) {
       const dom = new DOMParser().parseFromString(html, 'text/html')
-      document.title = dom.title
+      document.title = dom.title || 'hyrious.log'
       document.body.className = dom.body.className
       document.body.innerHTML = dom.body.innerHTML
     }
