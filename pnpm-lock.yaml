@@ -50,8 +50,8 @@ devDependencies:
     specifier: ^0.16.7
     version: 0.16.7
   '@types/node':
-    specifier: ^20.9.4
-    version: 20.9.4
+    specifier: ^20.10.0
+    version: 20.10.0
   chalk:
     specifier: ^5.3.0
     version: 5.3.0
@@ -61,6 +61,9 @@ devDependencies:
   feed:
     specifier: ^4.2.2
     version: 4.2.2
+  github-slugger:
+    specifier: ^2.0.0
+    version: 2.0.0
   html-minifier:
     specifier: ^4.0.0
     version: 4.0.0
@@ -71,11 +74,11 @@ devDependencies:
     specifier: ^1.69.5
     version: 1.69.5
   shikiji:
-    specifier: ^0.7.0
-    version: 0.7.0
+    specifier: ^0.7.4
+    version: 0.7.4
   vite:
     specifier: ^5.0.2
-    version: 5.0.2(@types/node@20.9.4)(sass@1.69.5)
+    version: 5.0.2(@types/node@20.10.0)(sass@1.69.5)
 
 packages:
 
@@ -386,7 +389,7 @@ packages:
   /@types/clean-css@4.2.11:
     resolution: {integrity: sha512-Y8n81lQVTAfP2TOdtJJEsCoYl1AnOkqDqMvXb9/7pfgZZ7r8YrEyurrAvAoAjHOGXKRybay+5CsExqIH6liccw==}
     dependencies:
-      '@types/node': 20.9.4
+      '@types/node': 20.10.0
       source-map: 0.6.1
     dev: true
 
@@ -418,8 +421,8 @@ packages:
       '@types/unist': 3.0.2
     dev: true
 
-  /@types/node@20.9.4:
-    resolution: {integrity: sha512-wmyg8HUhcn6ACjsn8oKYjkN/zUzQeNtMy44weTJSM6p4MMzEOuKbA3OjJ267uPCOW7Xex9dyrNTful8XTQYoDA==}
+  /@types/node@20.10.0:
+    resolution: {integrity: sha512-D0WfRmU9TQ8I9PFx9Yc+EBHw+vSpIub4IDvQivcp26PtPrdMGAq5SDcpXEo/epqa/DXotVpekHiLNTg3iaKXBQ==}
     dependencies:
       undici-types: 5.26.5
     dev: true
@@ -672,7 +675,6 @@ packages:
 
   /github-slugger@2.0.0:
     resolution: {integrity: sha512-IaOQ9puYtjrkq7Y0Ygl9KDZnrf/aiUJYUpVf89y8kyaxbRG7Y1SrX/jaumrv81vc61+kiMempujsM3Yw7w5qcw==}
-    dev: false
 
   /glob-parent@5.1.2:
     resolution: {integrity: sha512-AOIgSQCepiJYwP3ARnGx+5VnTu2HBYdzbGP45eLw1vr3zB3vZLeyed1sC9hnbcOc9/SrMyM5RPQrkGz4aS9Zow==}
@@ -1079,8 +1081,8 @@ packages:
       kind-of: 6.0.3
     dev: false
 
-  /shikiji@0.7.0:
-    resolution: {integrity: sha512-Tzx9pS9ixMVNsfZjeOoJWR3t3Vw054LU/r2euAGSRJPg8/v1sumxZsZQrajai2jpksn0qT3HJXcqzNaiJcJSag==}
+  /shikiji@0.7.4:
+    resolution: {integrity: sha512-N5dmPvyhH/zfcsuWysUEAMwRJDMz26LUns2VEUs5y4Ozbf5jkAODU0Yswjcf/tZAwpFnk5x3y34dupFMnF2+NA==}
     dependencies:
       hast-util-to-html: 9.0.0
     dev: true
@@ -1199,7 +1201,7 @@ packages:
       vfile-message: 4.0.2
     dev: true
 
-  /vite@5.0.2(@types/node@20.9.4)(sass@1.69.5):
+  /vite@5.0.2(@types/node@20.10.0)(sass@1.69.5):
     resolution: {integrity: sha512-6CCq1CAJCNM1ya2ZZA7+jS2KgnhbzvxakmlIjN24cF/PXhRMzpM/z8QgsVJA/Dm5fWUWnVEsmtBoMhmerPxT0g==}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
@@ -1227,7 +1229,7 @@ packages:
       terser:
         optional: true
     dependencies:
-      '@types/node': 20.9.4
+      '@types/node': 20.10.0
       esbuild: 0.19.7
       postcss: 8.4.31
       rollup: 4.5.1
