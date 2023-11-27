@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://hyrious.me/</id>
     <title>hyrious.log</title>
-    <updated>2023-11-23T10:09:32.261Z</updated>
+    <updated>2023-11-27T04:03:47.079Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <author>
         <name>hyrious</name>
@@ -14,6 +14,65 @@
     <subtitle>hyrious.log</subtitle>
     <icon>https://hyrious.me/favicon.svg</icon>
     <rights>CC0 1.0</rights>
+    <entry>
+        <title type="html"><![CDATA[代码分割并不简单]]></title>
+        <id>https://hyrious.me/p/code-splitting-is-not-trivial</id>
+        <link href="https://hyrious.me/p/code-splitting-is-not-trivial"/>
+        <updated>2023-11-27T00:00:00.000Z</updated>
+        <content type="html"><![CDATA[<style>.μ0{color:#6A737D}.μ1{color:#D73A49}.μ2{color:#24292E}.μ3{color:#005CC5}.μ4{color:#032F62}.μ5{color:#6F42C1}@media(prefers-color-scheme:dark){.μ0{color:#6A737D}.μ1{color:#F97583}.μ2{color:#E1E4E8}.μ3{color:#79B8FF}.μ4{color:#9ECBFF}.μ5{color:#B392F0}}</style><p>Code Splitting 一直是前端性能优化的一个重要手段，但是如此重要的功能在 <a target="_blank" rel="noopener" href="https://esbuild.github.io/api/#splitting">esbuild</a> 中时至今日仍然是实验性的，这是为什么呢？下面就来看看。</p>
+<h3 id="一个简单的例子">一个简单的例子</h3>
+<p>考虑下面这段代码：</p>
+<pre class="shiki shiki-themes github-light github-dark" style="background-color:#fff;--s-dark-bg:#24292e;color:#24292e;--s-dark:#e1e4e8" tabindex="0"><code><span class="line"><span class="μ0">// shared.js</span></span>
+<span class="line"><span class="μ1">export</span><span class="μ1"> let</span><span class="μ2"> util </span><span class="μ1">=</span><span class="μ3"> 1</span></span>
+<span class="line"></span>
+<span class="line"><span class="μ0">// a.js (entry)</span></span>
+<span class="line"><span class="μ1">import</span><span class="μ2"> { util } </span><span class="μ1">from</span><span class="μ4"> './shared.js'</span></span>
+<span class="line"><span class="μ1">import</span><span class="μ2"> b </span><span class="μ1">from</span><span class="μ4"> './b.js'</span></span>
+<span class="line"><span class="μ5">foo</span><span class="μ2">(b, util)</span></span>
+<span class="line"></span>
+<span class="line"><span class="μ0">// b.js (entry)</span></span>
+<span class="line"><span class="μ1">import</span><span class="μ2"> { util } </span><span class="μ1">from</span><span class="μ4"> './shared.js'</span></span>
+<span class="line"><span class="μ1">export</span><span class="μ1"> default</span><span class="μ5"> bar</span><span class="μ2">(util)</span></span></code></pre><p>如果我要你对 a.js 和 b.js 进行打包，且要求仅打包出两个文件，如何对敌？</p>
+<p>简单来说，此时你必须决定把 shared.js 放入某个文件里，而这次「放入」实际上产生了某种程度上说可以称之为错误的结果，下面就来看看：</p>
+<pre class="shiki shiki-themes github-light github-dark" style="background-color:#fff;--s-dark-bg:#24292e;color:#24292e;--s-dark:#e1e4e8" tabindex="0"><code><span class="line"><span class="μ0">// dist/a.js (a + shared)</span></span>
+<span class="line"><span class="μ1">export</span><span class="μ1"> let</span><span class="μ2"> util </span><span class="μ1">=</span><span class="μ3"> 1</span></span>
+<span class="line"><span class="μ1">import</span><span class="μ2"> b </span><span class="μ1">from</span><span class="μ4"> './b.js'</span><span class="μ0"> // a -> b</span></span>
+<span class="line"><span class="μ5">foo</span><span class="μ2">(b, util)</span></span>
+<span class="line"></span>
+<span class="line"><span class="μ0">// dist/b.js (b)</span></span>
+<span class="line"><span class="μ1">import</span><span class="μ2"> { util } </span><span class="μ1">from</span><span class="μ4"> './a.js'</span><span class="μ0"> // b -> a</span></span>
+<span class="line"><span class="μ1">export</span><span class="μ1"> default</span><span class="μ5"> bar</span><span class="μ2">(util)</span></span></code></pre><p>可以观察到：竟然出现了循环引用！实际上光是在 dist/a.js 中创建出 <code>util</code> 这个导出都是有问题的——因为原文件 a.js 没有要你导出 <code>util</code>。</p>
+<p>语义上的事情暂且放到一边，接下来看看运行时效果是否正确。因为 a.js 和 b.js 都是入口文件，理论上他们都可能被单独执行。然而，当你运行 dist/a.js 时，他要 import dist/b.js，所以 bar() 先执行；当你运行 dist/b.js 时，他要 import dist/a.js，所以 foo() 先执行。🤯</p>
+<p>但是我们看一下源文件，b.js 压根没有依赖 a.js，所以理论上来说执行 b.js 时不应该执行 foo() 才对。</p>
+<h3 id="副作用管理没有平凡解">副作用管理没有<abbr title="trivial">平凡</abbr>解</h3>
+<p>我们的软件功能基于副作用工作，大部分<abbr title="imperative">命令式</abbr>编程语言需要代码按顺序运行。考虑下面的代码，从语法上说他们是分离的语法树，但是由于引用关系，一些代码必须要在其他一些代码之后执行：</p>
+<pre class="shiki shiki-themes github-light github-dark" style="background-color:#fff;--s-dark-bg:#24292e;color:#24292e;--s-dark:#e1e4e8" tabindex="0"><code><span class="line"><span class="μ1">class</span><span class="μ5"> A</span><span class="μ2"> {} </span><span class="μ0">// [1]</span></span>
+<span class="line"><span class="μ3">A</span><span class="μ2">.foo </span><span class="μ1">=</span><span class="μ3"> 1</span><span class="μ0"> // [2] 必须在 [1] 之后执行</span></span>
+<span class="line"></span>
+<span class="line"><span class="μ0">// [3] 「似乎」不需要在 [1] 之后执行</span></span>
+<span class="line"><span class="μ1">function</span><span class="μ5"> foo</span><span class="μ2">() {</span></span>
+<span class="line"><span class="μ1">  return</span><span class="μ1"> new</span><span class="μ5"> A</span><span class="μ2">()</span></span>
+<span class="line"><span class="μ2">}</span></span>
+<span class="line"></span>
+<span class="line"><span class="μ5">foo</span><span class="μ2">() </span><span class="μ0">// [4] 如果你不知道 foo() 里在干什么，你无法确定 [4] 要在 [1] 之后执行</span></span></code></pre><p>实际上，追踪语法树之间的<strong>实际执行顺序</strong>关系太复杂了 (光是引用关系还好说，但是在 JavaScript 中可以轻易出现交叉引用)，各种隐式的依赖关系几乎不可能分析完整。因为打包器无法知道产物具体是如何运行的，只能尽最大努力兼容所有情况，出现 <a target="_blank" rel="noopener" href="https://github.com/evanw/esbuild/issues/399">bug</a> 也是常有的。</p>
+<h3 id="如何实践">如何实践</h3>
+<p>对于库作者，尽量发布 ESM 格式的纯函数包。如果要依赖副作用，可以手动包装成工厂函数或者其他形式实现懒惰加载，如此一来等到运行时，相关副作用代码大概率已经被执行过了，就不怕顺序问题了。另外，尽量不要出现循环引用，打包器通常很难决定在这种情况下哪个文件先执行。</p>
+<pre class="shiki shiki-themes github-light github-dark" style="background-color:#fff;--s-dark-bg:#24292e;color:#24292e;--s-dark:#e1e4e8" tabindex="0"><code><span class="line"><span class="μ0">// bundle.js</span></span>
+<span class="line"><span class="μ1">export</span><span class="μ1"> function</span><span class="μ5"> foo</span><span class="μ2">() {</span></span>
+<span class="line"><span class="μ1">  return</span><span class="μ1"> new</span><span class="μ5"> A</span><span class="μ2">()</span></span>
+<span class="line"><span class="μ2">}</span></span>
+<span class="line"><span class="μ1">class</span><span class="μ5"> A</span><span class="μ2"> {} </span><span class="μ0">// 假设 class A {} 被打包器挪到了后面</span></span>
+<span class="line"><span class="μ3">A</span><span class="μ2">.data </span><span class="μ1">=</span><span class="μ3"> 1</span><span class="μ0"> // 副作用</span></span>
+<span class="line"></span>
+<span class="line"><span class="μ0">// main.js</span></span>
+<span class="line"><span class="μ5">foo</span><span class="μ2">() </span><span class="μ0">// 用户代码执行的时候也不怕 A.data 未定义了</span></span></code></pre><p>对于终端开发者，如果你有 HTTP/2，可以无脑使用打包器的默认配置来分包，通常情况下会分出相当多的碎片，这主要是为了保证语义和运行顺序的正确性。不用担心碎片文件的性能问题，我们还有 <a target="_blank" rel="noopener" href="https://guybedford.com/es-module-preloading-integrity#modulepreload-polyfill">preload</a> 机制可以提前下载并解析模块。一句话概括，Just use <a target="_blank" rel="noopener" href="https://vitejs.dev/">Vite</a>。</p>
+<p>如果你需要一定程度的手动配置 (<a target="_blank" rel="noopener" href="https://github.com/evanw/esbuild/issues/207">Manual chunks</a>)，目前 Rollup 和 webpack 各自实现了一套相对稳定的分包算法。而 esbuild 还没实现，不过你可以<a target="_blank" rel="noopener" href="https://github.com/hyrious/esbuild-split-vendors-example">手动</a>模拟 webpack 的效果。</p>]]></content>
+        <author>
+            <name>hyrious</name>
+            <email>hyrious@outlook.com</email>
+            <uri>https://hyrious.me</uri>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[CRDT 漫谈]]></title>
         <id>https://hyrious.me/p/crdt</id>
