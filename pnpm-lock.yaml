@@ -77,8 +77,8 @@ devDependencies:
     specifier: ^0.7.4
     version: 0.7.4
   vite:
-    specifier: ^5.0.2
-    version: 5.0.2(@types/node@20.10.0)(sass@1.69.5)
+    specifier: ^5.0.5
+    version: 5.0.5(@types/node@20.10.0)(sass@1.69.5)
 
 packages:
 
@@ -1014,6 +1014,15 @@ packages:
       source-map-js: 1.0.2
     dev: true
 
+  /postcss@8.4.32:
+    resolution: {integrity: sha512-D/kj5JNu6oo2EIy+XL/26JEDTlIbB8hw85G8StOE6L74RQAVVP5rej6wxCNqyMbR4RkPfqvezVbPw81Ngd6Kcw==}
+    engines: {node: ^10 || ^12 || >=14}
+    dependencies:
+      nanoid: 3.3.7
+      picocolors: 1.0.0
+      source-map-js: 1.0.2
+    dev: true
+
   /pretty-bytes@5.6.0:
     resolution: {integrity: sha512-FFw039TmrBqFK8ma/7OL3sDz/VytdtJr044/QUJtH0wK9lb9jLq9tJyIxUwtQJHwar2BqtiA4iCWSwo9JLkzFg==}
     engines: {node: '>=6'}
@@ -1201,8 +1210,8 @@ packages:
       vfile-message: 4.0.2
     dev: true
 
-  /vite@5.0.2(@types/node@20.10.0)(sass@1.69.5):
-    resolution: {integrity: sha512-6CCq1CAJCNM1ya2ZZA7+jS2KgnhbzvxakmlIjN24cF/PXhRMzpM/z8QgsVJA/Dm5fWUWnVEsmtBoMhmerPxT0g==}
+  /vite@5.0.5(@types/node@20.10.0)(sass@1.69.5):
+    resolution: {integrity: sha512-OekeWqR9Ls56f3zd4CaxzbbS11gqYkEiBtnWFFgYR2WV8oPJRRKq0mpskYy/XaoCL3L7VINDhqqOMNDiYdGvGg==}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
     peerDependencies:
@@ -1231,7 +1240,7 @@ packages:
     dependencies:
       '@types/node': 20.10.0
       esbuild: 0.19.7
-      postcss: 8.4.31
+      postcss: 8.4.32
       rollup: 4.5.1
       sass: 1.69.5
     optionalDependencies:
