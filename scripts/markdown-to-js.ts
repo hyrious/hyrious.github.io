@@ -30,25 +30,34 @@ const shiki_p = getHighlighter({
   langs: Object.keys(bundledLanguages),
 })
 
-marked.use(
-  markedLinkifyIt(),
-  gfmHeadingId(),
-  markedHighlight({
-    async: true,
-    async highlight(code, lang) {
-      if (lang in bundledLanguages) {
-        const shiki = await shiki_p
-        return shiki.codeToHtml(code, {
-          lang,
-          themes: { light: 'github-light', dark: 'github-dark' },
-          cssVariablePrefix: '--s-',
-        })
-      } else {
-        return code
-      }
-    },
-  }),
-)
+const highlight = markedHighlight({
+  async: true,
+  async highlight(code, lang) {
+    if (lang in bundledLanguages) {
+      const shiki = await shiki_p
+      return shiki.codeToHtml(code, {
+        lang,
+        themes: { light: 'github-light', dark: 'github-dark' },
+        cssVariablePrefix: '--s-',
+      })
+    } else {
+      return code
+    }
+  },
+})
+// Patch the renderer object because shiki returns <pre> already, I don't want double <pre>
+const highlight_code = highlight.renderer!.code!
+highlight.renderer!.code = function custom_code(): string | false {
+  let str = highlight_code.apply(this, arguments as any)
+  if (str && str.startsWith('<pre><code') && str.includes('shiki')) {
+    const start = str.indexOf('<pre', 1)
+    const end = str.lastIndexOf('</code>')
+    if (start >= 0 && end >= 0) return str.slice(start, end)
+  }
+  return str
+}
+
+marked.use(markedLinkifyIt(), gfmHeadingId(), highlight)
 
 const math: TokenizerAndRendererExtension = {
   name: 'math',
@@ -146,7 +155,8 @@ marked.use({
 })
 
 function optimizeShiki(html: string): string {
-  const colorRe = /style="color:#[0-9a-f]{6};--s-dark:#[0-9a-f]{6}"/gi
+  const colorRe =
+    /style="(background-color:#fff;--s-dark-bg:#[0-9a-f]{6};)?color:#[0-9a-f]{6};--s-dark:#[0-9a-f]{6}"/gi
   let seen = new Set<string>()
   html.replaceAll(colorRe, (s) => {
     seen.add(s)
@@ -156,23 +166,35 @@ function optimizeShiki(html: string): string {
     const colors = new Map<string, number>()
     const darks: string[] = []
     let style = ''
-    for (const color of seen) {
-      const light = color.slice(13, 20)
-      const dark = color.slice(30, 37)
-      darks.push(dark)
-      const i = colors.size
-      style += `.μ${i}{color:${light}}`
-      colors.set(color, i)
+    for (const s of seen) {
+      const ss = s.slice(7, -1).split(';')
+      if (ss.length === 2 || ss.length === 4) {
+        const k = colors.size
+        const light = ss.filter((_, i) => i % 2 === 0).join(';')
+        const dark = ss
+          .filter((_, i) => i % 2 === 1)
+          .join(';')
+          .replace('--s-dark-bg', 'background-color')
+          .replace('--s-dark', 'color')
+        style += `.μ${k}{${light}}`
+        colors.set(s, k)
+        darks.push(dark)
+      } else {
+        throw new Error('shiki styles mismatch!', { cause: ss })
+      }
     }
     style += '@media(prefers-color-scheme:dark){'
     darks.forEach((dark, i) => {
-      style += `.μ${i}{color:${dark}}`
+      style += `.μ${i}{${dark}}`
     })
     style += '}'
     html = `<style>${style}</style>${html}`
     html = html.replaceAll(colorRe, (s) => {
       const i = colors.get(s)!
       return `class="μ${i}"`
+    })
+    html = html.replaceAll(/\bclass="(.+?)" class="(.+?)"/gi, (_, a, b) => {
+      return `class="${a} ${b}"`
     })
   }
   return html

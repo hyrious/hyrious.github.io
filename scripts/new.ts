@@ -6,6 +6,11 @@ import { slug } from 'github-slugger'
 const ARGV = process.argv.slice(2)
 
 const input = ARGV.join(' ')
+if (!input) {
+  console.log(c.bgWhiteBright.black('Usage:'), 'new <title>')
+  process.exit(0)
+}
+
 if (/^[-a-z]+$/.test(input)) {
   const title = apStyleTitleCase(input.replace(/-/g, ' '))
   makeFile(input, title)

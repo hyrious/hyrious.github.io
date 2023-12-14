@@ -8,11 +8,6 @@ overrides:
   critters>chalk: npm:noop-package@1.0.0
   html-minifier>commander: npm:noop-package@1.0.0
 
-patchedDependencies:
-  marked-highlight@2.0.7:
-    hash: 247zok7uenozwojb7qdlz5jtcu
-    path: patches/marked-highlight@2.0.7.patch
-
 dependencies:
   ap-style-title-case:
     specifier: ^2.0.0
@@ -24,25 +19,25 @@ dependencies:
     specifier: ^0.16.9
     version: 0.16.9
   marked:
-    specifier: ^10.0.0
-    version: 10.0.0
+    specifier: ^11.1.0
+    version: 11.1.0
   marked-gfm-heading-id:
-    specifier: ^3.1.1
-    version: 3.1.1(marked@10.0.0)
+    specifier: ^3.1.2
+    version: 3.1.2(marked@11.1.0)
   marked-highlight:
-    specifier: ^2.0.7
-    version: 2.0.7(patch_hash=247zok7uenozwojb7qdlz5jtcu)(marked@10.0.0)
+    specifier: ^2.0.9
+    version: 2.0.9(marked@11.1.0)
   marked-linkify-it:
-    specifier: ^3.1.6
-    version: 3.1.6(marked@10.0.0)
+    specifier: ^3.1.8
+    version: 3.1.8(marked@11.1.0)
   sanitize.css:
     specifier: ^13.0.0
     version: 13.0.0
 
 devDependencies:
   '@hyrious/esbuild-dev':
-    specifier: ^0.10.4
-    version: 0.10.4(esbuild@0.19.7)
+    specifier: ^0.10.5
+    version: 0.10.5(esbuild@0.19.7)
   '@types/html-minifier':
     specifier: ^4.0.5
     version: 4.0.5
@@ -50,8 +45,8 @@ devDependencies:
     specifier: ^0.16.7
     version: 0.16.7
   '@types/node':
-    specifier: ^20.10.0
-    version: 20.10.0
+    specifier: ^20.10.4
+    version: 20.10.4
   chalk:
     specifier: ^5.3.0
     version: 5.3.0
@@ -68,17 +63,17 @@ devDependencies:
     specifier: ^4.0.0
     version: 4.0.0
   p-queue:
-    specifier: ^7.4.1
-    version: 7.4.1
+    specifier: ^8.0.1
+    version: 8.0.1
   sass:
     specifier: ^1.69.5
     version: 1.69.5
   shikiji:
-    specifier: ^0.7.4
-    version: 0.7.4
+    specifier: ^0.8.7
+    version: 0.8.7
   vite:
-    specifier: ^5.0.2
-    version: 5.0.2(@types/node@20.10.0)(sass@1.69.5)
+    specifier: ^5.0.8
+    version: 5.0.8(@types/node@20.10.4)(sass@1.69.5)
 
 packages:
 
@@ -280,8 +275,8 @@ packages:
     dev: true
     optional: true
 
-  /@hyrious/esbuild-dev@0.10.4(esbuild@0.19.7):
-    resolution: {integrity: sha512-o0GmjEIDDWboxmePy95vGomYnINDqvkXAWpi+sQDneHM9dYT4GEEnmabNKXuXwHfWlYwyfKrVrJWR1aPDDEWvA==}
+  /@hyrious/esbuild-dev@0.10.5(esbuild@0.19.7):
+    resolution: {integrity: sha512-f8ODDk7AP29tR+MKN29a8x4IpMs2LIYEK/eOY34oD5xjqtj+gP6cx4rrcnP4R9cZKKGMlLFDm0RN51eSqOnMlg==}
     engines: {node: ^14.18 || >=16}
     hasBin: true
     peerDependencies:
@@ -389,7 +384,7 @@ packages:
   /@types/clean-css@4.2.11:
     resolution: {integrity: sha512-Y8n81lQVTAfP2TOdtJJEsCoYl1AnOkqDqMvXb9/7pfgZZ7r8YrEyurrAvAoAjHOGXKRybay+5CsExqIH6liccw==}
     dependencies:
-      '@types/node': 20.10.0
+      '@types/node': 20.10.4
       source-map: 0.6.1
     dev: true
 
@@ -421,8 +416,8 @@ packages:
       '@types/unist': 3.0.2
     dev: true
 
-  /@types/node@20.10.0:
-    resolution: {integrity: sha512-D0WfRmU9TQ8I9PFx9Yc+EBHw+vSpIub4IDvQivcp26PtPrdMGAq5SDcpXEo/epqa/DXotVpekHiLNTg3iaKXBQ==}
+  /@types/node@20.10.4:
+    resolution: {integrity: sha512-D08YG6rr8X90YB56tSIuBaddy/UXAA9RKJoFvrsnogAum/0pmjkgi4+2nx96A330FmioegBWmEYQ+syqCFaveg==}
     dependencies:
       undici-types: 5.26.5
     dev: true
@@ -542,7 +537,7 @@ packages:
       dom-serializer: 2.0.0
       domhandler: 5.0.3
       htmlparser2: 8.0.2
-      postcss: 8.4.31
+      postcss: 8.4.32
       pretty-bytes: 5.6.0
     dev: true
 
@@ -860,46 +855,45 @@ packages:
     engines: {node: '>=0.10.0'}
     dev: false
 
-  /linkify-it@4.0.1:
-    resolution: {integrity: sha512-C7bfi1UZmoj8+PQx22XyeXCuBlokoyWQL5pWSP+EI6nzRylyThouddufc2c1NDIcP9k5agmN9fLpA7VNJfIiqw==}
+  /linkify-it@5.0.0:
+    resolution: {integrity: sha512-5aHCbzQRADcdP+ATqnDuhhJ/MRIqDkZX5pyjFHRRysS8vZ5AbqGEoFIb6pYHPZ+L/OC2Lc+xT8uHVVR5CAK/wQ==}
     dependencies:
-      uc.micro: 1.0.6
+      uc.micro: 2.0.0
     dev: false
 
   /lower-case@1.1.4:
     resolution: {integrity: sha512-2Fgx1Ycm599x+WGpIYwJOvsjmXFzTSc34IwDWALRA/8AopUKAVPwfJ+h5+f85BCp0PWmmJcWzEpxOpoXycMpdA==}
     dev: true
 
-  /marked-gfm-heading-id@3.1.1(marked@10.0.0):
-    resolution: {integrity: sha512-PATvg4bpYxYY7SiTkknZWNiuKtfgpIctCHsbCHZiEUB+7eZ6SjGMlpL//X0JzE3/Z9B9aqLgQS9UTMFfYs6CEg==}
+  /marked-gfm-heading-id@3.1.2(marked@11.1.0):
+    resolution: {integrity: sha512-SdIZvhNxDgndFkDa2WRcFP4ahYm6k6hoHdTCN+fD7HRiI/R3Eimcw/Yl7ikQ+0KUuDpi75NnYQiThZnZsNr9Dg==}
     peerDependencies:
-      marked: '>=4 <11'
+      marked: '>=4 <12'
     dependencies:
       github-slugger: 2.0.0
-      marked: 10.0.0
+      marked: 11.1.0
     dev: false
 
-  /marked-highlight@2.0.7(patch_hash=247zok7uenozwojb7qdlz5jtcu)(marked@10.0.0):
-    resolution: {integrity: sha512-3IjgV879kEihgjWwVv8HGDkyuKDyR8hssDEjMUAH5LNVhIcZge+u6UKhxPA+daEVMVZeKEHo5gWrLVlLPF1m3g==}
+  /marked-highlight@2.0.9(marked@11.1.0):
+    resolution: {integrity: sha512-HAK1WJSK6CGVDzplOf6layWFz1lHm8Fsjd+SEUYmLhAZmM8TlYmErC/hTphoiOxogYqGQGt3Ghug3Yhs+s+3jw==}
     peerDependencies:
-      marked: '>=4 <11'
+      marked: '>=4 <12'
     dependencies:
-      marked: 10.0.0
+      marked: 11.1.0
     dev: false
-    patched: true
 
-  /marked-linkify-it@3.1.6(marked@10.0.0):
-    resolution: {integrity: sha512-rxM/9R6wemj9F49Y5h2lQm8ZTNx9k9+2yl3QLc7mvSyejcIGT+2Invb9Ll9l/dS520dR19MZzzfxTe8cL1oR6w==}
+  /marked-linkify-it@3.1.8(marked@11.1.0):
+    resolution: {integrity: sha512-hbqxk1cZPQzYoT8zaQ5rL+04YM60PPFW1ibF5m0DgxcxSykWA20SmK9aEqeLABRC1uP+Xf6u7pm9ya9Yb6YViQ==}
     peerDependencies:
-      marked: '>=4 <11'
+      marked: '>=4 <12'
     dependencies:
       '@types/linkify-it': 3.0.5
-      linkify-it: 4.0.1
-      marked: 10.0.0
+      linkify-it: 5.0.0
+      marked: 11.1.0
     dev: false
 
-  /marked@10.0.0:
-    resolution: {integrity: sha512-YiGcYcWj50YrwBgNzFoYhQ1hT6GmQbFG8SksnYJX1z4BXTHSOrz1GB5/Jm2yQvMg4nN1FHP4M6r03R10KrVUiA==}
+  /marked@11.1.0:
+    resolution: {integrity: sha512-fvKJWAPEafVj1dwGwcPI5mBB/0pvViL6NlCbNDG1HOIRwwAU/jeMoFxfbRLuirO1wRH7m4yPvBqD/O1wyWvayw==}
     engines: {node: '>= 18'}
     hasBin: true
     dev: false
@@ -971,17 +965,17 @@ packages:
       boolbase: 1.0.0
     dev: true
 
-  /p-queue@7.4.1:
-    resolution: {integrity: sha512-vRpMXmIkYF2/1hLBKisKeVYJZ8S2tZ0zEAmIJgdVKP2nq0nh4qCdf8bgw+ZgKrkh71AOCaqzwbJJk1WtdcF3VA==}
-    engines: {node: '>=12'}
+  /p-queue@8.0.1:
+    resolution: {integrity: sha512-NXzu9aQJTAzbBqOt2hwsR63ea7yvxJc0PwN/zobNAudYfb1B7R08SzB4TsLeSbUCuG467NhnoT0oO6w1qRO+BA==}
+    engines: {node: '>=18'}
     dependencies:
       eventemitter3: 5.0.1
-      p-timeout: 5.1.0
+      p-timeout: 6.1.2
     dev: true
 
-  /p-timeout@5.1.0:
-    resolution: {integrity: sha512-auFDyzzzGZZZdHz3BtET9VEz0SE/uMEAx7uWfGPucfzEwwe/xH0iVeZibQmANYE/hp9T2+UUZT5m+BKyrDp3Ew==}
-    engines: {node: '>=12'}
+  /p-timeout@6.1.2:
+    resolution: {integrity: sha512-UbD77BuZ9Bc9aABo74gfXhNvzC9Tx7SxtHSh1fxvx3jTLLYvmVhiQZZrJzqqU0jKbN32kb5VOKiLEQI/3bIjgQ==}
+    engines: {node: '>=14.16'}
     dev: true
 
   /param-case@2.1.1:
@@ -1005,8 +999,8 @@ packages:
     engines: {node: '>=8.6'}
     dev: true
 
-  /postcss@8.4.31:
-    resolution: {integrity: sha512-PS08Iboia9mts/2ygV3eLpY5ghnUcfLV/EXTOW1E2qYxJKGGBUtNjN76FYHnMs36RmARn41bC0AZmn+rR0OVpQ==}
+  /postcss@8.4.32:
+    resolution: {integrity: sha512-D/kj5JNu6oo2EIy+XL/26JEDTlIbB8hw85G8StOE6L74RQAVVP5rej6wxCNqyMbR4RkPfqvezVbPw81Ngd6Kcw==}
     engines: {node: ^10 || ^12 || >=14}
     dependencies:
       nanoid: 3.3.7
@@ -1081,8 +1075,8 @@ packages:
       kind-of: 6.0.3
     dev: false
 
-  /shikiji@0.7.4:
-    resolution: {integrity: sha512-N5dmPvyhH/zfcsuWysUEAMwRJDMz26LUns2VEUs5y4Ozbf5jkAODU0Yswjcf/tZAwpFnk5x3y34dupFMnF2+NA==}
+  /shikiji@0.8.7:
+    resolution: {integrity: sha512-j5usxwI0yHkDTHOuhuSJl9+wT5CNYeYO82dJMSJBlJ/NYT5SIebGcPoL6y9QOyH15wGrJC4LOP2nz5k8mUDGRQ==}
     dependencies:
       hast-util-to-html: 9.0.0
     dev: true
@@ -1128,8 +1122,8 @@ packages:
     resolution: {integrity: sha512-kRj8B+YHZCc9kQYdWfJB2/oUl9rA99qbowYYBtr4ui4mZyAQ2JpvVBd/6U2YloATfqBhBTSMhTpgBHtU0Mf3Rg==}
     dev: true
 
-  /uc.micro@1.0.6:
-    resolution: {integrity: sha512-8Y75pvTYkLJW2hWQHXxoqRgV7qb9B+9vFEtidML+7koHUFapnVJAZ6cKs+Qjz5Aw3aZWHMC6u0wJE3At+nSGwA==}
+  /uc.micro@2.0.0:
+    resolution: {integrity: sha512-DffL94LsNOccVn4hyfRe5rdKa273swqeA5DJpMOeFmEn1wCDc7nAbbB0gXlgBCL7TNzeTv6G7XVWzan7iJtfig==}
     dev: false
 
   /uglify-js@3.17.4:
@@ -1201,8 +1195,8 @@ packages:
       vfile-message: 4.0.2
     dev: true
 
-  /vite@5.0.2(@types/node@20.10.0)(sass@1.69.5):
-    resolution: {integrity: sha512-6CCq1CAJCNM1ya2ZZA7+jS2KgnhbzvxakmlIjN24cF/PXhRMzpM/z8QgsVJA/Dm5fWUWnVEsmtBoMhmerPxT0g==}
+  /vite@5.0.8(@types/node@20.10.4)(sass@1.69.5):
+    resolution: {integrity: sha512-jYMALd8aeqR3yS9xlHd0OzQJndS9fH5ylVgWdB+pxTwxLKdO1pgC5Dlb398BUxpfaBxa4M9oT7j1g503Gaj5IQ==}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
     peerDependencies:
@@ -1229,9 +1223,9 @@ packages:
       terser:
         optional: true
     dependencies:
-      '@types/node': 20.10.0
+      '@types/node': 20.10.4
       esbuild: 0.19.7
-      postcss: 8.4.31
+      postcss: 8.4.32
       rollup: 4.5.1
       sass: 1.69.5
     optionalDependencies:
