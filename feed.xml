@@ -4,11 +4,96 @@
         <title>hyrious.log</title>
         <link>https://hyrious.me/</link>
         <description>hyrious.log</description>
-        <lastBuildDate>Fri, 15 Dec 2023 04:17:22 GMT</lastBuildDate>
+        <lastBuildDate>Fri, 15 Dec 2023 09:41:53 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <copyright>CC0 1.0</copyright>
         <atom:link href="https://hyrious.me/feed.xml" rel="self" type="application/rss+xml"/>
+        <item>
+            <title><![CDATA[TypeScript Tips]]></title>
+            <link>https://hyrious.me/p/typescript-tips</link>
+            <guid>https://hyrious.me/p/typescript-tips</guid>
+            <pubDate>Fri, 15 Dec 2023 00:00:00 GMT</pubDate>
+            <content:encoded><![CDATA[<style>.μ0{background-color:#fff;color:#24292e}.μ1{color:#D73A49}.μ2{color:#6F42C1}.μ3{color:#24292E}.μ4{color:#E36209}.μ5{color:#005CC5}.μ6{color:#6A737D}@media(prefers-color-scheme:dark){.μ0{background-color:#24292e;color:#e1e4e8}.μ1{color:#F97583}.μ2{color:#B392F0}.μ3{color:#E1E4E8}.μ4{color:#FFAB70}.μ5{color:#79B8FF}.μ6{color:#6A737D}}</style><h3 id="implicit-nominal-typing">Implicit Nominal Typing</h3>
+<p>不知道中文该叫什么，<q>隐式标称类型</q>？咳咳，简单来说我们想标记一类特定的对象是某个类型的，但是又没有也不想在他身上加个脏脏的标记字段，如下面的例子：</p>
+<pre class="shiki shiki-themes github-light github-dark μ0" tabindex="0"><code><span class="line"><span class="μ1">class</span><span class="μ2"> Foo</span><span class="μ3"> {}</span></span>
+<span class="line"></span>
+<span class="line"><span class="μ1">class</span><span class="μ2"> Bar</span><span class="μ3"> {}</span></span>
+<span class="line"></span>
+<span class="line"><span class="μ1">let</span><span class="μ3"> foo</span><span class="μ1">:</span><span class="μ2"> Foo</span><span class="μ1"> =</span><span class="μ1"> new</span><span class="μ2"> Bar</span><span class="μ3">()</span></span></code></pre>
+<p>明明是两个类，但是其中一个的实例居然可以直接赋值成另一个类型。为了不让这么操作，可以要求 <code>Foo</code> 身上有个 <code>Bar</code> 身上没有的东西，可以往他身上添加一个不存在的私有属性来达到目的：</p>
+<pre class="shiki shiki-themes github-light github-dark twoslash lsp μ0" tabindex="0"><code><span class="line"><span class="μ1">class</span><span class="μ3"> </span><span class="μ2"><span class="twoslash-hover">Foo<span class="twoslash-popup-info"><span class="line"><span class="μ1">class</span><span class="μ3"> </span><span class="μ2">Foo</span></span></span></span></span><span class="μ3"> {</span></span>
+<span class="line"><span class="μ3">  </span><span class="μ1">private</span><span class="μ3"> </span><span class="μ1">declare</span><span class="μ3"> </span><span class="μ4"><span class="twoslash-hover">_isFoo<span class="twoslash-popup-info"><span class="line"><span class="μ3">(property) Foo._isFoo: </span><span class="μ5">true</span></span></span></span></span><span class="μ1">:</span><span class="μ3"> </span><span class="μ5">true</span></span>
+<span class="line"><span class="μ3">}</span></span>
+<span class="line"></span>
+<span class="line"><span class="μ1">class</span><span class="μ3"> </span><span class="μ2"><span class="twoslash-hover">Bar<span class="twoslash-popup-info"><span class="line"><span class="μ1">class</span><span class="μ3"> </span><span class="μ2">Bar</span></span></span></span></span><span class="μ3"> {}</span></span>
+<span class="line"></span>
+<span class="line"><span class="μ1">let</span><span class="μ3"><span class="twoslash-error"> foo</span></span><span class="μ1">:</span><span class="μ3"> </span><span class="μ2"><span class="twoslash-hover">Foo<span class="twoslash-popup-info"><span class="line"><span class="μ1">class</span><span class="μ3"> </span><span class="μ2">Foo</span></span></span></span></span><span class="μ3"> </span><span class="μ1">=</span><span class="μ3"> </span><span class="μ1">new</span><span class="μ3"> </span><span class="μ2"><span class="twoslash-hover">Bar<span class="twoslash-popup-info"><span class="line"><span class="μ3">constructor </span><span class="μ2">Bar</span><span class="μ3">(): Bar</span></span></span></span></span><span class="μ3">()</span></span><div class="twoslash-meta-line twoslash-error-line">Property '_isFoo' is missing in type 'Bar' but required in type 'Foo'.</div></code></pre>
+<p>这里有两个标记使得他变得如此好用：</p>
+<ul>
+<li><p><code>private</code> 决定了它仍然可以产生类型标记，但禁止了上层用户直接访问，你只能通过构造函数来实例化这个特殊的类型：</p>
+<pre class="shiki shiki-themes github-light github-dark μ0" tabindex="0"><code><span class="line"><span class="μ6">// 生成的 d.ts</span></span>
+<span class="line"><span class="μ1">declare</span><span class="μ1"> class</span><span class="μ2"> Foo</span><span class="μ3"> {</span></span>
+<span class="line"><span class="μ1">  private</span><span class="μ4"> _isFoo</span></span>
+<span class="line"><span class="μ3">}</span></span></code></pre>
+</li>
+<li><p><code>declare</code> 决定了这个属性只是个标记而没有实体，因此生成的 JavaScript 也很干净：</p>
+<pre class="shiki shiki-themes github-light github-dark μ0" tabindex="0"><code><span class="line"><span class="μ6">// 生成的 js</span></span>
+<span class="line"><span class="μ1">class</span><span class="μ2"> Foo</span><span class="μ3"> {}</span></span></code></pre>
+</li>
+</ul>
+<p>如果你设置了 <a target="_blank" rel="noopener" href="https://www.typescriptlang.org/tsconfig#useDefineForClassFields"><code>useDefineForClassFields: false</code></a>，也可以省略 <code>declare</code> 换成 <code>!</code>。</p>
+<h4 id="shared-nominal-typing">Shared Nominal Typing</h4>
+<p>上文往 <code>class</code> 上添加了私有属性，如果是往 <code>interface</code> 上加呢？诶，我们发现 <code>private</code> 是保不住了，但是可以让一些类共享同一个类型，而且用户一般不会自己尝试实现这个类型：</p>
+<pre class="shiki shiki-themes github-light github-dark twoslash lsp μ0" tabindex="0"><code><span class="line"><span class="μ1">type</span><span class="μ3"> </span><span class="μ2"><span class="twoslash-hover">FooLike<span class="twoslash-popup-info"><span class="line"><span class="μ1">type</span><span class="μ3"> </span><span class="μ2">FooLike</span><span class="μ3"> </span><span class="μ1">=</span><span class="μ3"> {</span></span>
+<span class="line"><span class="μ3">    </span><span class="μ4">_isFoo</span><span class="μ1">:</span><span class="μ3"> </span><span class="μ2">FooLike</span><span class="μ3">;</span></span>
+<span class="line"><span class="μ3">}</span></span></span></span></span><span class="μ3"> </span><span class="μ1">=</span><span class="μ3"> { </span><span class="μ4"><span class="twoslash-hover">_isFoo<span class="twoslash-popup-info"><span class="line"><span class="μ3">(property) </span><span class="μ2">_isFoo</span><span class="μ3">: FooLike</span></span></span></span></span><span class="μ1">:</span><span class="μ3"> </span><span class="μ2"><span class="twoslash-hover twoslash-query-presisted">FooLike<span class="twoslash-popup-info"><div class="twoslash-popup-arrow"></div><span class="line"><span class="μ1">type</span><span class="μ3"> </span><span class="μ2">FooLike</span><span class="μ3"> </span><span class="μ1">=</span><span class="μ3"> {</span></span>
+<span class="line"><span class="μ3">    </span><span class="μ4">_isFoo</span><span class="μ1">:</span><span class="μ3"> </span><span class="μ2">FooLike</span><span class="μ3">;</span></span>
+<span class="line"><span class="μ3">}</span></span></span></span></span><span class="μ3"> }</span></span>
+<span class="line"></span>
+<span class="line"><span class="μ1">class</span><span class="μ3"> </span><span class="μ2"><span class="twoslash-hover">Bar<span class="twoslash-popup-info"><span class="line"><span class="μ1">class</span><span class="μ3"> </span><span class="μ2">Bar</span></span></span></span></span><span class="μ3"> {</span></span>
+<span class="line"><span class="μ3">  </span><span class="μ1">declare</span><span class="μ3"> </span><span class="μ4"><span class="twoslash-hover">_isFoo<span class="twoslash-popup-info"><span class="line"><span class="μ3">(property) Bar._isFoo: </span><span class="μ5">this</span></span></span></span></span><span class="μ1">:</span><span class="μ3"> </span><span class="μ5">this</span></span>
+<span class="line"><span class="μ3">}</span></span>
+<span class="line"></span>
+<span class="line"><span class="μ1">let</span><span class="μ3"><span class="twoslash-hover"> a<span class="twoslash-popup-info"><span class="line"><span class="μ1">let</span><span class="μ3"> a</span><span class="μ1">:</span><span class="μ3"> </span><span class="μ2">FooLike</span></span></span></span></span><span class="μ1">:</span><span class="μ3"> </span><span class="μ2"><span class="twoslash-hover">FooLike<span class="twoslash-popup-info"><span class="line"><span class="μ1">type</span><span class="μ3"> </span><span class="μ2">FooLike</span><span class="μ3"> </span><span class="μ1">=</span><span class="μ3"> {</span></span>
+<span class="line"><span class="μ3">    </span><span class="μ4">_isFoo</span><span class="μ1">:</span><span class="μ3"> </span><span class="μ2">FooLike</span><span class="μ3">;</span></span>
+<span class="line"><span class="μ3">}</span></span></span></span></span><span class="μ3"> </span><span class="μ1">=</span><span class="μ3"> </span><span class="μ1">new</span><span class="μ3"> </span><span class="μ2"><span class="twoslash-hover">Bar<span class="twoslash-popup-info"><span class="line"><span class="μ3">constructor </span><span class="μ2">Bar</span><span class="μ3">(): Bar</span></span></span></span></span><span class="μ3">()</span></span>
+<span class="line"></span>
+<span class="line"><span class="μ1">class</span><span class="μ3"> </span><span class="μ2"><span class="twoslash-hover">UserDefined<span class="twoslash-popup-info"><span class="line"><span class="μ1">class</span><span class="μ3"> </span><span class="μ2">UserDefined</span></span></span></span></span><span class="μ3"> {}</span></span>
+<span class="line"></span>
+<span class="line"><span class="μ1">let</span><span class="μ3"><span class="twoslash-error"> b</span></span><span class="μ1">:</span><span class="μ3"> </span><span class="μ2"><span class="twoslash-hover">FooLike<span class="twoslash-popup-info"><span class="line"><span class="μ1">type</span><span class="μ3"> </span><span class="μ2">FooLike</span><span class="μ3"> </span><span class="μ1">=</span><span class="μ3"> {</span></span>
+<span class="line"><span class="μ3">    </span><span class="μ4">_isFoo</span><span class="μ1">:</span><span class="μ3"> </span><span class="μ2">FooLike</span><span class="μ3">;</span></span>
+<span class="line"><span class="μ3">}</span></span></span></span></span><span class="μ3"> </span><span class="μ1">=</span><span class="μ3"> </span><span class="μ1">new</span><span class="μ3"> </span><span class="μ2"><span class="twoslash-hover">UserDefined<span class="twoslash-popup-info"><span class="line"><span class="μ3">constructor </span><span class="μ2">UserDefined</span><span class="μ3">(): UserDefined</span></span></span></span></span><span class="μ3">()</span></span><div class="twoslash-meta-line twoslash-error-line">Property '_isFoo' is missing in type 'UserDefined' but required in type 'FooLike'.</div></code></pre>
+<h3 id="tagged-value">Tagged Value</h3>
+<p>传统 JavaScript 人的做法是存一个 <code>{ type: string, value }</code>，写起来不免有些繁琐而且不利于代码压缩。我们可以考虑下面这个写法：</p>
+<pre class="shiki shiki-themes github-light github-dark μ0" tabindex="0"><code><span class="line"><span class="μ1">class</span><span class="μ2"> Value</span><span class="μ3">&#x3C;</span><span class="μ2">T</span><span class="μ3">> {</span></span>
+<span class="line"><span class="μ6">  /** </span><span class="μ1">@internal</span><span class="μ6"> */</span></span>
+<span class="line"><span class="μ1">  constructor</span><span class="μ3">(</span><span class="μ1">readonly</span><span class="μ4"> type</span><span class="μ1">:</span><span class="μ2"> Type</span><span class="μ3">&#x3C;</span><span class="μ2">T</span><span class="μ3">>, </span><span class="μ1">readonly</span><span class="μ4"> value</span><span class="μ1">:</span><span class="μ2"> T</span><span class="μ3">) {}</span></span>
+<span class="line"></span>
+<span class="line"><span class="μ1">  static</span><span class="μ2"> define</span><span class="μ3">&#x3C;</span><span class="μ2">T</span><span class="μ3">>() {</span></span>
+<span class="line"><span class="μ1">    return</span><span class="μ1"> new</span><span class="μ2"> Type</span><span class="μ3">&#x3C;</span><span class="μ2">T</span><span class="μ3">>()</span></span>
+<span class="line"><span class="μ3">  }</span></span>
+<span class="line"></span>
+<span class="line"><span class="μ2">  is</span><span class="μ3">&#x3C;</span><span class="μ2">T</span><span class="μ3">>(</span><span class="μ4">type</span><span class="μ1">:</span><span class="μ2"> Type</span><span class="μ3">&#x3C;</span><span class="μ2">T</span><span class="μ3">>)</span><span class="μ1">:</span><span class="μ5"> this</span><span class="μ1"> is</span><span class="μ2"> Value</span><span class="μ3">&#x3C;</span><span class="μ2">T</span><span class="μ3">> {</span></span>
+<span class="line"><span class="μ1">    return</span><span class="μ5"> this</span><span class="μ3">.type </span><span class="μ1">===</span><span class="μ3"> type</span></span>
+<span class="line"><span class="μ3">  }</span></span>
+<span class="line"><span class="μ3">}</span></span>
+<span class="line"></span>
+<span class="line"><span class="μ1">class</span><span class="μ2"> Type</span><span class="μ3">&#x3C;</span><span class="μ2">T</span><span class="μ3">> {</span></span>
+<span class="line"><span class="μ2">  of</span><span class="μ3">(</span><span class="μ4">value</span><span class="μ1">:</span><span class="μ2"> T</span><span class="μ3">)</span><span class="μ1">:</span><span class="μ2"> Value</span><span class="μ3">&#x3C;</span><span class="μ2">T</span><span class="μ3">> {</span></span>
+<span class="line"><span class="μ1">    return</span><span class="μ1"> new</span><span class="μ2"> Value</span><span class="μ3">(</span><span class="μ5">this</span><span class="μ3">, value)</span></span>
+<span class="line"><span class="μ3">  }</span></span>
+<span class="line"><span class="μ3">}</span></span>
+<span class="line"></span>
+<span class="line"><span class="μ6">// 定义一个类型叫温度</span></span>
+<span class="line"><span class="μ1">const</span><span class="μ5"> temperature</span><span class="μ1"> =</span><span class="μ3"> Value</span><span class="μ1">&#x3C;</span><span class="μ3">number</span><span class="μ1">></span><span class="μ3">.</span><span class="μ2">define</span><span class="μ3">()</span></span>
+<span class="line"></span>
+<span class="line"><span class="μ6">// 实例化这个类型</span></span>
+<span class="line"><span class="μ1">const</span><span class="μ5"> a</span><span class="μ1"> =</span><span class="μ3"> temperature.</span><span class="μ2">of</span><span class="μ3">(</span><span class="μ5">42</span><span class="μ3">)</span></span>
+<span class="line"><span class="μ3">a.</span><span class="μ2">is</span><span class="μ3">(temperature) </span><span class="μ6">// true</span></span></code></pre>
+<p>注意到 <code>@internal</code> 标记，这使得最终用户不能看到这个构造，也就可以要求一定通过指定的工厂函数实例化自定义类型了。</p>]]></content:encoded>
+            <author>hyrious@outlook.com (hyrious)</author>
+        </item>
         <item>
             <title><![CDATA[代码分割并不简单]]></title>
             <link>https://hyrious.me/p/code-splitting-is-not-trivial</link>
