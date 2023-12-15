@@ -12,7 +12,7 @@
     "katex": "^0.16.9",
     "marked": "^11.1.0",
     "marked-gfm-heading-id": "^3.1.2",
-    "marked-highlight": "^2.0.9",
+    "marked-highlight": "^2.1.0",
     "marked-linkify-it": "^3.1.8",
     "sanitize.css": "^13.0.0"
   },
@@ -27,6 +27,7 @@
     "github-slugger": "^2.0.0",
     "html-minifier": "^4.0.0",
     "p-queue": "^8.0.1",
+    "quick-lru": "^7.0.0",
     "sass": "^1.69.5",
     "shikiji": "^0.9.2",
     "shikiji-twoslash": "^0.9.2",
@@ -36,9 +37,6 @@
     "overrides": {
       "critters>chalk": "npm:noop-package@1.0.0",
       "html-minifier>commander": "npm:noop-package@1.0.0"
-    },
-    "patchedDependencies": {
-      "marked-highlight@2.0.9": "patches/marked-highlight@2.0.9.patch"
     }
   }
 }

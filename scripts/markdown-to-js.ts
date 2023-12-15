@@ -1,5 +1,6 @@
 import katex from 'katex'
 import matter from 'gray-matter'
+import QuickLRU from 'quick-lru'
 import { apStyleTitleCase } from 'ap-style-title-case'
 import { marked, Renderer, type TokenizerAndRendererExtension } from 'marked'
 import { gfmHeadingId } from 'marked-gfm-heading-id'
@@ -31,12 +32,17 @@ const shiki_p = getHighlighter({
   langs: Object.keys(bundledLanguages),
 })
 
+const twoslashCache = new QuickLRU<string, string>({ maxSize: 114 })
 const highlight = markedHighlight({
   async: true,
   async highlight(code, lang, info) {
+    const key = lang + '\x00' + code
+    if (info.includes('twoslash') && twoslashCache.has(key)) {
+      return twoslashCache.get(key)!
+    }
     if (lang in bundledLanguages) {
       const shiki = await shiki_p
-      return shiki.codeToHtml(code, {
+      const html = shiki.codeToHtml(code, {
         lang,
         themes: { light: 'github-light', dark: 'github-dark' },
         cssVariablePrefix: '--s-',
@@ -48,6 +54,10 @@ const highlight = markedHighlight({
           }),
         ],
       })
+      if (info.includes('twoslash')) {
+        twoslashCache.set(key, html)
+      }
+      return html
     } else {
       return code
     }

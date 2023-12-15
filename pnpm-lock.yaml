@@ -8,11 +8,6 @@ overrides:
   critters>chalk: npm:noop-package@1.0.0
   html-minifier>commander: npm:noop-package@1.0.0
 
-patchedDependencies:
-  marked-highlight@2.0.9:
-    hash: 4exzc3sfesvxzazk5rqtx3kjju
-    path: patches/marked-highlight@2.0.9.patch
-
 dependencies:
   ap-style-title-case:
     specifier: ^2.0.0
@@ -30,8 +25,8 @@ dependencies:
     specifier: ^3.1.2
     version: 3.1.2(marked@11.1.0)
   marked-highlight:
-    specifier: ^2.0.9
-    version: 2.0.9(patch_hash=4exzc3sfesvxzazk5rqtx3kjju)(marked@11.1.0)
+    specifier: ^2.1.0
+    version: 2.1.0(marked@11.1.0)
   marked-linkify-it:
     specifier: ^3.1.8
     version: 3.1.8(marked@11.1.0)
@@ -70,6 +65,9 @@ devDependencies:
   p-queue:
     specifier: ^8.0.1
     version: 8.0.1
+  quick-lru:
+    specifier: ^7.0.0
+    version: 7.0.0
   sass:
     specifier: ^1.69.5
     version: 1.69.5
@@ -936,14 +934,13 @@ packages:
       marked: 11.1.0
     dev: false
 
-  /marked-highlight@2.0.9(patch_hash=4exzc3sfesvxzazk5rqtx3kjju)(marked@11.1.0):
-    resolution: {integrity: sha512-HAK1WJSK6CGVDzplOf6layWFz1lHm8Fsjd+SEUYmLhAZmM8TlYmErC/hTphoiOxogYqGQGt3Ghug3Yhs+s+3jw==}
+  /marked-highlight@2.1.0(marked@11.1.0):
+    resolution: {integrity: sha512-peBvgGZZqUw074Vy/N8Y7/6JQhSnR54/T0Ozq2/fAIBzcYfVfExFdQJptIhQxreR1elpwvJRrqhp6S/Prk8prA==}
     peerDependencies:
       marked: '>=4 <12'
     dependencies:
       marked: 11.1.0
     dev: false
-    patched: true
 
   /marked-linkify-it@3.1.8(marked@11.1.0):
     resolution: {integrity: sha512-hbqxk1cZPQzYoT8zaQ5rL+04YM60PPFW1ibF5m0DgxcxSykWA20SmK9aEqeLABRC1uP+Xf6u7pm9ya9Yb6YViQ==}
@@ -1082,6 +1079,11 @@ packages:
 
   /property-information@6.4.0:
     resolution: {integrity: sha512-9t5qARVofg2xQqKtytzt+lZ4d1Qvj8t5B8fEwXK6qOfgRLgH/b13QlgEyDh033NOS31nXeFbYv7CLUDG1CeifQ==}
+    dev: true
+
+  /quick-lru@7.0.0:
+    resolution: {integrity: sha512-MX8gB7cVYTrYcFfAnfLlhRd0+Toyl8yX8uBx1MrX7K0jegiz9TumwOK27ldXrgDlHRdVi+MqU9Ssw6dr4BNreg==}
+    engines: {node: '>=18'}
     dev: true
 
   /readdirp@3.6.0:
