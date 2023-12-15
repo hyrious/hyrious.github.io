@@ -6,6 +6,7 @@ import { gfmHeadingId } from 'marked-gfm-heading-id'
 import { markedHighlight } from 'marked-highlight'
 import { default as markedLinkifyIt } from 'marked-linkify-it'
 import { bundledLanguages, getHighlighter } from 'shikiji'
+import { transformerTwoSlash, rendererRich } from 'shikiji-twoslash'
 
 export interface Parsed {
   id: string
@@ -32,13 +33,20 @@ const shiki_p = getHighlighter({
 
 const highlight = markedHighlight({
   async: true,
-  async highlight(code, lang) {
+  async highlight(code, lang, info) {
     if (lang in bundledLanguages) {
       const shiki = await shiki_p
       return shiki.codeToHtml(code, {
         lang,
         themes: { light: 'github-light', dark: 'github-dark' },
         cssVariablePrefix: '--s-',
+        meta: { __raw: info },
+        transformers: [
+          transformerTwoSlash({
+            explicitTrigger: true,
+            renderer: rendererRich(),
+          }),
+        ],
       })
     } else {
       return code
@@ -47,8 +55,8 @@ const highlight = markedHighlight({
 })
 // Patch the renderer object because shiki returns <pre> already, I don't want double <pre>
 const highlight_code = highlight.renderer!.code!
-highlight.renderer!.code = function custom_code(): string | false {
-  let str = highlight_code.apply(this, arguments as any)
+highlight.renderer!.code = function custom_code(code, info, escaped): string | false {
+  let str = highlight_code.call(this, code, info, escaped)
   if (str && str.startsWith('<pre><code') && str.includes('shiki')) {
     const start = str.indexOf('<pre', 1)
     const end = str.lastIndexOf('</code>')

@@ -1,0 +1,47 @@
+diff --git a/src/index.d.ts b/src/index.d.ts
+index 0162a9c52e727fd3b0f0bec797a9dfc7d4eed4c3..6a0a366b7d47e79ab295f2cab30c0f9a4b6e178b 100644
+--- a/src/index.d.ts
++++ b/src/index.d.ts
+@@ -5,9 +5,11 @@ declare module 'marked-highlight' {
+    * @param code The raw code to be highlighted
+    * @param language The language tag found immediately after the code block
+    *   opening marker (e.g. ```typescript -> language='typescript')
++   * @param info The full string after the code block opening marker
++   *   (e.g. ```ts twoslash -> info='ts twoslash')
+    * @return The highlighted code as a HTML string
+    */
+-  type SyncHighlightFunction = (code: string, language: string) => string;
++  type SyncHighlightFunction = (code: string, language: string, info: string) => string;
+ 
+   /**
+    * An asynchronous function to highlight code
+@@ -15,9 +17,11 @@ declare module 'marked-highlight' {
+    * @param code The raw code to be highlighted
+    * @param language The language tag found immediately after the code block
+    *   opening marker (e.g. ```typescript -> language='typescript')
++   * @param info The full string after the code block opening marker
++   *   (e.g. ```ts twoslash -> info='ts twoslash')
+    * @return A Promise for the highlighted code as a HTML string
+    */
+-  type AsyncHighlightFunction = (code: string, language: string) => Promise<string>;
++  type AsyncHighlightFunction = (code: string, language: string, info: string) => Promise<string>;
+ 
+   /**
+    * Options for configuring the marked-highlight extension using a synchronous
+diff --git a/src/index.js b/src/index.js
+index b267e4d87dfb45bbb387a0c8290cba485f1ffbae..a65ff5c77aed7da369270be650be0e279b25c91e 100644
+--- a/src/index.js
++++ b/src/index.js
+@@ -23,10 +23,10 @@ export function markedHighlight(options) {
+       const lang = getLang(token);
+ 
+       if (options.async) {
+-        return Promise.resolve(options.highlight(token.text, lang)).then(updateToken(token));
++        return Promise.resolve(options.highlight(token.text, lang, token.lang)).then(updateToken(token));
+       }
+ 
+-      const code = options.highlight(token.text, lang);
++      const code = options.highlight(token.text, lang, token.lang);
+       if (code instanceof Promise) {
+         throw new Error('markedHighlight is not set to async but the highlight function is async. Set the async option to true on markedHighlight to await the async highlight function.');
+       }

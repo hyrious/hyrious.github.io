@@ -15,29 +15,31 @@ if (import.meta.env.SSR || import.meta.hot) {
   if (import.meta.hot) {
     const { compile, makeArgs } = await import('../scripts/compile-template')
 
-    function refresh(html: string) {
-      const dom = new DOMParser().parseFromString(html, 'text/html')
-      document.title = dom.title || 'hyrious.log'
-      document.body.className = dom.body.className
-      document.body.innerHTML = dom.body.innerHTML
-    }
-
     async function update(t: typeof templates, p: typeof posts) {
+      let done = false
+      function refresh(html: string) {
+        const dom = new DOMParser().parseFromString(html, 'text/html')
+        document.title = dom.title || 'hyrious.log'
+        document.body.className = dom.body.className
+        document.body.innerHTML = dom.body.innerHTML
+        done = true
+      }
+
+      // console.debug({ t, p })
       const { pathname } = location
       const posts_ = Object.values(p).map((e) => e.default)
       const argsStr = '{ site, posts, post, strip_html, katex }'
-      console.debug({ t, p })
 
       // update /index.html
       if (['/', '/index', '/index.html'].includes(pathname)) {
         const render = compile('index', t['./templates/index.html'], argsStr)
-        return refresh(render(makeArgs(posts_)))
+        refresh(render(makeArgs(posts_)))
       }
 
       // update /p/index.html
       else if (['/p/', '/p/index', '/p/index.html'].includes(pathname)) {
         const render = compile('p', t['./templates/p.html'], argsStr)
-        return refresh(render(makeArgs(posts_)))
+        refresh(render(makeArgs(posts_)))
       }
 
       // update /p/hello-world.html
@@ -46,14 +48,28 @@ if (import.meta.env.SSR || import.meta.hot) {
         const post = p[`../posts/${id}.md`]?.default
         if (post) {
           const render = compile('post', t['./templates/post.html'], argsStr)
-          return refresh(render(makeArgs(posts_, post)))
+          refresh(render(makeArgs(posts_, post)))
         }
       }
 
       // 404
-      document.title = '404 Not found'
-      document.body.className = ''
-      document.body.innerHTML = `<h1>404 Not found</h1>`
+      if (!done) {
+        document.title = '404 Not found'
+        document.body.className = ''
+        document.body.innerHTML = `<h1>404 Not found</h1>`
+      }
+
+      // Patch <a> tags to use client-side navigation
+      document.querySelectorAll('a').forEach((a) => {
+        if (a.href.startsWith(location.origin)) {
+          a.onclick = (e) => {
+            e.preventDefault()
+            history.pushState({}, '', a.href)
+            update(t, p)
+          }
+        }
+      })
+      onpopstate = () => update(t, p)
     }
 
     if (!import.meta.hot.data.accepted) {
