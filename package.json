@@ -20,7 +20,7 @@
     "@hyrious/esbuild-dev": "^0.10.5",
     "@types/html-minifier": "^4.0.5",
     "@types/katex": "^0.16.7",
-    "@types/node": "^20.10.4",
+    "@types/node": "^20.10.5",
     "chalk": "^5.3.0",
     "critters": "^0.0.20",
     "feed": "^4.2.2",
@@ -29,9 +29,9 @@
     "p-queue": "^8.0.1",
     "quick-lru": "^7.0.0",
     "sass": "^1.69.5",
-    "shikiji": "^0.9.2",
-    "shikiji-twoslash": "^0.9.2",
-    "vite": "^5.0.9"
+    "shikiji": "^0.9.9",
+    "shikiji-twoslash": "^0.9.9",
+    "vite": "^5.0.10"
   },
   "pnpm": {
     "overrides": {

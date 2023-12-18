@@ -1,5 +1,5 @@
 ---
-title: TypeScript Tips
+title: TypeScript 小技巧
 date: 2023-12-15
 ---
 
