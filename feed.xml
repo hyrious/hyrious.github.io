@@ -4,11 +4,53 @@
         <title>hyrious.log</title>
         <link>https://hyrious.me/</link>
         <description>hyrious.log</description>
-        <lastBuildDate>Mon, 18 Dec 2023 05:00:38 GMT</lastBuildDate>
+        <lastBuildDate>Mon, 22 Jan 2024 08:22:11 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <copyright>CC0 1.0</copyright>
         <atom:link href="https://hyrious.me/feed.xml" rel="self" type="application/rss+xml"/>
+        <item>
+            <title><![CDATA[网格布局一把梭]]></title>
+            <link>https://hyrious.me/p/css-subgrid</link>
+            <guid>https://hyrious.me/p/css-subgrid</guid>
+            <pubDate>Mon, 22 Jan 2024 00:00:00 GMT</pubDate>
+            <content:encoded><![CDATA[<style>.μ0{background-color:#fff;color:#24292e}.μ1{color:#24292E}.μ2{color:#22863A}.μ3{color:#6F42C1}.μ4{color:#032F62}.μ5{color:#005CC5}.μ6{color:#D73A49}.μ7{color:#6A737D}@media(prefers-color-scheme:dark){.μ0{background-color:#24292e;color:#e1e4e8}.μ1{color:#E1E4E8}.μ2{color:#85E89D}.μ3{color:#B392F0}.μ4{color:#9ECBFF}.μ5{color:#79B8FF}.μ6{color:#F97583}.μ7{color:#6A737D}}</style><blockquote>
+<p>参考：<a target="_blank" rel="noopener" href="https://web.dev/articles/css-subgrid">https://web.dev/articles/css-subgrid</a></p>
+</blockquote>
+<p>自从 <code>subgrid</code> 被<a target="_blank" rel="noopener" href="https://caniuse.com/css-subgrid">广泛支持</a>后，网格布局系统终于可以在前端被当成一把梭的存在 (和 <code>flex</code> 平起平坐了)，下面就来看看。</p>
+<p>来看这么一个例子 (取自 <a target="_blank" rel="noopener" href="https://meyerweb.com/eric/thoughts/2016/01/15/subgrids-considered-essential/">Subgrids Considered Essential</a>)：</p>
+<pre class="shiki shiki-themes github-light github-dark μ0" tabindex="0"><code><span class="line"><span class="μ1">&#x3C;</span><span class="μ2">ul</span><span class="μ1">></span></span>
+<span class="line"><span class="μ1">  &#x3C;</span><span class="μ2">li</span><span class="μ1">>&#x3C;</span><span class="μ2">label</span><span class="μ1">>Name:&#x3C;/</span><span class="μ2">label</span><span class="μ1">> &#x3C;</span><span class="μ2">input</span><span class="μ3"> id</span><span class="μ1">=</span><span class="μ4">"name"</span><span class="μ1">>&#x3C;/</span><span class="μ2">li</span><span class="μ1">></span></span>
+<span class="line"><span class="μ1">  &#x3C;</span><span class="μ2">li</span><span class="μ1">>&#x3C;</span><span class="μ2">label</span><span class="μ1">>Email:&#x3C;/</span><span class="μ2">label</span><span class="μ1">> &#x3C;</span><span class="μ2">input</span><span class="μ3"> id</span><span class="μ1">=</span><span class="μ4">"email"</span><span class="μ1">>&#x3C;/</span><span class="μ2">li</span><span class="μ1">></span></span>
+<span class="line"><span class="μ1">  &#x3C;</span><span class="μ2">li</span><span class="μ1">>&#x3C;</span><span class="μ2">label</span><span class="μ1">>Password:&#x3C;/</span><span class="μ2">label</span><span class="μ1">> &#x3C;</span><span class="μ2">input</span><span class="μ3"> id</span><span class="μ1">=</span><span class="μ4">"password"</span><span class="μ1">>&#x3C;/</span><span class="μ2">li</span><span class="μ1">></span></span>
+<span class="line"><span class="μ1">&#x3C;/</span><span class="μ2">ul</span><span class="μ1">></span></span></code></pre>
+<p>你的设计师朋友：这几个 label 能不能加个纵向对齐？</p>
+<p>除了强行给 <code>&lt;label&gt;</code> 加个估算的 <code>width</code> 外，其实用 <code>subgrid</code> 就可以实现：</p>
+<pre class="shiki shiki-themes github-light github-dark μ0" tabindex="0"><code><span class="line"><span class="μ2">ul</span><span class="μ1"> {</span></span>
+<span class="line"><span class="μ5">  display</span><span class="μ1">: </span><span class="μ5">grid</span><span class="μ1">;</span></span>
+<span class="line"><span class="μ5">  grid-template-columns</span><span class="μ1">: [column-1] </span><span class="μ5">max-content</span><span class="μ1"> [column-2] </span><span class="μ5">1</span><span class="μ6">fr</span><span class="μ1"> [</span><span class="μ5">end</span><span class="μ1">];</span></span>
+<span class="line"><span class="μ1">}</span></span>
+<span class="line"><span class="μ2">ul</span><span class="μ2"> li</span><span class="μ1"> {</span></span>
+<span class="line"><span class="μ5">  grid-column</span><span class="μ1">: span </span><span class="μ5">2</span><span class="μ1">;</span></span>
+<span class="line"><span class="μ5">  display</span><span class="μ1">: </span><span class="μ5">grid</span><span class="μ1">;</span></span>
+<span class="line"><span class="μ5">  grid-template-columns</span><span class="μ1">: </span><span class="μ5">subgrid</span><span class="μ1">;</span></span>
+<span class="line"><span class="μ1">}</span></span></code></pre>
+<p>简单解释几点：</p>
+<ul>
+<li><code>[name]</code> 是用来给<strong>格线</strong>命名的，也可以不命名直接从 1 开始数 (或者从右侧 -1 开始数)，也就是说本例中 <code>[column-1]</code> 实际上等于 1，<code>[end]</code> 实际上等于 3 或者 -1</li>
+<li><code>grid-template-columns: max-content 1fr</code> 设置了这样一个网格：<br>一共两列，第一列宽度是其内容的最大宽度，第二列是占满剩下的宽度</li>
+<li><code>grid-column</code> 是一个缩写属性，表示本元素在父网格中<strong>开始</strong>到<strong>结束</strong>的列<strong>格线</strong>，以下几个表示的都是<q>前两格</q>：<pre class="shiki shiki-themes github-light github-dark μ0" tabindex="0"><code><span class="line"><span class="μ2">ul</span><span class="μ2"> li</span><span class="μ1"> {</span></span>
+<span class="line"><span class="μ5">  grid-column</span><span class="μ1">: </span><span class="μ5">1</span><span class="μ1"> / </span><span class="μ5">3</span><span class="μ1">;</span></span>
+<span class="line"><span class="μ5">  grid-column</span><span class="μ1">: </span><span class="μ5">1</span><span class="μ1"> / span </span><span class="μ5">2</span><span class="μ1">;</span></span>
+<span class="line"><span class="μ5">  grid-column</span><span class="μ1">: span </span><span class="μ5">2</span><span class="μ1">;</span></span>
+<span class="line"><span class="μ5">  grid-column</span><span class="μ1">: column-1 / </span><span class="μ5">end</span><span class="μ1">; </span><span class="μ7">/* 可以通过命名更直观地表示范围 */</span></span>
+<span class="line"><span class="μ1">}</span></span></code></pre>
+本例中，<code>&lt;li&gt;</code> 元素需要占满宽度，所以直接框选了一行里的所有格子</li>
+<li><code>grid-template-columns: subgrid</code> 表示此网格继承父元素的网格位置，也就是刚刚用 <code>grid-column: span 2</code> 框住的两列</li>
+<li>所以我们现在有 1 + 3 个 <code>display: grid</code>，其中 <code>&lt;ul&gt;</code> 是三行两列的，而每个 <code>&lt;li&gt;</code> 各自占住一行并且是两列的，并且他们的<q>两列</q>完全是同一个逻辑网格里的</li>
+</ul>]]></content:encoded>
+            <author>hyrious@outlook.com (hyrious)</author>
+        </item>
         <item>
             <title><![CDATA[最小 tsconfig.json]]></title>
             <link>https://hyrious.me/p/minimal-tsconfig</link>
