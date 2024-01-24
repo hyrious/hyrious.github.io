@@ -3,6 +3,46 @@ title: 最小 tsconfig.json
 date: 2023-12-18
 ---
 
+<time>2024-01-24</time> 更新
+
+TypeScript 还有一个无配置文件模式，当然这个模式下默认是不开 `strict` 的，来看看实际上会造成什么问题：
+
+0. `target: "es5"`，不使用 `tsc` 编译的话其实没啥影响
+1. `alwaysStrict: false`，默认不产生 `"use strict"`
+2. `noImplicitAny: false`，隐式 `any` 不会报错，所以你可以写下面这个东东
+   ```ts
+   window.foo = 'bar'
+   // 否则你必须标记成
+   (window as any).foo = 'bar'
+   ```
+3. `noImplicitThis: false`，`this` 不标类型不会报错，所以你可以写下面这个东东
+   ```ts
+   function foo() { return this.bar }
+   // 否则你必须标记成
+   function foo(this: { bar: unknown }) { return this.bar }
+   ```
+4. `strictNullChecks: false`，不会检查 `null | undefined`，但是目前 VS Code 和 Sublime LSP TypeScript 都是默认开启这个检查的 (有可能是 tsserver 默认开启)，所以实际上可以理解成仍然会检查 null。下面这段代码可以用 tsc 编译过但是常见编辑器里会有提示
+   ```ts twoslash
+   // @errors: 18047
+   declare const a: string | null
+   console.log(a.toLowerCase())
+   ```
+5. `strictPropertyInitialization: false`，不会检查未初始化的属性
+   ```ts
+   class Foo {
+     bar: string;
+     constructor() {
+       // Not initializing 'bar' here and no error
+     }
+   }
+   ```
+6. `useUnknownInCatchVariables: false`，`catch(error)` 默认用 any 类型。其实在规范的项目里我希望 `error` 直接隐式标成 `Error`，这样 `.message` 比较容易
+7. 你可以正常使用 `import { uniq } from "lodash"` 和 `import.meta.url` 等语法
+8. 但是不能写 top level await，这个功能必须要设置 `module: "ESNext" / "ES2022"`
+
+---
+<time>2023-12-18</time> 更新
+
 TypeScript 发展至今积累了许多过时配置项以及重复配置项，本文试图按现在[最新](https://aka.ms/tsconfig)的文档，给出最小的 tsconfig.json 配置。
 
 ### TL;DR
