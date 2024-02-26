@@ -6,8 +6,8 @@ import { marked, Renderer, type TokenizerAndRendererExtension } from 'marked'
 import { gfmHeadingId } from 'marked-gfm-heading-id'
 import { markedHighlight } from 'marked-highlight'
 import { default as markedLinkifyIt } from 'marked-linkify-it'
-import { bundledLanguages, getHighlighter } from 'shikiji'
-import { transformerTwoSlash, rendererRich } from 'shikiji-twoslash'
+import { bundledLanguages, getHighlighter } from 'shiki'
+import { rendererRich, transformerTwoslash } from '@shikijs/twoslash'
 
 export interface Parsed {
   id: string
@@ -45,10 +45,11 @@ const highlight = markedHighlight({
       const html = shiki.codeToHtml(code, {
         lang,
         themes: { light: 'github-light', dark: 'github-dark' },
+        defaultColor: false,
         cssVariablePrefix: '--s-',
         meta: { __raw: info },
         transformers: [
-          transformerTwoSlash({
+          transformerTwoslash({
             explicitTrigger: true,
             renderer: rendererRich(),
           }),
@@ -174,7 +175,7 @@ marked.use({
 
 function optimizeShiki(html: string): string {
   const colorRe =
-    /style="(background-color:#fff;--s-dark-bg:#[0-9a-f]{6};)?color:#[0-9a-f]{6};--s-dark:#[0-9a-f]{6}"/gi
+    /style="--s-light:#[0-9a-f]{6};--s-dark:#[0-9a-f]{6}(;--s-light-bg:#fff;--s-dark-bg:#[0-9a-f]{6})?"/gi
   let seen = new Set<string>()
   html.replaceAll(colorRe, (s) => {
     seen.add(s)
@@ -188,7 +189,11 @@ function optimizeShiki(html: string): string {
       const ss = s.slice(7, -1).split(';')
       if (ss.length === 2 || ss.length === 4) {
         const k = colors.size
-        const light = ss.filter((_, i) => i % 2 === 0).join(';')
+        const light = ss
+          .filter((_, i) => i % 2 === 0)
+          .join(';')
+          .replace('--s-light-bg', 'background-color')
+          .replace('--s-light', 'color')
         const dark = ss
           .filter((_, i) => i % 2 === 1)
           .join(';')

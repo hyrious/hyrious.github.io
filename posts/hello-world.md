@@ -32,7 +32,7 @@ export let posts = {}
 
 // 只在预渲染和 dev 时加载真正的数据
 if (import.meta.env.SSR || import.meta.hot) {
-  templates = import.meta.glob('./templates/*.html', { as: 'raw', eager: true })
+  templates = import.meta.glob('./templates/*.html', { query: 'raw', eager: true })
   posts = import.meta.glob('../posts/*.md', { eager: true })
 
   if (import.meta.hot) {

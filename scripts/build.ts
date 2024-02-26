@@ -84,22 +84,11 @@ async function build() {
   const serverEntry = join(process.platform === 'win32' ? 'file://' : '', ssrOut, 'main.js')
   const { templates: templates_, posts: posts_ } = (await import(serverEntry)) as {
     templates: { [path: string]: string }
-    posts: { [path: string]: { readonly default: Required<Post> } }
+    posts: { [path: string]: Required<Post> }
   }
   const indexHTML = fs.readFileSync(join(out, 'index.html'), 'utf8')
   const templates = compileTemplates(indexHTML, templates_)
-  const posts = Object.values(posts_).map((mod) => mod.default)
-
-  // const critters = await import('critters').then((mod) => {
-  //   const Critters = mod.default
-  //   return new Critters({
-  //     path: out,
-  //     logLevel: 'error',
-  //     external: true,
-  //     inlineFonts: true,
-  //     preloadFonts: true,
-  //   })
-  // })
+  const posts = Object.values(posts_)
 
   // const manifest: Manifest = JSON.parse(fs.readFileSync(join(out, 'ssr-manifest.json'), 'utf8'))
   // TODO Preload assets using manifest
@@ -109,7 +98,6 @@ async function build() {
   const output = async (file: string, html: string) => {
     outFiles.push(file)
     const filename = join(out, file)
-    // const transformed = await critters.process(html)
     const formatted = await formatHTML(html)
     await fs.promises.writeFile(filename, formatted)
   }
@@ -137,10 +125,19 @@ async function build() {
   }
 
   const maxPath = paths.reduce((len, a) => Math.max(len, a.length), 0) + 2
+  const sizes = paths.reduce(
+    (map, a) => ({
+      ...map,
+      [a.file]: `${(fs.statSync(join(out, a.file)).size / 1024).toFixed(2)} kB`,
+    }),
+    {} as { [f: string]: string },
+  )
+  const maxSize = Object.values(sizes).reduce((len, a) => Math.max(len, a.length), 0)
 
   for (const { file, prefix, filename, length } of paths) {
-    const sizeStr = `${(fs.statSync(join(out, file)).size / 1024).toFixed(2)} kB`
-    config.logger.info(c.dim(prefix) + c.green(filename) + ' '.repeat(maxPath - length) + c.dim.bold(sizeStr))
+    const sizeStr = sizes[file]
+    const padding = ' '.repeat(maxPath - length + maxSize - sizeStr.length)
+    config.logger.info(c.dim(prefix) + c.green(filename) + padding + c.dim.bold(sizeStr))
   }
 
   console.log()
