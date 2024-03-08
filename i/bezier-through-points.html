@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="zh-Hans-CN" style="height: 100%;">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>过定点的贝塞尔曲线</title>
+  <meta name="color-scheme" content="light dark">
+  <style>
+    svg { stroke: black; fill: white; }
+    text { stroke-width: 0; fill: black; font: italic 20px serif; }
+    svg > * { pointer-events: none; }
+    @media (prefers-color-scheme: dark) {
+      svg { stroke: white; fill: black; }
+      text { fill: white; }
+      #c01, #c23, #p1ht1, #p2ht2 { stroke: #fff4; }
+    }
+  </style>
+</head>
+<body style="margin: 0; height: 100%; overflow: hidden;">
+  <svg id="svg" style="width: 100%; height: 100%; touch-action: none; stroke-width:1.5px;">
+    <text id="lbl_p0">P₀</text>
+    <text id="lbl_p1">P₁</text>
+    <text id="lbl_p2">P₂</text>
+    <text id="lbl_p3">P₃</text>
+    <text id="lbl_t1">T₁</text>
+    <text id="lbl_t2">T₂</text>
+    <path id="c01" fill="transparent" stroke="#0004"></path>
+    <path id="c12" fill="transparent"></path>
+    <path id="c23" fill="transparent" stroke="#0004"></path>
+    <path id="p1ht1" stroke="#0004"></path>
+    <path id="p1t1" stroke-dasharray="8,4"></path>
+    <path id="p2t2" stroke-dasharray="8,4"></path>
+    <path id="p2ht2" stroke="#0004"></path>
+    <circle id="p0" r="4"></circle>
+    <circle id="p1" r="4"></circle>
+    <circle id="p2" r="4"></circle>
+    <circle id="p3" r="4"></circle>
+    <circle id="t1" r="4"></circle>
+    <circle id="t2" r="4"></circle>
+  </svg>
+  <script>
+    const EPSILON = 0.0001
+    const OFFSET = { x: 5, y: 20 }
+    const $ = `lbl_p0 lbl_p1 lbl_p2 lbl_p3 lbl_t1 lbl_t2
+               c01 c12 c23 p1ht1 p1t1 p2t2 p2ht2
+               p0 p1 p2 p3 t1 t2`.split(/\s+/g).reduce(
+                (a, id) => { a[id] = document.getElementById(id); return a },
+                Object.create(null));
+
+    let svg, p0, p1, p2, p3,
+             hp0 = { x: 0, y: 0 }, hp3 = { x: 0, y: 0 }, // hidden points
+             t1 = { x: 0, y: 0 }, t2 = { x: 0, y: 0 }, // tangents
+             ht0 = { x: 0, y: 0 }, ht1 = { x: 0, y: 0 }, ht2 = { x: 0, y: 0 }, ht3 = { x: 0, y: 0 } // hidden tangents
+
+    let get_points = () => ({ p0, p1, p2, p3, t1, t2 })
+
+    let cur_pt, svg_pos
+
+    function update() {
+      // Refit P0-P1
+      if (cur_pt == p0 || cur_pt == p1 || cur_pt == p2) {
+        hp0.x = p0.x + (p0.x - p1.x) * EPSILON
+        hp0.y = p0.y + (p0.y - p1.y) * EPSILON
+        refit_bezier(hp0, p0, p1, p2, ht0, ht1)
+      }
+      // Refit P1-P2
+      if (cur_pt == p0 || cur_pt == p1 || cur_pt == p2 || cur_pt == p3) {
+        refit_bezier(p0, p1, p2, p3, t1, t2)
+      }
+      // Refit P2-P3
+      if (cur_pt == p1 || cur_pt == p2 || cur_pt == p3) {
+        hp3.x = p3.x + (p3.x - p2.x) * EPSILON
+        hp3.y = p3.y + (p3.y - p2.y) * EPSILON
+        refit_bezier(p1, p2, p3, hp3, ht2, ht3)
+      }
+      refresh_svg()
+    }
+
+    function refit_bezier(p0, p1, p2, p3, t1, t2) {
+      let d1 = Math.pow(Math.hypot(p1.x - p0.x, p1.y - p0.y), 0.5)
+      let d2 = Math.pow(Math.hypot(p2.x - p1.x, p2.y - p1.y), 0.5)
+      let d3 = Math.pow(Math.hypot(p3.x - p2.x, p3.y - p2.y), 0.5)
+      /* modify t1 */ {
+        let a = d1 * d1, b = d2 * d2, c = 2 * a + 3 * d1 * d2 + b, d = 3 * d1 * (d1 + d2)
+        t1.x = (a * p2.x - b * p0.x + c * p1.x) / d
+        t1.y = (a * p2.y - b * p0.y + c * p1.y) / d
+      }
+      /* modify t2 */ {
+        let a = d3 * d3, b = d2 * d2, c = 2 * a + 3 * d3 * d2 + b, d = 3 * d3 * (d3 + d2)
+        t2.x = (a * p1.x - b * p3.x + c * p2.x) / d
+        t2.y = (a * p1.y - b * p3.y + c * p2.y) / d
+      }
+    }
+
+    function refit_full_spline() {
+      // Refit P0-P1
+      hp0.x = p0.x + p0.x - p1.x;
+      hp0.y = p0.y + p0.y - p1.y;
+      refit_bezier(hp0, p0, p1, p2, ht0, ht1);
+      // Refit P1-P2
+      refit_bezier(p0, p1, p2, p3, t1, t2);
+      // Refit P2-P3
+      hp3.x = p3.x + (p3.x - p2.x) * EPSILON;
+      hp3.y = p3.y + (p3.y - p2.y) * EPSILON;
+      refit_bezier(p1, p2, p3, hp3, ht2, ht3);
+    }
+
+    function refresh_svg() {
+      let points = get_points()
+      for (let id in points) {
+        set_attr($[id], { cx: points[id].x, cy: points[id].y })
+        set_attr($[`lbl_${id}`], { x: points[id].x + OFFSET.x, y: points[id].y + OFFSET.y })
+      }
+      set_curve($.c01, p0, ht0, ht1, p1)
+      set_curve($.c12, p1, t1, t2, p2)
+      set_curve($.c23, p2, ht2, ht3, p3)
+      set_line($.p1ht1, p1, ht1)
+      set_line($.p1t1, p1, t1)
+      set_line($.p2t2, p2, t2)
+      set_line($.p2ht2, p2, ht2)
+    }
+
+    function set_attr(el, attr) {
+      for (let k in attr) { el.setAttribute(k, attr[k]) }
+    }
+
+    function set_line(el, p0, p1) {
+      el.setAttribute('d', `M${p0.x},${p0.y} L${p1.x},${p1.y}`)
+    }
+
+    function set_curve(el, p0, t1, t2, p2) {
+      el.setAttribute('d', `M${p0.x},${p0.y} C${t1.x},${t1.y} ${t2.x},${t2.y} ${p2.x},${p2.y}`)
+    }
+
+    function onpointerdown(e) {
+      let r = svg.getBoundingClientRect()
+      svg_pos = { x: r.left, y: r.top }
+
+      let x = e.clientX - svg_pos.x, y = e.clientY - svg_pos.y
+      let min_dist = Number.MAX_VALUE, cur_dist = 0
+      if (min_dist > (cur_dist = Math.hypot(x - p0.x, y - p0.y))) {
+        min_dist = cur_dist
+        cur_pt = p0
+      }
+      if (min_dist > (cur_dist = Math.hypot(x - p1.x, y - p1.y))) {
+        min_dist = cur_dist
+        cur_pt = p1
+      }
+      if (min_dist > (cur_dist = Math.hypot(x - p2.x, y - p2.y))) {
+        min_dist = cur_dist
+        cur_pt = p2
+      }
+      if (min_dist > (cur_dist = Math.hypot(x - p3.x, y - p3.y))) {
+        min_dist = cur_dist
+        cur_pt = p3
+      }
+      if (min_dist > (cur_dist = Math.hypot(x - t1.x, y - t1.y))) {
+        min_dist = cur_dist
+        cur_pt = t1
+      }
+      if (min_dist > (cur_dist = Math.hypot(x - t2.x, y - t2.y))) {
+        min_dist = cur_dist
+        cur_pt = t2
+      }
+      if (min_dist > 900) {
+        cur_pt = null
+      }
+
+      e.preventDefault()
+      this.setPointerCapture(e.pointerId)
+    }
+
+    function onpointermove(e) {
+      if (cur_pt && svg_pos) {
+        let x = e.clientX - svg_pos.x, y = e.clientY - svg_pos.y
+        cur_pt.x = x
+        cur_pt.y = y
+        update()
+        e.preventDefault()
+      }
+    }
+
+    function onpointerup(e) {
+      cur_pt = null
+      this.releasePointerCapture(e.pointerId)
+      e.preventDefault()
+    }
+
+    const handler = { onpointerdown, onpointermove, onpointerup }
+
+    onload = function onload() {
+      svg = document.getElementById('svg')
+      let r = svg.getBoundingClientRect()
+      p0 = { x: r.width * 0.2, y: r.height * 0.5 }
+      p1 = { x: r.width * 0.333, y: r.height * 0.25 }
+      p2 = { x: r.width * 0.666, y: r.height * 0.75 }
+      p3 = { x: r.width * 0.8, y: r.height * 0.5 }
+      svg.onpointermove = handler.onpointermove
+      svg.onpointerdown = handler.onpointerdown
+      svg.onpointerup = handler.onpointerup
+      svg.onpointerout = handler.onpointerup
+      svg.onpointercancel = handler.onpointerup
+      refit_full_spline()
+      refresh_svg()
+    }
+    document.readyState === "complete" && onload()
+  </script>
+</body>
+</html>
