@@ -188,6 +188,13 @@
 
     const handler = { onpointerdown, onpointermove, onpointerup }
 
+    function show_all_iframe() {
+      const iframes = parent.document.getElementsByTagName('iframe')
+      for (let i = 0; i < iframes.length; ++i) {
+        iframes[i].style.visibility = 'revert'
+      }
+    }
+
     onload = function onload() {
       svg = document.getElementById('svg')
       let r = svg.getBoundingClientRect()
@@ -202,6 +209,7 @@
       svg.onpointercancel = handler.onpointerup
       refit_full_spline()
       refresh_svg()
+      show_all_iframe()
     }
     document.readyState === "complete" && onload()
   </script>

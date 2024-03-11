@@ -315,6 +315,10 @@ footer a:focus {
   margin-inline-start: 0;
 }
 
+iframe {
+  visibility: hidden;
+}
+
 // https://antfu.me/posts/sliding-enter-animation
 // @keyframes slide-enter {
 //   0% {
