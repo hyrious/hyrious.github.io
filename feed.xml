@@ -4,11 +4,24 @@
         <title>hyrious.log</title>
         <link>https://hyrious.me/</link>
         <description>hyrious.log</description>
-        <lastBuildDate>Mon, 11 Mar 2024 01:16:25 GMT</lastBuildDate>
+        <lastBuildDate>Thu, 28 Mar 2024 08:12:12 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <copyright>CC0 1.0</copyright>
         <atom:link href="https://hyrious.me/feed.xml" rel="self" type="application/rss+xml"/>
+        <item>
+            <title><![CDATA[Debug 生产环境的 Electron 应用]]></title>
+            <link>https://hyrious.me/p/debug-prod-electron</link>
+            <guid>https://hyrious.me/p/debug-prod-electron</guid>
+            <pubDate>Thu, 28 Mar 2024 00:00:00 GMT</pubDate>
+            <content:encoded><![CDATA[<style>.μ0{color:#24292e;background-color:#fff}.μ1{color:#24292E}.μ2{color:#6F42C1}@media(prefers-color-scheme:dark){.μ0{color:#e1e4e8;background-color:#24292e}.μ1{color:#E1E4E8}.μ2{color:#B392F0}}</style><p>首先启动应用，在任务管理器 / 活动监视器里找到该应用主进程的 PID，注意只有不带 Helper 后缀的才是主进程。</p>
+<p>然后用 Node.js 往这个进程发送 <code>SIGUSR1</code> 信号：</p>
+<pre class="shiki shiki-themes github-light github-dark μ0" tabindex="0"><code><span class="line"><span class="μ1">process.</span><span class="μ2">_debugProcess</span><span class="μ1">(pid)</span></span></code></pre>
+<p>然后 Chrome 打开 <code>chrome://inspect</code> 就可以开始调试了。</p>
+<p>当然开发者还是可以针对特定信号做防御的，比如 NTQQ 就会直接退出。</p>
+<p>不过我还是建议就算是生产环境也保留开发者工具选项。</p>]]></content:encoded>
+            <author>hyrious@outlook.com (hyrious)</author>
+        </item>
         <item>
             <title><![CDATA[过定点的贝塞尔曲线]]></title>
             <link>https://hyrious.me/p/bezier-through-points</link>
@@ -140,7 +153,7 @@
 <span class="line"><span class="μ2">function</span><span class="μ6"> foo</span><span class="μ1">(</span><span class="μ5">this</span><span class="μ2">:</span><span class="μ1"> { </span><span class="μ7">bar</span><span class="μ2">:</span><span class="μ5"> unknown</span><span class="μ1"> }) { </span><span class="μ2">return</span><span class="μ5"> this</span><span class="μ1">.bar }</span></span></code></pre>
 </li>
 <li><code>strictNullChecks: false</code>，不会检查 <code>null | undefined</code>，但是目前 VS Code 和 Sublime LSP TypeScript 都是默认开启这个检查的 (有可能是 tsserver 默认开启)，所以实际上可以理解成仍然会检查 null。下面这段代码可以用 tsc 编译过但是常见编辑器里会有提示<pre class="shiki shiki-themes github-light github-dark twoslash lsp μ0" tabindex="0"><code><span class="line"><span class="μ2">declare</span><span class="μ2"> const</span><span class="μ5"> </span><span class="μ5"><span class="twoslash-hover"><span class="twoslash-popup-container"><code class="twoslash-popup-code"><span class="line"><span class="μ2">const</span><span class="μ5"> a</span><span class="μ2">:</span><span class="μ5"> string</span><span class="μ2"> |</span><span class="μ5"> null</span></span></code></span>a</span></span><span class="μ2">:</span><span class="μ5"> string</span><span class="μ2"> |</span><span class="μ5"> null</span></span>
-<span class="line"><span class="μ1"><span class="twoslash-hover"><span class="twoslash-popup-container"><code class="twoslash-popup-code"><span class="line"><span class="μ2">var</span><span class="μ1"> console</span><span class="μ2">:</span><span class="μ6"> Console</span></span></code></span>console</span></span><span class="μ1">.</span><span class="μ6"><span class="twoslash-hover"><span class="twoslash-popup-container"><code class="twoslash-popup-code"><span class="line"><span class="μ1">Console.</span><span class="μ6">log</span><span class="μ1">(</span><span class="μ2">...</span><span class="μ1">data: any[]): </span><span class="μ2">void</span></span></code><div class="twoslash-popup-docs">[MDN Reference](https://developer.mozilla.org/docs/Web/API/console/log)</div></span>log</span></span><span class="μ1">(</span><span class="twoslash-error"><span class="μ1">a</span></span><span class="μ1">.</span><span class="μ6"><span class="twoslash-hover"><span class="twoslash-popup-container"><code class="twoslash-popup-code"><span class="line"><span class="μ1">String.</span><span class="μ6">toLowerCase</span><span class="μ1">(): string</span></span></code><div class="twoslash-popup-docs">Converts all the alphabetic characters in a string to lowercase.</div></span>toLowerCase</span></span><span class="μ1">())</span></span><div class="twoslash-meta-line twoslash-error-line">'a' is possibly 'null'.</div></code></pre>
+<span class="line"><span class="μ1"><span class="twoslash-hover"><span class="twoslash-popup-container"><code class="twoslash-popup-code"><span class="line"><span class="μ2">var</span><span class="μ1"> console</span><span class="μ2">:</span><span class="μ6"> Console</span></span></code></span>console</span></span><span class="μ1">.</span><span class="μ6"><span class="twoslash-hover"><span class="twoslash-popup-container"><code class="twoslash-popup-code"><span class="line"><span class="μ1">Console.</span><span class="μ6">log</span><span class="μ1">(</span><span class="μ2">...</span><span class="μ1">data: any[]): </span><span class="μ2">void</span></span></code><div class="twoslash-popup-docs">[MDN Reference](https://developer.mozilla.org/docs/Web/API/console/log_static)</div></span>log</span></span><span class="μ1">(</span><span class="twoslash-error"><span class="μ1">a</span></span><span class="μ1">.</span><span class="μ6"><span class="twoslash-hover"><span class="twoslash-popup-container"><code class="twoslash-popup-code"><span class="line"><span class="μ1">String.</span><span class="μ6">toLowerCase</span><span class="μ1">(): string</span></span></code><div class="twoslash-popup-docs">Converts all the alphabetic characters in a string to lowercase.</div></span>toLowerCase</span></span><span class="μ1">())</span></span><div class="twoslash-meta-line twoslash-error-line">'a' is possibly 'null'.</div></code></pre>
 </li>
 <li><code>strictPropertyInitialization: false</code>，不会检查未初始化的属性<pre class="shiki shiki-themes github-light github-dark μ0" tabindex="0"><code><span class="line"><span class="μ2">class</span><span class="μ6"> Foo</span><span class="μ1"> {</span></span>
 <span class="line"><span class="μ7">  bar</span><span class="μ2">:</span><span class="μ5"> string</span><span class="μ1">;</span></span>
