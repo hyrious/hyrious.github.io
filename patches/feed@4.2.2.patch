@@ -1,0 +1,29 @@
+diff --git a/lib/json.js b/lib/json.js
+index 7e0cb10b9e3c3c610e502a34792f9d0ccd27e403..342d53450fe1318adf134f21cb54763f837ebff2 100644
+--- a/lib/json.js
++++ b/lib/json.js
+@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.default = (function (ins) {
+     var options = ins.options, items = ins.items, extensions = ins.extensions;
+     var feed = {
+-        version: "https://jsonfeed.org/version/1",
++        version: "https://jsonfeed.org/version/1.1",
+         title: options.title,
+     };
+     if (options.link) {
+@@ -19,12 +19,12 @@ exports.default = (function (ins) {
+         feed.icon = options.image;
+     }
+     if (options.author) {
+-        feed.author = {};
++        feed.authors = [{}];
+         if (options.author.name) {
+-            feed.author.name = options.author.name;
++            feed.authors[0].name = options.author.name;
+         }
+         if (options.author.link) {
+-            feed.author.url = options.author.link;
++            feed.authors[0].url = options.author.link;
+         }
+     }
+     extensions.map(function (e) {

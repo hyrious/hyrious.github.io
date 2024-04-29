@@ -30,10 +30,10 @@ const posts: Item[] = await Promise.all(
     .filter((e) => e.endsWith('.md'))
     .map(async (e): Promise<Item> => {
       const raw = await fs.promises.readFile(`./posts/${e}`, 'utf-8')
-      const { title, date, html } = await markdownToJs(`./posts/${e}`, raw)
+      const { id, title, date, html } = await markdownToJs(`./posts/${e}`, raw)
       const content = html.replace('src="/', 'src="https://hyrious.me/')
       const link = `${DOMAIN}/p/${e.replace(/\.md$/, '')}`
-      return { title, date, content, author: [AUTHOR], link }
+      return { id, title, date, content, link }
     }),
 ).then((posts) => posts.sort((a, b) => +b.date - +a.date))
 
