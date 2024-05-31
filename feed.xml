@@ -4,11 +4,35 @@
         <title>hyrious.log</title>
         <link>https://hyrious.me/</link>
         <description>hyrious.log</description>
-        <lastBuildDate>Thu, 23 May 2024 02:37:28 GMT</lastBuildDate>
+        <lastBuildDate>Fri, 31 May 2024 04:17:49 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <copyright>CC0 1.0</copyright>
         <atom:link href="https://hyrious.me/feed.xml" rel="self" type="application/rss+xml"/>
+        <item>
+            <title><![CDATA[Electron 实现多窗口踩坑]]></title>
+            <link>https://hyrious.me/p/electron-multi-window-tips</link>
+            <guid>electron-multi-window-tips</guid>
+            <pubDate>Fri, 31 May 2024 00:00:00 GMT</pubDate>
+            <content:encoded><![CDATA[<style>.μ0{color:#24292e;background-color:#fff}.μ1{color:#D73A49}.μ2{color:#24292E}.μ3{color:#6F42C1}.μ4{color:#032F62}.μ5{color:#005CC5}.μ6{color:#E36209}@media(prefers-color-scheme:dark){.μ0{color:#e1e4e8;background-color:#24292e}.μ1{color:#F97583}.μ2{color:#E1E4E8}.μ3{color:#B392F0}.μ4{color:#9ECBFF}.μ5{color:#79B8FF}.μ6{color:#FFAB70}}</style><p>想在 electron 里打开一个新窗口，除了在主进程 <code>new BrowserWindow()</code> 外，也可以在渲染进程执行 <code>window.open()</code>。后者其实在正常浏览器里也可以用来打开弹窗，而且如果没有跨域限制的话，可以随意访问和修改后者的 <code>document</code>：</p>
+<pre class="shiki shiki-themes github-light github-dark μ0" tabindex="0"><code><span class="line"><span class="μ1">var</span><span class="μ2"> w </span><span class="μ1">=</span><span class="μ2"> window.</span><span class="μ3">open</span><span class="μ2">(</span><span class="μ4">"about:blank"</span><span class="μ2">, </span><span class="μ4">''</span><span class="μ2">, </span><span class="μ4">'popup'</span><span class="μ2">)</span></span>
+<span class="line"><span class="μ2">w.document.body.</span><span class="μ3">append</span><span class="μ2">(</span><span class="μ4">'Hello, world!'</span><span class="μ2">)</span></span></code></pre>
+<p>甚至你在主窗口里创建的元素也可以被塞进这个新窗口的 DOM 里：</p>
+<pre class="shiki shiki-themes github-light github-dark μ0" tabindex="0"><code><span class="line"><span class="μ2">w.document.body.</span><span class="μ3">appendChild</span><span class="μ2">(document.</span><span class="μ3">createElement</span><span class="μ2">(</span><span class="μ4">'h1'</span><span class="μ2">)).textContent </span><span class="μ1">=</span><span class="μ4"> 'Hello world!'</span></span></code></pre>
+<p>但是，注意到这两个窗口的 JS 对象其实都不共享：</p>
+<pre class="shiki shiki-themes github-light github-dark μ0" tabindex="0"><code><span class="line"><span class="μ2">document.</span><span class="μ3">createElement</span><span class="μ2">(</span><span class="μ4">'h1'</span><span class="μ2">) </span><span class="μ1">instanceof</span><span class="μ3"> w</span><span class="μ2">.</span><span class="μ3">HTMLElement</span><span class="μ1"> ===</span><span class="μ5"> false</span></span>
+<span class="line"><span class="μ2">Uint8Array.</span><span class="μ3">of</span><span class="μ2">(</span><span class="μ5">1</span><span class="μ2">) </span><span class="μ1">instanceof</span><span class="μ3"> w</span><span class="μ2">.</span><span class="μ3">Uint8Array</span><span class="μ1"> ===</span><span class="μ5"> false</span></span></code></pre>
+<p>这就会导致一些库的逻辑出现问题，例如 <a target="_blank" rel="noopener" href="https://hyrious.me/npm-browser/?q=rc-util@5.41.0/package/es/Dom/findDOMNode.js:7"><code>rc-util</code></a>：</p>
+<pre class="shiki shiki-themes github-light github-dark μ0" tabindex="0"><code><span class="line"><span class="μ1">function</span><span class="μ3"> isDOM</span><span class="μ2">(</span><span class="μ6">node</span><span class="μ2">) {</span></span>
+<span class="line"><span class="μ1">  return</span><span class="μ2"> node </span><span class="μ1">instanceof</span><span class="μ3"> HTMLElement</span><span class="μ1"> ||</span><span class="μ2"> node </span><span class="μ1">instanceof</span><span class="μ3"> SVGElement</span><span class="μ2">;</span></span>
+<span class="line"><span class="μ2">}</span></span></code></pre>
+<p>想要在跨 <code>window</code> 情况下判断正确就不能依赖 <code>instanceof</code>，来看 <code>lodash</code> 里的实现：</p>
+<pre class="shiki shiki-themes github-light github-dark μ0" tabindex="0"><code><span class="line"><span class="μ1">function</span><span class="μ3"> isElement</span><span class="μ2">(</span><span class="μ6">value</span><span class="μ2">) {</span></span>
+<span class="line"><span class="μ1">  return</span><span class="μ3"> isObjectLike</span><span class="μ2">(value) </span><span class="μ1">&#x26;&#x26;</span><span class="μ2"> value.nodeType </span><span class="μ1">===</span><span class="μ5"> 1</span><span class="μ1"> &#x26;&#x26;</span><span class="μ1"> !</span><span class="μ3">isPlainObject</span><span class="μ2">(value);</span></span>
+<span class="line"><span class="μ2">}</span></span></code></pre>
+<p>而且靠 <code>window.open()</code> 打开的窗口有一个小缺点，就是刷新这个窗口时，其网址如果是无效的（比如 <code>about:blank</code>）那么这个窗口就废了。</p>
+<p>这么看来最稳妥的实现办法还是给这个窗口内容写一个独立的页面（当然可以通过 SPA 方式加载同一个页面只是 query / hash 不一样），窗口间通信使用 SharedWorker 或者在主进程里写一个简单的广播协议，不过这么一来要写的代码就比上面的多了。</p>]]></content:encoded>
+        </item>
         <item>
             <title><![CDATA[Debug 生产环境的 Electron 应用]]></title>
             <link>https://hyrious.me/p/debug-prod-electron</link>
