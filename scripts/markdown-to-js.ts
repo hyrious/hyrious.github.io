@@ -95,7 +95,7 @@ const math: TokenizerAndRendererExtension = {
     }
   },
   renderer(token) {
-    return katex.renderToString(token.text, { displayMode: token.display })
+    return katex.renderToString(token.text, { displayMode: token.display, output: 'html' })
   },
 }
 
@@ -155,7 +155,7 @@ marked.use({
   renderer: {
     code(code, lang) {
       if (lang === 'math') {
-        return `<p class="math">${katex.renderToString(code, { displayMode: true })}</p>`
+        return `<p class="math">${katex.renderToString(code, { displayMode: true, output: 'html' })}</p>`
       }
       return false
     },
