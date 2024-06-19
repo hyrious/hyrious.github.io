@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://hyrious.me/</id>
     <title>hyrious.log</title>
-    <updated>2024-06-03T09:25:07.566Z</updated>
+    <updated>2024-06-19T10:14:25.957Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <author>
         <name>hyrious</name>
@@ -14,6 +14,134 @@
     <subtitle>hyrious.log</subtitle>
     <icon>https://hyrious.me/favicon.svg</icon>
     <rights>CC0 1.0</rights>
+    <entry>
+        <title type="html"><![CDATA[基于 Lezer Parser 写一个 Formatter]]></title>
+        <id>lezer-formatter</id>
+        <link href="https://hyrious.me/p/lezer-formatter"/>
+        <updated>2024-06-19T00:00:00.000Z</updated>
+        <content type="html"><![CDATA[<style>.μ0{color:#24292e;background-color:#fff}.μ1{color:#D73A49}.μ2{color:#24292E}.μ3{color:#032F62}.μ4{color:#6F42C1}.μ5{color:#E36209}.μ6{color:#6A737D}.μ7{color:#005CC5}@media(prefers-color-scheme:dark){.μ0{color:#e1e4e8;background-color:#24292e}.μ1{color:#F97583}.μ2{color:#E1E4E8}.μ3{color:#9ECBFF}.μ4{color:#B392F0}.μ5{color:#FFAB70}.μ6{color:#6A737D}.μ7{color:#79B8FF}}</style><p>我不止一次萌生过自己写一个代码格式化工具的想法，但几乎都以失败告终。究其原因，正如 Anthony Fn 在 <a target="_blank" rel="noopener" href="https://antfu.me/posts/why-not-prettier-zh">为什么我不使用 Prettier</a> 中抱怨的，Prettier 这个工具总是有一些不尽如人意的格式化结果。但这一次，我发现了一个简单的实现方式。</p>
+<p>Prettier 的 <a target="_blank" rel="noopener" href="https://prettier.io/docs/en/technical-details">实现方式</a> 十分容易理解：首先将代码解析成 AST，然后对着它重新输出一遍格式化好的代码。有趣的地方是他在输出一个子语法树的时候，可以对比不同的输出方式（比如使用换行或者不换行）来决定最<q>好看</q>的结果。</p>
+<blockquote>
+<p>上述步骤有一个小坑，就是解析 AST 的库（例如 Acorn）通常在遇到语法错误时会直接退出解析，这使得语法不正确的代码无法被格式化。实际上 Prettier 现在就有这样的问题。</p>
+</blockquote>
+<p>也就是说，如果要按 Prettier 方式写一个新的格式化工具，至少需要以下几个基础设施：</p>
+<ul>
+<li>一个 Parser 用于把代码解析成 token 或者 AST；</li>
+<li>Token 身上要有一定的上下文信息，从而决定 <code>foo()</code> 的括号前面没有空格，而 <code>for ()</code> 的括号前面有空格。</li>
+</ul>
+<p>诶，Acorn 作者写的另一个库 <a target="_blank" rel="noopener" href="https://lezer.codemirror.net">Lezer</a> 似乎刚好满足要求。而且他还能从语法错误中恢复解析，简直是针对这个需求量身定制的一样。</p>
+<p>下面就来试试！</p>
+<pre class="shiki shiki-themes github-light github-dark μ0" tabindex="0"><code><span class="line"><span class="μ1">import</span><span class="μ2"> { parser } </span><span class="μ1">from</span><span class="μ3"> '@lezer/javascript'</span></span>
+<span class="line"></span>
+<span class="line"><span class="μ1">let</span><span class="μ2"> tree </span><span class="μ1">=</span><span class="μ2"> parser.</span><span class="μ4">parse</span><span class="μ2">(</span><span class="μ3">'let a=1'</span><span class="μ2">)</span></span>
+<span class="line"><span class="μ2">tree.</span><span class="μ4">iterate</span><span class="μ2">({</span></span>
+<span class="line"><span class="μ4">  enter</span><span class="μ2">(</span><span class="μ5">node</span><span class="μ2">) {</span></span>
+<span class="line"><span class="μ2">    console.</span><span class="μ4">log</span><span class="μ2">(node.name, node.from, node.to)</span></span>
+<span class="line"><span class="μ2">  },</span></span>
+<span class="line"><span class="μ2">})</span></span>
+<span class="line"><span class="μ6">// Script 0 7</span></span>
+<span class="line"><span class="μ6">// VariableDeclaration 0 7</span></span>
+<span class="line"><span class="μ6">// let 0 3</span></span>
+<span class="line"><span class="μ6">// VariableDefinition 4 5</span></span>
+<span class="line"><span class="μ6">// Equals 5 6</span></span>
+<span class="line"><span class="μ6">// Number 6 7</span></span></code></pre>
+<p>最细粒度的 token 一定都存储在叶子结点上，如何只输出叶子结点呢？观察 <code>enter</code> 和 <code>leave</code> 的调用规律不难看出，只有 <code>enter</code> 后面紧跟着一个 <code>leave</code> 的结点才是叶子结点，所以可以这么写：</p>
+<pre class="shiki shiki-themes github-light github-dark μ0" tabindex="0"><code><span class="line"><span class="μ1">let</span><span class="μ2"> enter </span><span class="μ1">=</span><span class="μ7"> false</span></span>
+<span class="line"><span class="μ1">let</span><span class="μ2"> input </span><span class="μ1">=</span><span class="μ3"> 'let a=1'</span></span>
+<span class="line"><span class="μ1">let</span><span class="μ2"> tree </span><span class="μ1">=</span><span class="μ2"> parser.</span><span class="μ4">parse</span><span class="μ2">(input)</span></span>
+<span class="line"><span class="μ2">tree.</span><span class="μ4">iterate</span><span class="μ2">({</span></span>
+<span class="line"><span class="μ4">  enter</span><span class="μ2">() {</span></span>
+<span class="line"><span class="μ2">    enter </span><span class="μ1">=</span><span class="μ7"> true</span></span>
+<span class="line"><span class="μ2">  },</span></span>
+<span class="line"><span class="μ4">  leave</span><span class="μ2">(</span><span class="μ5">node</span><span class="μ2">) {</span></span>
+<span class="line"><span class="μ1">    if</span><span class="μ2"> (enter) {</span></span>
+<span class="line"><span class="μ2">      console.</span><span class="μ4">log</span><span class="μ2">(node.name, [input.</span><span class="μ4">slice</span><span class="μ2">(node.from, node.to)])</span></span>
+<span class="line"><span class="μ2">    }</span></span>
+<span class="line"><span class="μ2">    enter </span><span class="μ1">=</span><span class="μ7"> false</span></span>
+<span class="line"><span class="μ2">  },</span></span>
+<span class="line"><span class="μ2">})</span></span>
+<span class="line"><span class="μ6">// let [ 'let' ]</span></span>
+<span class="line"><span class="μ6">// VariableDefinition [ 'a' ]</span></span>
+<span class="line"><span class="μ6">// Equals [ '=' ]</span></span>
+<span class="line"><span class="μ6">// Number [ '1' ]</span></span></code></pre>
+<p>上面的几个 token 直接 <code>.join(&#39; &#39;)</code> 似乎就可以得到想要的结果了，但如果是这样呢 &darr;</p>
+<pre class="shiki shiki-themes github-light github-dark μ0" tabindex="0"><code><span class="line"><span class="μ1">let</span><span class="μ2"> input </span><span class="μ1">=</span><span class="μ3"> 'let a=1,b'</span></span>
+<span class="line"><span class="μ6">// let [ 'let' ]</span></span>
+<span class="line"><span class="μ6">// VariableDefinition [ 'a' ]</span></span>
+<span class="line"><span class="μ6">// Equals [ '=' ]</span></span>
+<span class="line"><span class="μ6">// Number [ '1' ]</span></span>
+<span class="line"><span class="μ6">// , [ ',' ]</span></span>
+<span class="line"><span class="μ6">// VariableDefinition [ 'b' ]</span></span></code></pre>
+<p>诶，这个 <code>,</code> 前面不应该有空格。嗯，看来可以对每个 <code>node.name</code> 增加一个是否有前后空格的配置：</p>
+<pre class="shiki shiki-themes github-light github-dark μ0" tabindex="0"><code><span class="line"><span class="μ1">let</span><span class="μ4"> spaceAfter</span><span class="μ1"> =</span><span class="μ2"> (</span><span class="μ5">s</span><span class="μ2">) </span><span class="μ1">=></span><span class="μ2"> s </span><span class="μ1">+</span><span class="μ3"> ' '</span></span>
+<span class="line"><span class="μ1">let</span><span class="μ4"> spaceBefore</span><span class="μ1"> =</span><span class="μ2"> (</span><span class="μ5">s</span><span class="μ2">) </span><span class="μ1">=></span><span class="μ3"> ' '</span><span class="μ1"> +</span><span class="μ2"> s</span></span>
+<span class="line"><span class="μ1">let</span><span class="μ4"> spaceAround</span><span class="μ1"> =</span><span class="μ2"> (</span><span class="μ5">s</span><span class="μ2">) </span><span class="μ1">=></span><span class="μ3"> ' '</span><span class="μ1"> +</span><span class="μ2"> s </span><span class="μ1">+</span><span class="μ3"> ' '</span></span>
+<span class="line"></span>
+<span class="line"><span class="μ1">let</span><span class="μ2"> spec </span><span class="μ1">=</span><span class="μ2"> {</span></span>
+<span class="line"><span class="μ2">  [</span><span class="μ3">','</span><span class="μ2">]: spaceAfter,</span></span>
+<span class="line"><span class="μ2">  let: spaceAfter,</span></span>
+<span class="line"><span class="μ2">  Equals: spaceAround,</span></span>
+<span class="line"><span class="μ2">}</span></span>
+<span class="line"></span>
+<span class="line"><span class="μ1">let</span><span class="μ2"> out </span><span class="μ1">=</span><span class="μ3"> ''</span></span>
+<span class="line"><span class="μ1">let</span><span class="μ2"> enter </span><span class="μ1">=</span><span class="μ7"> false</span></span>
+<span class="line"><span class="μ2">tree.</span><span class="μ4">iterate</span><span class="μ2">({</span></span>
+<span class="line"><span class="μ4">  enter</span><span class="μ2">() {</span></span>
+<span class="line"><span class="μ2">    enter </span><span class="μ1">=</span><span class="μ7"> true</span></span>
+<span class="line"><span class="μ2">  },</span></span>
+<span class="line"><span class="μ4">  leave</span><span class="μ2">(</span><span class="μ5">node</span><span class="μ2">) {</span></span>
+<span class="line"><span class="μ1">    if</span><span class="μ2"> (enter) {</span></span>
+<span class="line"><span class="μ1">      let</span><span class="μ2"> f </span><span class="μ1">=</span><span class="μ2"> spec[node.name]</span></span>
+<span class="line"><span class="μ1">      let</span><span class="μ2"> s </span><span class="μ1">=</span><span class="μ2"> input.</span><span class="μ4">slice</span><span class="μ2">(node.from, node.to)</span></span>
+<span class="line"><span class="μ2">      out </span><span class="μ1">+=</span><span class="μ2"> f </span><span class="μ1">?</span><span class="μ4"> f</span><span class="μ2">(s) </span><span class="μ1">:</span><span class="μ2"> s</span></span>
+<span class="line"><span class="μ2">    }</span></span>
+<span class="line"><span class="μ2">    enter </span><span class="μ1">=</span><span class="μ7"> false</span></span>
+<span class="line"><span class="μ2">  },</span></span>
+<span class="line"><span class="μ2">})</span></span>
+<span class="line"></span>
+<span class="line"><span class="μ2">console.</span><span class="μ4">log</span><span class="μ2">(out) </span><span class="μ6">// let a = 1, b</span></span></code></pre>
+<p>如果代码中间有换行呢？</p>
+<pre class="shiki shiki-themes github-light github-dark μ0" tabindex="0"><code><span class="line"><span class="μ1">let</span><span class="μ2"> input </span><span class="μ1">=</span><span class="μ3"> 'let a=1</span><span class="μ7">\n</span><span class="μ3">let b=2'</span></span>
+<span class="line"><span class="μ6">// out = 'let a = 1let b = 2'</span></span></code></pre>
+<p>可以在每次 <code>+= code</code> 时，判断前面有没有跳过换行，有的话手动补一下：</p>
+<pre class="shiki shiki-themes github-light github-dark μ0" tabindex="0"><code><span class="line"><span class="μ6">// before `out += f ? f(s) : s`</span></span>
+<span class="line"><span class="μ1">let</span><span class="μ2"> newline </span><span class="μ1">=</span><span class="μ4"> count_newline</span><span class="μ2">(input.</span><span class="μ4">slice</span><span class="μ2">(last.to, node.from))</span></span>
+<span class="line"><span class="μ1">if</span><span class="μ2"> (newline) {</span></span>
+<span class="line"><span class="μ2">  out </span><span class="μ1">=</span><span class="μ2"> out.</span><span class="μ4">trimEnd</span><span class="μ2">()</span></span>
+<span class="line"><span class="μ2">  out </span><span class="μ1">+=</span><span class="μ2"> newline </span><span class="μ1">></span><span class="μ7"> 1</span><span class="μ1"> ?</span><span class="μ3"> '</span><span class="μ7">\n\n</span><span class="μ3">'</span><span class="μ1"> :</span><span class="μ3"> '</span><span class="μ7">\n</span><span class="μ3">'</span></span>
+<span class="line"><span class="μ2">}</span></span>
+<span class="line"></span>
+<span class="line"><span class="μ1">function</span><span class="μ4"> count_newline</span><span class="μ2">(</span><span class="μ5">s</span><span class="μ1">:</span><span class="μ7"> string</span><span class="μ2">) {</span></span>
+<span class="line"><span class="μ1">  let</span><span class="μ2"> count </span><span class="μ1">=</span><span class="μ7"> 0</span></span>
+<span class="line"><span class="μ1">  let</span><span class="μ2"> index </span><span class="μ1">=</span><span class="μ1"> -</span><span class="μ7">1</span></span>
+<span class="line"><span class="μ1">  do</span><span class="μ2"> {</span></span>
+<span class="line"><span class="μ2">    index </span><span class="μ1">=</span><span class="μ2"> s.</span><span class="μ4">indexOf</span><span class="μ2">(</span><span class="μ3">'</span><span class="μ7">\n</span><span class="μ3">'</span><span class="μ2">, index </span><span class="μ1">+</span><span class="μ7"> 1</span><span class="μ2">)</span></span>
+<span class="line"><span class="μ1">    if</span><span class="μ2"> (index </span><span class="μ1">>=</span><span class="μ7"> 0</span><span class="μ2">) count</span><span class="μ1">++</span></span>
+<span class="line"><span class="μ2">  } </span><span class="μ1">while</span><span class="μ2"> (index </span><span class="μ1">>=</span><span class="μ7"> 0</span><span class="μ2">)</span></span>
+<span class="line"><span class="μ1">  return</span><span class="μ2"> count</span></span>
+<span class="line"><span class="μ2">}</span></span></code></pre>
+<p>类似的，我们也可以手动保留缩进、折叠重复的空格等等。下面来看另一个问题：如何根据上下文输出不同的文本？</p>
+<pre class="shiki shiki-themes github-light github-dark μ0" tabindex="0"><code><span class="line"><span class="μ1">for</span><span class="μ2">() </span><span class="μ6">// => `for ()`</span></span></code></pre>
+<p>这里既然有 <code>enter</code> 和 <code>leave</code>，那么维护一个 scope 栈自然不是难事：</p>
+<pre class="shiki shiki-themes github-light github-dark μ0" tabindex="0"><code><span class="line"><span class="μ1">let</span><span class="μ2"> scope </span><span class="μ1">=</span><span class="μ2"> []</span></span>
+<span class="line"></span>
+<span class="line"><span class="μ2">tree.</span><span class="μ4">iterate</span><span class="μ2">({</span></span>
+<span class="line"><span class="μ4">  enter</span><span class="μ2">(</span><span class="μ5">node</span><span class="μ2">) {</span></span>
+<span class="line"><span class="μ2">    scope.</span><span class="μ4">push</span><span class="μ2">(node.name)</span></span>
+<span class="line"><span class="μ2">  },</span></span>
+<span class="line"><span class="μ4">  leave</span><span class="μ2">(</span><span class="μ5">node</span><span class="μ2">) {</span></span>
+<span class="line"><span class="μ2">    scope.</span><span class="μ4">pop</span><span class="μ2">()</span></span>
+<span class="line"><span class="μ2">  },</span></span>
+<span class="line"><span class="μ2">})</span></span></code></pre>
+<p>把这个 <code>scope</code> 传给上面的配置函数，就可以根据上下文输出不同的文本了：</p>
+<pre class="shiki shiki-themes github-light github-dark μ0" tabindex="0"><code><span class="line"><span class="μ1">let</span><span class="μ2"> spec </span><span class="μ1">=</span><span class="μ2"> {</span></span>
+<span class="line"><span class="μ2">  [</span><span class="μ3">'('</span><span class="μ2">](</span><span class="μ5">s</span><span class="μ2">, </span><span class="μ5">scope</span><span class="μ2">) {</span></span>
+<span class="line"><span class="μ1">    if</span><span class="μ2"> (scope.</span><span class="μ4">includes</span><span class="μ2">(</span><span class="μ3">'ForSpec'</span><span class="μ2">)) </span><span class="μ1">return</span><span class="μ4"> spaceBefore</span><span class="μ2">(s)</span></span>
+<span class="line"><span class="μ1">    return</span><span class="μ2"> s</span></span>
+<span class="line"><span class="μ2">  },</span></span>
+<span class="line"><span class="μ2">}</span></span></code></pre>
+<p>如果你感兴趣的话，这里有 <a target="_blank" rel="noopener" href="https://gist.github.com/hyrious/a2d3b22009a6d5a3b09e368254f139f9">完整的代码</a> 。</p>]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Electron 实现多窗口踩坑]]></title>
         <id>electron-multi-window-tips</id>
@@ -361,17 +489,25 @@
 <p>如果你设置了 <a target="_blank" rel="noopener" href="https://www.typescriptlang.org/tsconfig#useDefineForClassFields"><code>useDefineForClassFields: false</code></a>，也可以省略 <code>declare</code> 换成 <code>!</code>。</p>
 <h4 id="shared-nominal-typing">Shared Nominal Typing</h4>
 <p>上文往 <code>class</code> 上添加了私有属性，如果是往 <code>interface</code> 上加呢？诶，我们发现 <code>private</code> 是保不住了，但是可以让一些类共享同一个类型，而且用户一般不会自己尝试实现这个类型：</p>
-<pre class="shiki shiki-themes github-light github-dark twoslash lsp μ0" tabindex="0"><code><span class="line"><span class="μ1">type</span><span class="μ2"> </span><span class="μ2"><span class="twoslash-hover"><span class="twoslash-popup-container"><code class="twoslash-popup-code"><span class="μ1">type</span><span class="μ2"> FooLike</span><span class="μ1"> =</span><span class="μ3"> {</span><br><span class="μ4">    _isFoo</span><span class="μ1">:</span><span class="μ2"> FooLike</span><span class="μ3">;</span><br><span class="μ3">}</span></code></span>FooLike</span></span><span class="μ1"> =</span><span class="μ3"> { </span><span class="μ4"><span class="twoslash-hover"><span class="twoslash-popup-container"><code class="twoslash-popup-code"><span class="μ2">_isFoo</span><span class="μ3">: FooLike</span></code></span>_isFoo</span></span><span class="μ1">:</span><span class="μ2"> </span><span class="μ2"><span class="twoslash-hover twoslash-query-presisted"><span class="twoslash-popup-container"><div class="twoslash-popup-arrow"></div><code class="twoslash-popup-code"><span class="μ1">type</span><span class="μ2"> FooLike</span><span class="μ1"> =</span><span class="μ3"> {</span><br><span class="μ4">    _isFoo</span><span class="μ1">:</span><span class="μ2"> FooLike</span><span class="μ3">;</span><br><span class="μ3">}</span></code></span>FooLike</span></span><span class="μ3"> }</span></span>
+<pre class="shiki shiki-themes github-light github-dark twoslash lsp μ0" tabindex="0"><code><span class="line"><span class="μ1">type</span><span class="μ2"> </span><span class="μ2"><span class="twoslash-hover"><span class="twoslash-popup-container"><code class="twoslash-popup-code"><pre class="shiki shiki-themes github-light github-dark μ0" tabindex="0"><code><span class="line"><span class="μ1">type</span><span class="μ2"> FooLike</span><span class="μ1"> =</span><span class="μ3"> {</span></span>
+<span class="line"><span class="μ4">    _isFoo</span><span class="μ1">:</span><span class="μ2"> FooLike</span><span class="μ3">;</span></span>
+<span class="line"><span class="μ3">}</span></span></code></pre></code></span>FooLike</span></span><span class="μ1"> =</span><span class="μ3"> { </span><span class="μ4"><span class="twoslash-hover"><span class="twoslash-popup-container"><code class="twoslash-popup-code"><span class="μ2">_isFoo</span><span class="μ3">: FooLike</span></code></span>_isFoo</span></span><span class="μ1">:</span><span class="μ2"> </span><span class="μ2"><span class="twoslash-hover twoslash-query-presisted"><span class="twoslash-popup-container"><div class="twoslash-popup-arrow"></div><code class="twoslash-popup-code"><pre class="shiki shiki-themes github-light github-dark μ0" tabindex="0"><code><span class="line"><span class="μ1">type</span><span class="μ2"> FooLike</span><span class="μ1"> =</span><span class="μ3"> {</span></span>
+<span class="line"><span class="μ4">    _isFoo</span><span class="μ1">:</span><span class="μ2"> FooLike</span><span class="μ3">;</span></span>
+<span class="line"><span class="μ3">}</span></span></code></pre></code></span>FooLike</span></span><span class="μ3"> }</span></span>
 <span class="line"></span>
 <span class="line"><span class="μ1">class</span><span class="μ2"> </span><span class="μ2"><span class="twoslash-hover"><span class="twoslash-popup-container"><code class="twoslash-popup-code"><span class="μ1">class</span><span class="μ2"> Bar</span></code></span>Bar</span></span><span class="μ3"> {</span></span>
 <span class="line"><span class="μ1">  declare</span><span class="μ4"> </span><span class="μ4"><span class="twoslash-hover"><span class="twoslash-popup-container"><code class="twoslash-popup-code"><span class="μ3">Bar._isFoo: </span><span class="μ5">this</span></code></span>_isFoo</span></span><span class="μ1">:</span><span class="μ5"> this</span></span>
 <span class="line"><span class="μ3">}</span></span>
 <span class="line"></span>
-<span class="line"><span class="μ1">let</span><span class="μ3"> </span><span class="μ3"><span class="twoslash-hover"><span class="twoslash-popup-container"><code class="twoslash-popup-code"><span class="μ1">let</span><span class="μ3"> a</span><span class="μ1">:</span><span class="μ2"> FooLike</span></code></span>a</span></span><span class="μ1">:</span><span class="μ2"> </span><span class="μ2"><span class="twoslash-hover"><span class="twoslash-popup-container"><code class="twoslash-popup-code"><span class="μ1">type</span><span class="μ2"> FooLike</span><span class="μ1"> =</span><span class="μ3"> {</span><br><span class="μ4">    _isFoo</span><span class="μ1">:</span><span class="μ2"> FooLike</span><span class="μ3">;</span><br><span class="μ3">}</span></code></span>FooLike</span></span><span class="μ1"> =</span><span class="μ1"> new</span><span class="μ2"> </span><span class="μ2"><span class="twoslash-hover"><span class="twoslash-popup-container"><code class="twoslash-popup-code"><span class="μ3">constructor </span><span class="μ2">Bar</span><span class="μ3">(): Bar</span></code></span>Bar</span></span><span class="μ3">()</span></span>
+<span class="line"><span class="μ1">let</span><span class="μ3"> </span><span class="μ3"><span class="twoslash-hover"><span class="twoslash-popup-container"><code class="twoslash-popup-code"><span class="μ1">let</span><span class="μ3"> a</span><span class="μ1">:</span><span class="μ2"> FooLike</span></code></span>a</span></span><span class="μ1">:</span><span class="μ2"> </span><span class="μ2"><span class="twoslash-hover"><span class="twoslash-popup-container"><code class="twoslash-popup-code"><pre class="shiki shiki-themes github-light github-dark μ0" tabindex="0"><code><span class="line"><span class="μ1">type</span><span class="μ2"> FooLike</span><span class="μ1"> =</span><span class="μ3"> {</span></span>
+<span class="line"><span class="μ4">    _isFoo</span><span class="μ1">:</span><span class="μ2"> FooLike</span><span class="μ3">;</span></span>
+<span class="line"><span class="μ3">}</span></span></code></pre></code></span>FooLike</span></span><span class="μ1"> =</span><span class="μ1"> new</span><span class="μ2"> </span><span class="μ2"><span class="twoslash-hover"><span class="twoslash-popup-container"><code class="twoslash-popup-code"><span class="μ3">constructor </span><span class="μ2">Bar</span><span class="μ3">(): Bar</span></code></span>Bar</span></span><span class="μ3">()</span></span>
 <span class="line"></span>
 <span class="line"><span class="μ1">class</span><span class="μ2"> </span><span class="μ2"><span class="twoslash-hover"><span class="twoslash-popup-container"><code class="twoslash-popup-code"><span class="μ1">class</span><span class="μ2"> UserDefined</span></code></span>UserDefined</span></span><span class="μ3"> {}</span></span>
 <span class="line"></span>
-<span class="line"><span class="μ1">let</span><span class="μ3"> </span><span class="twoslash-error"><span class="μ3">b</span></span><span class="μ1">:</span><span class="μ2"> </span><span class="μ2"><span class="twoslash-hover"><span class="twoslash-popup-container"><code class="twoslash-popup-code"><span class="μ1">type</span><span class="μ2"> FooLike</span><span class="μ1"> =</span><span class="μ3"> {</span><br><span class="μ4">    _isFoo</span><span class="μ1">:</span><span class="μ2"> FooLike</span><span class="μ3">;</span><br><span class="μ3">}</span></code></span>FooLike</span></span><span class="μ1"> =</span><span class="μ1"> new</span><span class="μ2"> </span><span class="μ2"><span class="twoslash-hover"><span class="twoslash-popup-container"><code class="twoslash-popup-code"><span class="μ3">constructor </span><span class="μ2">UserDefined</span><span class="μ3">(): UserDefined</span></code></span>UserDefined</span></span><span class="μ3">()</span></span><div class="twoslash-meta-line twoslash-error-line">Property '_isFoo' is missing in type 'UserDefined' but required in type 'FooLike'.</div></code></pre>
+<span class="line"><span class="μ1">let</span><span class="μ3"> </span><span class="twoslash-error"><span class="μ3">b</span></span><span class="μ1">:</span><span class="μ2"> </span><span class="μ2"><span class="twoslash-hover"><span class="twoslash-popup-container"><code class="twoslash-popup-code"><pre class="shiki shiki-themes github-light github-dark μ0" tabindex="0"><code><span class="line"><span class="μ1">type</span><span class="μ2"> FooLike</span><span class="μ1"> =</span><span class="μ3"> {</span></span>
+<span class="line"><span class="μ4">    _isFoo</span><span class="μ1">:</span><span class="μ2"> FooLike</span><span class="μ3">;</span></span>
+<span class="line"><span class="μ3">}</span></span></code></pre></code></span>FooLike</span></span><span class="μ1"> =</span><span class="μ1"> new</span><span class="μ2"> </span><span class="μ2"><span class="twoslash-hover"><span class="twoslash-popup-container"><code class="twoslash-popup-code"><span class="μ3">constructor </span><span class="μ2">UserDefined</span><span class="μ3">(): UserDefined</span></code></span>UserDefined</span></span><span class="μ3">()</span></span><div class="twoslash-meta-line twoslash-error-line">Property '_isFoo' is missing in type 'UserDefined' but required in type 'FooLike'.</div></code></pre>
 <h3 id="tagged-value">Tagged Value</h3>
 <p>传统 JavaScript 人的做法是存一个 <code>{ type: string, value }</code>，写起来不免有些繁琐而且不利于代码压缩。我们可以考虑下面这个写法：</p>
 <pre class="shiki shiki-themes github-light github-dark μ0" tabindex="0"><code><span class="line"><span class="μ1">class</span><span class="μ2"> Value</span><span class="μ3">&#x3C;</span><span class="μ2">T</span><span class="μ3">> {</span></span>
