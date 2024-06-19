@@ -65,8 +65,8 @@ const highlight = markedHighlight({
   },
 })
 // Patch the renderer object because shiki returns <pre> already, I don't want double <pre>
-const highlight_code = highlight.renderer!.code!
-highlight.renderer!.code = function custom_code(code, info, escaped): string | false {
+const highlight_code = highlight.renderer!.code! as any
+;(highlight.renderer as any).code = function custom_code(code, info, escaped): string | false {
   let str = highlight_code.call(this, code, info, escaped)
   if (str && str.startsWith('<pre><code') && str.includes('shiki')) {
     const start = str.indexOf('<pre', 1)
@@ -148,20 +148,20 @@ const footnote: TokenizerAndRendererExtension[] = [
 
 marked.use({
   async: true,
-  // These are by default:
-  // gfm: true,
-  // pedantic: false,
+  gfm: true,
+  pedantic: false,
   extensions: [math, ...footnote],
+  useNewRenderer: true,
   renderer: {
-    code(code, lang) {
+    code({ text, lang }) {
       if (lang === 'math') {
-        return `<p class="math">${katex.renderToString(code, { displayMode: true, output: 'html' })}</p>`
+        return `<p class="math">${katex.renderToString(text, { displayMode: true, output: 'html' })}</p>`
       }
       return false
     },
-    link(href, title, text) {
-      let html = Renderer.prototype.link.call(this, href, title, text)
-      if (href.startsWith('http')) {
+    link(arg) {
+      let html = Renderer.prototype.link.call(this, arg)
+      if (arg.href.startsWith('http')) {
         html = html.replace(/^<a /, '<a target="_blank" rel="noopener" ')
       }
       return html

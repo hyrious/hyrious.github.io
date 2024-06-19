@@ -10,16 +10,16 @@
     "ap-style-title-case": "^2.0.0",
     "gray-matter": "^4.0.3",
     "katex": "^0.16.10",
-    "marked": "^12.0.2",
-    "marked-gfm-heading-id": "^3.1.3",
-    "marked-highlight": "^2.1.1",
-    "marked-linkify-it": "^3.1.9",
+    "marked": "^13.0.0",
+    "marked-gfm-heading-id": "^4.0.0",
+    "marked-highlight": "^2.1.3",
+    "marked-linkify-it": "^3.1.10",
     "sanitize.css": "^13.0.0"
   },
   "devDependencies": {
-    "@hyrious/configs": "^0.1.1",
+    "@hyrious/configs": "^0.1.2",
     "@hyrious/esbuild-dev": "^0.10.6",
-    "@shikijs/twoslash": "^1.5.1",
+    "@shikijs/twoslash": "^1.7.0",
     "@types/html-minifier": "^4.0.5",
     "@types/katex": "^0.16.7",
     "@types/node": "^20.12.11",
@@ -29,9 +29,9 @@
     "html-minifier": "^4.0.0",
     "p-queue": "^8.0.1",
     "quick-lru": "^7.0.0",
-    "sass": "^1.77.0",
-    "shiki": "^1.5.1",
-    "vite": "^5.2.11"
+    "sass": "^1.77.6",
+    "shiki": "^1.7.0",
+    "vite": "^5.3.1"
   },
   "pnpm": {
     "overrides": {

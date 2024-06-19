@@ -1,5 +1,5 @@
 import fs from 'fs'
-import { Feed, Item } from 'feed'
+import { Feed, type Item } from 'feed'
 import { markdownToJs } from './markdown-to-js'
 
 const DOMAIN = 'https://hyrious.me'

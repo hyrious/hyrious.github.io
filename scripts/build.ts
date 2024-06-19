@@ -2,7 +2,7 @@ import fs from 'fs'
 import c from 'chalk'
 import PQueue from 'p-queue'
 import { join } from 'path'
-import { ResolvedConfig, resolveConfig, build as viteBuild } from 'vite'
+import { type ResolvedConfig, resolveConfig, build as viteBuild } from 'vite'
 import { compile, makeArgs, mergeHTML } from './compile-template'
 import type { Post } from '../src/main'
 

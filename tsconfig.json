@@ -4,6 +4,6 @@
   "compilerOptions": {
     "module": "ESNext",
     "lib": ["ESNext", "DOM", "DOM.Iterable"],
-    "types": ["vite/client"],
-  },
+    "types": ["vite/client"]
+  }
 }

@@ -1,4 +1,4 @@
-import { Plugin, createFilter } from 'vite'
+import { type Plugin, createFilter } from 'vite'
 import { markdownToJs as markdownToJs_ } from './markdown-to-js'
 
 export function posts(): Plugin {
