@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://hyrious.me/</id>
     <title>hyrious.log</title>
-    <updated>2024-06-19T10:14:25.957Z</updated>
+    <updated>2024-07-14T14:09:03.572Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <author>
         <name>hyrious</name>
@@ -19,7 +19,7 @@
         <id>lezer-formatter</id>
         <link href="https://hyrious.me/p/lezer-formatter"/>
         <updated>2024-06-19T00:00:00.000Z</updated>
-        <content type="html"><![CDATA[<style>.μ0{color:#24292e;background-color:#fff}.μ1{color:#D73A49}.μ2{color:#24292E}.μ3{color:#032F62}.μ4{color:#6F42C1}.μ5{color:#E36209}.μ6{color:#6A737D}.μ7{color:#005CC5}@media(prefers-color-scheme:dark){.μ0{color:#e1e4e8;background-color:#24292e}.μ1{color:#F97583}.μ2{color:#E1E4E8}.μ3{color:#9ECBFF}.μ4{color:#B392F0}.μ5{color:#FFAB70}.μ6{color:#6A737D}.μ7{color:#79B8FF}}</style><p>我不止一次萌生过自己写一个代码格式化工具的想法，但几乎都以失败告终。究其原因，正如 Anthony Fn 在 <a target="_blank" rel="noopener" href="https://antfu.me/posts/why-not-prettier-zh">为什么我不使用 Prettier</a> 中抱怨的，Prettier 这个工具总是有一些不尽如人意的格式化结果。但这一次，我发现了一个简单的实现方式。</p>
+        <content type="html"><![CDATA[<style>.μ0{color:#24292e;background-color:#fff}.μ1{color:#D73A49}.μ2{color:#24292E}.μ3{color:#032F62}.μ4{color:#6F42C1}.μ5{color:#E36209}.μ6{color:#6A737D}.μ7{color:#005CC5}@media(prefers-color-scheme:dark){.μ0{color:#e1e4e8;background-color:#24292e}.μ1{color:#F97583}.μ2{color:#E1E4E8}.μ3{color:#9ECBFF}.μ4{color:#B392F0}.μ5{color:#FFAB70}.μ6{color:#6A737D}.μ7{color:#79B8FF}}</style><p>我不止一次萌生过自己写一个代码格式化工具的想法，但几乎都以失败告终。究其原因，正如 Anthony Fu 在 <a target="_blank" rel="noopener" href="https://antfu.me/posts/why-not-prettier-zh">为什么我不使用 Prettier</a> 中抱怨的，Prettier 这个工具总是有一些不尽如人意的格式化结果。但这一次，我发现了一个简单的实现方式。</p>
 <p>Prettier 的 <a target="_blank" rel="noopener" href="https://prettier.io/docs/en/technical-details">实现方式</a> 十分容易理解：首先将代码解析成 AST，然后对着它重新输出一遍格式化好的代码。有趣的地方是他在输出一个子语法树的时候，可以对比不同的输出方式（比如使用换行或者不换行）来决定最<q>好看</q>的结果。</p>
 <blockquote>
 <p>上述步骤有一个小坑，就是解析 AST 的库（例如 Acorn）通常在遇到语法错误时会直接退出解析，这使得语法不正确的代码无法被格式化。实际上 Prettier 现在就有这样的问题。</p>
