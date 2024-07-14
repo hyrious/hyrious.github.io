@@ -3,7 +3,7 @@ title: 基于 Lezer Parser 写一个 Formatter
 date: 2024-06-19
 ---
 
-我不止一次萌生过自己写一个代码格式化工具的想法，但几乎都以失败告终。究其原因，正如 Anthony Fn 在 [为什么我不使用 Prettier](https://antfu.me/posts/why-not-prettier-zh) 中抱怨的，Prettier 这个工具总是有一些不尽如人意的格式化结果。但这一次，我发现了一个简单的实现方式。
+我不止一次萌生过自己写一个代码格式化工具的想法，但几乎都以失败告终。究其原因，正如 Anthony Fu 在 [为什么我不使用 Prettier](https://antfu.me/posts/why-not-prettier-zh) 中抱怨的，Prettier 这个工具总是有一些不尽如人意的格式化结果。但这一次，我发现了一个简单的实现方式。
 
 Prettier 的 [实现方式](https://prettier.io/docs/en/technical-details) 十分容易理解：首先将代码解析成 AST，然后对着它重新输出一遍格式化好的代码。有趣的地方是他在输出一个子语法树的时候，可以对比不同的输出方式（比如使用换行或者不换行）来决定最<q>好看</q>的结果。
 
