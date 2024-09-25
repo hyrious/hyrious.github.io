@@ -68,9 +68,7 @@ a {
   text-decoration-color: transparent;
   text-decoration-thickness: 2px;
   text-underline-offset: var(--offset, 0.1em);
-  transition:
-    text-decoration-color 0.2s,
-    --offset 0.2s;
+  transition: text-decoration-color 0.2s, --offset 0.2s;
   box-shadow: 0 -0.7em var(--link-bg-color, #deefff) inset;
 
   &:hover {
@@ -86,9 +84,7 @@ a {
 
 @supports not (background: paint(something)) {
   a {
-    transition:
-      text-decoration-color 0.2s,
-      text-underline-offset 0.2s;
+    transition: text-decoration-color 0.2s, text-underline-offset 0.2s;
 
     &:hover,
     &:focus {
@@ -137,6 +133,7 @@ h4 {
 }
 
 footer {
+  font-size: 15px;
   padding: 2ch 0;
   color: var(--gray-color);
   position: sticky;
@@ -305,18 +302,41 @@ footer a:focus {
   text-decoration-color: inherit;
 }
 
-.toys dt:not(:first-child) {
-  padding-top: 0.8rem;
-}
+.toys {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1ch;
 
-.toys dd {
-  color: var(--gray-color);
-  font-size: 0.875rem;
-  margin-inline-start: 0;
+  a {
+    display: inline-flex;
+    flex-flow: column nowrap;
+    text-decoration: none;
+
+    span {
+      text-transform: uppercase;
+    }
+
+    small {
+      color: var(--gray-color);
+    }
+  }
+
+  a:hover span {
+    text-decoration: underline solid;
+  }
 }
 
 iframe {
   visibility: hidden;
+}
+
+.twoslash .twoslash-popup-code,
+.twoslash .twoslash-popup-error,
+.twoslash .twoslash-popup-docs {
+  pre {
+    margin: 0;
+    padding: 0;
+  }
 }
 
 // https://antfu.me/posts/sliding-enter-animation

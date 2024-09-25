@@ -9,24 +9,36 @@
     <a href="https://ulysseszh.github.io" title="芳芳" target="_blank">Ulysses</a>
     <a href="https://synthesizer.moe" title="Caviar-X" target="_blank">Synth Magic</a>
   </p>
-  <h3>瞎写</h3>{#each posts.slice(0, 5) as post}
+  <h3>瞎写</h3>{#each posts.slice(0, 7) as post}
   <p><a href="/p/{ post.id }">{ post.title }</a></p>{/each}{#if posts.length > 5}
   <p><a href="/p/">更多&hellip;</a></p>{/if}
-  <h3 onclick="$toys.hidden ^= true"><a>玩具</a></h3>{@const base = 'https://hyrious.me'}
-  <dl id="$toys" class="toys" hidden>
-    <dt><a href="{base}/esbuild-repl" target="_blank">esbuild.repl</a></dt>
-    <dd>Try esbuild online</dd>
-    <dt><a href="{base}/npm-browser" target="_blank">npm browser</a></dt>
-    <dd>View npm package contents online</dd>
-    <dt><a href="{base}/tool" target="_blank">tool</a></dt>
-    <dd>Tiny tools which are quickly written in 10 minutes</dd>
-    <dt><a href="https://github.com/hyrious/w7" target="_blank">w7</a></dt>
-    <dd>Preview static website with hot-refresh, route like GitHub</dd>
-    <dt><a href="https://github.com/hyrious/marked-cli" target="_blank">marked-cli</a></dt>
-    <dd>Preview markdown file with hot-reload, theme like GitHub</dd>
-    <dt><a href="https://github.com/hyrious/blivec" target="_blank">blivec</a></dt>
-    <dd>Bilibili Live Streaming Tools</dd>
-  </dl>
+  <h3>玩具</h3>{@const base = 'https://hyrious.me'}
+  <section class="toys">
+    <a href="{base}/esbuild-repl" target="_blank">
+      <span>esbuild.repl</span>
+      <small>Try esbuild online</small>
+    </a>
+    <a href="{base}/npm-browser" target="_blank">
+      <span>npm browser</span>
+      <small>View npm package contents online</small>
+    </a>
+    <a href="{base}/tool" target="_blank">
+      <span>tool</span>
+      <small>Tiny tools which are quickly written in 10 minutes</small>
+    </a>
+    <a href="https://github.com/hyrious/w7" target="_blank">
+      <span>w7</span>
+      <small>Preview static website with hot-refresh, route like GitHub</small>
+    </a>
+    <a href="https://github.com/hyrious/marked-cli" target="_blank">
+      <span>marked-cli</span>
+      <small>Preview markdown file with hot-reload, theme like GitHub</small>
+    </a>
+    <a href="https://github.com/hyrious/blivec" target="_blank">
+      <span>blivec</span>
+      <small>Bilibili Live Streaming Tools</small>
+    </a>
+  </section>
   <footer>
     <p><a href="http://creativecommons.org/publicdomain/zero/1.0/">CC0</a> 2024 @ hyrious</p>
   </footer>

@@ -4,4 +4,5 @@ import { posts } from './scripts/vite-plugin-posts'
 export default defineConfig({
   build: { assetsDir: 'i' },
   plugins: [posts()],
+  css: { preprocessorOptions: { scss: { api: 'modern' } } },
 })

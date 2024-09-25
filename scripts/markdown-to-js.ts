@@ -6,7 +6,7 @@ import { marked, Renderer, type TokenizerAndRendererExtension } from 'marked'
 import { gfmHeadingId } from 'marked-gfm-heading-id'
 import { markedHighlight } from 'marked-highlight'
 import { default as markedLinkifyIt } from 'marked-linkify-it'
-import { bundledLanguages, getHighlighter } from 'shiki'
+import { bundledLanguages, createHighlighter } from 'shiki'
 import { rendererRich, transformerTwoslash } from '@shikijs/twoslash'
 
 export interface Parsed {
@@ -27,7 +27,7 @@ const emptyParsed: Parsed = {
   katex: false,
 }
 
-const shiki_p = getHighlighter({
+const shiki_p = createHighlighter({
   themes: ['github-dark', 'github-light'],
   langs: Object.keys(bundledLanguages),
 })
@@ -66,8 +66,8 @@ const highlight = markedHighlight({
 })
 // Patch the renderer object because shiki returns <pre> already, I don't want double <pre>
 const highlight_code = highlight.renderer!.code! as any
-;(highlight.renderer as any).code = function custom_code(code, info, escaped): string | false {
-  let str = highlight_code.call(this, code, info, escaped)
+;(highlight.renderer as any).code = function custom_code(token): string | false {
+  let str = highlight_code.call(this, token.text, token.info, token.escaped)
   if (str && str.startsWith('<pre><code') && str.includes('shiki')) {
     const start = str.indexOf('<pre', 1)
     const end = str.lastIndexOf('</code>')
@@ -151,7 +151,6 @@ marked.use({
   gfm: true,
   pedantic: false,
   extensions: [math, ...footnote],
-  useNewRenderer: true,
   renderer: {
     code({ text, lang }) {
       if (lang === 'math') {
