@@ -51,7 +51,7 @@ const highlight = markedHighlight({
         transformers: [
           transformerTwoslash({
             explicitTrigger: true,
-            renderer: rendererRich(),
+            renderer: rendererRich({ jsdoc: false }),
           }),
         ],
       })

@@ -121,23 +121,23 @@ a.length
 ```ts twoslash
 // @noFallthroughCasesInSwitch: true
 // @errors: 7029
-const a: number = 6;
+const a: number = 6
 
 switch (a) {
   case 0:
-    console.log("even");
+    console.log('even')
   case 1:
-    console.log("odd");
-    break;
+    console.log('odd')
+    break
 }
 
 switch (a) {
   // @ts-expect-error
   case 0:
-    console.log("even");
+    console.log('even')
   case 1:
-    console.log("odd");
-    break;
+    console.log('odd')
+    break
 }
 ```
 
@@ -166,6 +166,7 @@ switch (a) {
 不允许出现未使用的参数，真有可以加前缀 `_`。
 
 ---
+
 <time>2024-01-24</time> 更新
 
 TypeScript 还有一个无配置文件模式，当然这个模式下默认是不开 `strict` 的，来看看实际上会造成什么问题：
@@ -176,13 +177,17 @@ TypeScript 还有一个无配置文件模式，当然这个模式下默认是不
    ```ts
    window.foo = 'bar'
    // 否则你必须标记成
-   (window as any).foo = 'bar'
+   ;(window as any).foo = 'bar'
    ```
 3. `noImplicitThis: false`，`this` 不标类型不会报错，所以你可以写下面这个东东
    ```ts
-   function foo() { return this.bar }
+   function foo() {
+     return this.bar
+   }
    // 否则你必须标记成
-   function foo(this: { bar: unknown }) { return this.bar }
+   function foo(this: { bar: unknown }) {
+     return this.bar
+   }
    ```
 4. `strictNullChecks: false`，不会检查 `null | undefined`，但是目前 VS Code 和 Sublime LSP TypeScript 都是默认开启这个检查的 (有可能是 tsserver 默认开启)，所以实际上可以理解成仍然会检查 null。下面这段代码可以用 tsc 编译过但是常见编辑器里会有提示
    ```ts twoslash
@@ -193,7 +198,7 @@ TypeScript 还有一个无配置文件模式，当然这个模式下默认是不
 5. `strictPropertyInitialization: false`，不会检查未初始化的属性
    ```ts
    class Foo {
-     bar: string;
+     bar: string
      constructor() {
        // Not initializing 'bar' here and no error
      }
@@ -204,6 +209,7 @@ TypeScript 还有一个无配置文件模式，当然这个模式下默认是不
 8. 但是不能写 top level await，这个功能必须要设置 `module: "ESNext" / "ES2022"`
 
 ---
+
 <time>2024-05-23</time> 更新
 
 最近 TypeScript 5.4 新增了一个 [`module: "Preserve"`](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-5-4.html#support-for-require-calls-in---moduleresolution-bundler-and---module-preserve)
