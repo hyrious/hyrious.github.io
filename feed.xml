@@ -4,7 +4,7 @@
         <title>hyrious.log</title>
         <link>https://hyrious.me/</link>
         <description>hyrious.log</description>
-        <lastBuildDate>Fri, 27 Sep 2024 01:53:46 GMT</lastBuildDate>
+        <lastBuildDate>Fri, 27 Sep 2024 03:07:00 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <copyright>CC0 1.0</copyright>
@@ -312,7 +312,7 @@
 <h4 id="strict"><code>strict</code></h4>
 <p>开启严格模式，比如不允许含有 <code>null</code> 的类型通过检查。</p>
 <pre class="shiki shiki-themes github-light github-dark twoslash lsp μ0" tabindex="0"><code><span class="line"><span class="μ4">declare</span><span class="μ4"> const</span><span class="μ2"> </span><span class="μ2"><span class="twoslash-hover"><span class="twoslash-popup-container"><code class="twoslash-popup-code"><span class="μ4">const</span><span class="μ2"> a</span><span class="μ4">:</span><span class="μ2"> string</span><span class="μ4"> |</span><span class="μ2"> null</span></code></span>a</span></span><span class="μ4">:</span><span class="μ2"> string</span><span class="μ4"> |</span><span class="μ2"> null</span></span>
-<span class="line"><span class="twoslash-error"><span class="μ1">a</span></span><span class="μ1">.</span><span class="μ2"><span class="twoslash-hover"><span class="twoslash-popup-container"><code class="twoslash-popup-code"><span class="μ1">String.</span><span class="μ2">length</span><span class="μ1">: number</span></code><div class="twoslash-popup-docs">Returns the length of a String object.</div></span>length</span></span></span><div class="twoslash-meta-line twoslash-error-line">'a' is possibly 'null'.</div></code></pre>
+<span class="line"><span class="twoslash-error"><span class="μ1">a</span></span><span class="μ1">.</span><span class="μ2"><span class="twoslash-hover"><span class="twoslash-popup-container"><code class="twoslash-popup-code"><span class="μ1">String.</span><span class="μ2">length</span><span class="μ1">: number</span></code></span>length</span></span></span><div class="twoslash-meta-line twoslash-error-line">'a' is possibly 'null'.</div></code></pre>
 <p>这个严格模式代替了其他 8 个建议开启的配置项，我就不一一列举了，文末会附上一些更严格的选项，用户按需打开。</p>
 <h4 id="target"><code>target</code></h4>
 <p>代码降级和默认 <code>lib</code>，类比 esbuild 的 <code>target</code>，不填是 <code>ES5</code>。例如，当 <code>target</code> 是 <code>ES5</code> 时，<code>let a = 1</code> 会变成 <code>var a = 1</code>。如果不使用 <code>tsc</code> 编译出 js 文件，这里的降级对我们没有意义。</p>
@@ -382,290 +382,22 @@
 <h3 id="附超级严格选项">附：超级严格选项</h3>
 <h5 id="nofallthroughcasesinswitch-true">noFallthroughCasesInSwitch: true</h5>
 <p>不允许直接 fallthrough 到下一个 case，除非用 <code>// @ts-expect-error</code> 绕过。</p>
-<pre class="shiki shiki-themes github-light github-dark twoslash lsp μ0" tabindex="0"><code><span class="line"><span class="μ4">const</span><span class="μ2"> </span><span class="μ2"><span class="twoslash-hover"><span class="twoslash-popup-container"><code class="twoslash-popup-code"><span class="μ4">const</span><span class="μ2"> a</span><span class="μ4">:</span><span class="μ2"> number</span></code></span>a</span></span><span class="μ4">:</span><span class="μ2"> number</span><span class="μ4"> =</span><span class="μ2"> 6</span><span class="μ1">;</span></span>
+<pre class="shiki shiki-themes github-light github-dark twoslash lsp μ0" tabindex="0"><code><span class="line"><span class="μ4">const</span><span class="μ2"> </span><span class="μ2"><span class="twoslash-hover"><span class="twoslash-popup-container"><code class="twoslash-popup-code"><span class="μ4">const</span><span class="μ2"> a</span><span class="μ4">:</span><span class="μ2"> number</span></code></span>a</span></span><span class="μ4">:</span><span class="μ2"> number</span><span class="μ4"> =</span><span class="μ2"> 6</span></span>
 <span class="line"></span>
 <span class="line"><span class="μ4">switch</span><span class="μ1"> (</span><span class="μ1"><span class="twoslash-hover"><span class="twoslash-popup-container"><code class="twoslash-popup-code"><span class="μ4">const</span><span class="μ2"> a</span><span class="μ4">:</span><span class="μ2"> number</span></code></span>a</span></span><span class="μ1">) {</span></span>
-<span class="line"><span class="μ4">  </span><span class="twoslash-error"><span class="μ4">case</span><span class="μ2"> 0</span><span class="μ1">:</span></span></span><div class="twoslash-meta-line twoslash-error-line">Fallthrough case in switch.</div><span class="line"><span class="μ1">    </span><span class="μ1"><span class="twoslash-hover"><span class="twoslash-popup-container"><code class="twoslash-popup-code"><span class="μ4">var</span><span class="μ1"> console</span><span class="μ4">:</span><span class="μ5"> Console</span></code><div class="twoslash-popup-docs">The `console` module provides a simple debugging console that is similar to the
-JavaScript console mechanism provided by web browsers.
-
-The module exports two specific components:
-
-* A `Console` class with methods such as `console.log()`, `console.error()` and `console.warn()` that can be used to write to any Node.js stream.
-* A global `console` instance configured to write to [`process.stdout`](https://nodejs.org/docs/latest-v20.x/api/process.html#processstdout) and
-[`process.stderr`](https://nodejs.org/docs/latest-v20.x/api/process.html#processstderr). The global `console` can be used without calling `require('console')`.
-
-_**Warning**_: The global console object's methods are neither consistently
-synchronous like the browser APIs they resemble, nor are they consistently
-asynchronous like all other Node.js streams. See the [`note on process I/O`](https://nodejs.org/docs/latest-v20.x/api/process.html#a-note-on-process-io) for
-more information.
-
-Example using the global `console`:
-
-```js
-console.log('hello world');
-// Prints: hello world, to stdout
-console.log('hello %s', 'world');
-// Prints: hello world, to stdout
-console.error(new Error('Whoops, something bad happened'));
-// Prints error message and stack trace to stderr:
-//   Error: Whoops, something bad happened
-//     at [eval]:5:15
-//     at Script.runInThisContext (node:vm:132:18)
-//     at Object.runInThisContext (node:vm:309:38)
-//     at node:internal/process/execution:77:19
-//     at [eval]-wrapper:6:22
-//     at evalScript (node:internal/process/execution:76:60)
-//     at node:internal/main/eval_string:23:3
-
-const name = 'Will Robinson';
-console.warn(`Danger ${name}! Danger!`);
-// Prints: Danger Will Robinson! Danger!, to stderr
-```
-
-Example using the `Console` class:
-
-```js
-const out = getStreamSomehow();
-const err = getStreamSomehow();
-const myConsole = new console.Console(out, err);
-
-myConsole.log('hello world');
-// Prints: hello world, to out
-myConsole.log('hello %s', 'world');
-// Prints: hello world, to out
-myConsole.error(new Error('Whoops, something bad happened'));
-// Prints: [Error: Whoops, something bad happened], to err
-
-const name = 'Will Robinson';
-myConsole.warn(`Danger ${name}! Danger!`);
-// Prints: Danger Will Robinson! Danger!, to err
-```</div><div class="twoslash-popup-docs twoslash-popup-docs-tags"><span class="twoslash-popup-docs-tag"><span class="twoslash-popup-docs-tag-name">@see</span><span class="twoslash-popup-docs-tag-value">[source](https://github.com/nodejs/node/blob/v20.11.1/lib/console.js)</span></span></div></span>console</span></span><span class="μ1">.</span><span class="μ5"><span class="twoslash-hover"><span class="twoslash-popup-container"><code class="twoslash-popup-code"><span class="μ1">Console.</span><span class="μ5">log</span><span class="μ1">(message</span><span class="μ4">?:</span><span class="μ1"> any, </span><span class="μ4">...</span><span class="μ1">optionalParams: any[]): </span><span class="μ4">void</span><span class="μ1"> (</span><span class="μ4">+</span><span class="μ2">1</span><span class="μ1"> overload)</span></code><div class="twoslash-popup-docs">Prints to `stdout` with newline. Multiple arguments can be passed, with the
-first used as the primary message and all additional used as substitution
-values similar to [`printf(3)`](http://man7.org/linux/man-pages/man3/printf.3.html)
-(the arguments are all passed to [`util.format()`](https://nodejs.org/docs/latest-v20.x/api/util.html#utilformatformat-args)).
-
-```js
-const count = 5;
-console.log('count: %d', count);
-// Prints: count: 5, to stdout
-console.log('count:', count);
-// Prints: count: 5, to stdout
-```
-
-See [`util.format()`](https://nodejs.org/docs/latest-v20.x/api/util.html#utilformatformat-args) for more information.</div><div class="twoslash-popup-docs twoslash-popup-docs-tags"><span class="twoslash-popup-docs-tag"><span class="twoslash-popup-docs-tag-name">@since</span><span class="twoslash-popup-docs-tag-value">v0.1.100</span></span></div></span>log</span></span><span class="μ1">(</span><span class="μ3">"even"</span><span class="μ1">);</span></span>
+<span class="line"><span class="μ4">  </span><span class="twoslash-error"><span class="μ4">case</span><span class="μ2"> 0</span><span class="μ1">:</span></span></span><div class="twoslash-meta-line twoslash-error-line">Fallthrough case in switch.</div><span class="line"><span class="μ1">    </span><span class="μ1"><span class="twoslash-hover"><span class="twoslash-popup-container"><code class="twoslash-popup-code"><span class="μ4">var</span><span class="μ1"> console</span><span class="μ4">:</span><span class="μ5"> Console</span></code></span>console</span></span><span class="μ1">.</span><span class="μ5"><span class="twoslash-hover"><span class="twoslash-popup-container"><code class="twoslash-popup-code"><span class="μ1">Console.</span><span class="μ5">log</span><span class="μ1">(message</span><span class="μ4">?:</span><span class="μ1"> any, </span><span class="μ4">...</span><span class="μ1">optionalParams: any[]): </span><span class="μ4">void</span><span class="μ1"> (</span><span class="μ4">+</span><span class="μ2">1</span><span class="μ1"> overload)</span></code></span>log</span></span><span class="μ1">(</span><span class="μ3">'even'</span><span class="μ1">)</span></span>
 <span class="line"><span class="μ4">  case</span><span class="μ2"> 1</span><span class="μ1">:</span></span>
-<span class="line"><span class="μ1">    </span><span class="μ1"><span class="twoslash-hover"><span class="twoslash-popup-container"><code class="twoslash-popup-code"><span class="μ4">var</span><span class="μ1"> console</span><span class="μ4">:</span><span class="μ5"> Console</span></code><div class="twoslash-popup-docs">The `console` module provides a simple debugging console that is similar to the
-JavaScript console mechanism provided by web browsers.
-
-The module exports two specific components:
-
-* A `Console` class with methods such as `console.log()`, `console.error()` and `console.warn()` that can be used to write to any Node.js stream.
-* A global `console` instance configured to write to [`process.stdout`](https://nodejs.org/docs/latest-v20.x/api/process.html#processstdout) and
-[`process.stderr`](https://nodejs.org/docs/latest-v20.x/api/process.html#processstderr). The global `console` can be used without calling `require('console')`.
-
-_**Warning**_: The global console object's methods are neither consistently
-synchronous like the browser APIs they resemble, nor are they consistently
-asynchronous like all other Node.js streams. See the [`note on process I/O`](https://nodejs.org/docs/latest-v20.x/api/process.html#a-note-on-process-io) for
-more information.
-
-Example using the global `console`:
-
-```js
-console.log('hello world');
-// Prints: hello world, to stdout
-console.log('hello %s', 'world');
-// Prints: hello world, to stdout
-console.error(new Error('Whoops, something bad happened'));
-// Prints error message and stack trace to stderr:
-//   Error: Whoops, something bad happened
-//     at [eval]:5:15
-//     at Script.runInThisContext (node:vm:132:18)
-//     at Object.runInThisContext (node:vm:309:38)
-//     at node:internal/process/execution:77:19
-//     at [eval]-wrapper:6:22
-//     at evalScript (node:internal/process/execution:76:60)
-//     at node:internal/main/eval_string:23:3
-
-const name = 'Will Robinson';
-console.warn(`Danger ${name}! Danger!`);
-// Prints: Danger Will Robinson! Danger!, to stderr
-```
-
-Example using the `Console` class:
-
-```js
-const out = getStreamSomehow();
-const err = getStreamSomehow();
-const myConsole = new console.Console(out, err);
-
-myConsole.log('hello world');
-// Prints: hello world, to out
-myConsole.log('hello %s', 'world');
-// Prints: hello world, to out
-myConsole.error(new Error('Whoops, something bad happened'));
-// Prints: [Error: Whoops, something bad happened], to err
-
-const name = 'Will Robinson';
-myConsole.warn(`Danger ${name}! Danger!`);
-// Prints: Danger Will Robinson! Danger!, to err
-```</div><div class="twoslash-popup-docs twoslash-popup-docs-tags"><span class="twoslash-popup-docs-tag"><span class="twoslash-popup-docs-tag-name">@see</span><span class="twoslash-popup-docs-tag-value">[source](https://github.com/nodejs/node/blob/v20.11.1/lib/console.js)</span></span></div></span>console</span></span><span class="μ1">.</span><span class="μ5"><span class="twoslash-hover"><span class="twoslash-popup-container"><code class="twoslash-popup-code"><span class="μ1">Console.</span><span class="μ5">log</span><span class="μ1">(message</span><span class="μ4">?:</span><span class="μ1"> any, </span><span class="μ4">...</span><span class="μ1">optionalParams: any[]): </span><span class="μ4">void</span><span class="μ1"> (</span><span class="μ4">+</span><span class="μ2">1</span><span class="μ1"> overload)</span></code><div class="twoslash-popup-docs">Prints to `stdout` with newline. Multiple arguments can be passed, with the
-first used as the primary message and all additional used as substitution
-values similar to [`printf(3)`](http://man7.org/linux/man-pages/man3/printf.3.html)
-(the arguments are all passed to [`util.format()`](https://nodejs.org/docs/latest-v20.x/api/util.html#utilformatformat-args)).
-
-```js
-const count = 5;
-console.log('count: %d', count);
-// Prints: count: 5, to stdout
-console.log('count:', count);
-// Prints: count: 5, to stdout
-```
-
-See [`util.format()`](https://nodejs.org/docs/latest-v20.x/api/util.html#utilformatformat-args) for more information.</div><div class="twoslash-popup-docs twoslash-popup-docs-tags"><span class="twoslash-popup-docs-tag"><span class="twoslash-popup-docs-tag-name">@since</span><span class="twoslash-popup-docs-tag-value">v0.1.100</span></span></div></span>log</span></span><span class="μ1">(</span><span class="μ3">"odd"</span><span class="μ1">);</span></span>
-<span class="line"><span class="μ4">    break</span><span class="μ1">;</span></span>
+<span class="line"><span class="μ1">    </span><span class="μ1"><span class="twoslash-hover"><span class="twoslash-popup-container"><code class="twoslash-popup-code"><span class="μ4">var</span><span class="μ1"> console</span><span class="μ4">:</span><span class="μ5"> Console</span></code></span>console</span></span><span class="μ1">.</span><span class="μ5"><span class="twoslash-hover"><span class="twoslash-popup-container"><code class="twoslash-popup-code"><span class="μ1">Console.</span><span class="μ5">log</span><span class="μ1">(message</span><span class="μ4">?:</span><span class="μ1"> any, </span><span class="μ4">...</span><span class="μ1">optionalParams: any[]): </span><span class="μ4">void</span><span class="μ1"> (</span><span class="μ4">+</span><span class="μ2">1</span><span class="μ1"> overload)</span></code></span>log</span></span><span class="μ1">(</span><span class="μ3">'odd'</span><span class="μ1">)</span></span>
+<span class="line"><span class="μ4">    break</span></span>
 <span class="line"><span class="μ1">}</span></span>
 <span class="line"></span>
 <span class="line"><span class="μ4">switch</span><span class="μ1"> (</span><span class="μ1"><span class="twoslash-hover"><span class="twoslash-popup-container"><code class="twoslash-popup-code"><span class="μ4">const</span><span class="μ2"> a</span><span class="μ4">:</span><span class="μ2"> number</span></code></span>a</span></span><span class="μ1">) {</span></span>
 <span class="line"><span class="μ6">  // @ts-expect-error</span></span>
 <span class="line"><span class="μ4">  case</span><span class="μ2"> 0</span><span class="μ1">:</span></span>
-<span class="line"><span class="μ1">    </span><span class="μ1"><span class="twoslash-hover"><span class="twoslash-popup-container"><code class="twoslash-popup-code"><span class="μ4">var</span><span class="μ1"> console</span><span class="μ4">:</span><span class="μ5"> Console</span></code><div class="twoslash-popup-docs">The `console` module provides a simple debugging console that is similar to the
-JavaScript console mechanism provided by web browsers.
-
-The module exports two specific components:
-
-* A `Console` class with methods such as `console.log()`, `console.error()` and `console.warn()` that can be used to write to any Node.js stream.
-* A global `console` instance configured to write to [`process.stdout`](https://nodejs.org/docs/latest-v20.x/api/process.html#processstdout) and
-[`process.stderr`](https://nodejs.org/docs/latest-v20.x/api/process.html#processstderr). The global `console` can be used without calling `require('console')`.
-
-_**Warning**_: The global console object's methods are neither consistently
-synchronous like the browser APIs they resemble, nor are they consistently
-asynchronous like all other Node.js streams. See the [`note on process I/O`](https://nodejs.org/docs/latest-v20.x/api/process.html#a-note-on-process-io) for
-more information.
-
-Example using the global `console`:
-
-```js
-console.log('hello world');
-// Prints: hello world, to stdout
-console.log('hello %s', 'world');
-// Prints: hello world, to stdout
-console.error(new Error('Whoops, something bad happened'));
-// Prints error message and stack trace to stderr:
-//   Error: Whoops, something bad happened
-//     at [eval]:5:15
-//     at Script.runInThisContext (node:vm:132:18)
-//     at Object.runInThisContext (node:vm:309:38)
-//     at node:internal/process/execution:77:19
-//     at [eval]-wrapper:6:22
-//     at evalScript (node:internal/process/execution:76:60)
-//     at node:internal/main/eval_string:23:3
-
-const name = 'Will Robinson';
-console.warn(`Danger ${name}! Danger!`);
-// Prints: Danger Will Robinson! Danger!, to stderr
-```
-
-Example using the `Console` class:
-
-```js
-const out = getStreamSomehow();
-const err = getStreamSomehow();
-const myConsole = new console.Console(out, err);
-
-myConsole.log('hello world');
-// Prints: hello world, to out
-myConsole.log('hello %s', 'world');
-// Prints: hello world, to out
-myConsole.error(new Error('Whoops, something bad happened'));
-// Prints: [Error: Whoops, something bad happened], to err
-
-const name = 'Will Robinson';
-myConsole.warn(`Danger ${name}! Danger!`);
-// Prints: Danger Will Robinson! Danger!, to err
-```</div><div class="twoslash-popup-docs twoslash-popup-docs-tags"><span class="twoslash-popup-docs-tag"><span class="twoslash-popup-docs-tag-name">@see</span><span class="twoslash-popup-docs-tag-value">[source](https://github.com/nodejs/node/blob/v20.11.1/lib/console.js)</span></span></div></span>console</span></span><span class="μ1">.</span><span class="μ5"><span class="twoslash-hover"><span class="twoslash-popup-container"><code class="twoslash-popup-code"><span class="μ1">Console.</span><span class="μ5">log</span><span class="μ1">(message</span><span class="μ4">?:</span><span class="μ1"> any, </span><span class="μ4">...</span><span class="μ1">optionalParams: any[]): </span><span class="μ4">void</span><span class="μ1"> (</span><span class="μ4">+</span><span class="μ2">1</span><span class="μ1"> overload)</span></code><div class="twoslash-popup-docs">Prints to `stdout` with newline. Multiple arguments can be passed, with the
-first used as the primary message and all additional used as substitution
-values similar to [`printf(3)`](http://man7.org/linux/man-pages/man3/printf.3.html)
-(the arguments are all passed to [`util.format()`](https://nodejs.org/docs/latest-v20.x/api/util.html#utilformatformat-args)).
-
-```js
-const count = 5;
-console.log('count: %d', count);
-// Prints: count: 5, to stdout
-console.log('count:', count);
-// Prints: count: 5, to stdout
-```
-
-See [`util.format()`](https://nodejs.org/docs/latest-v20.x/api/util.html#utilformatformat-args) for more information.</div><div class="twoslash-popup-docs twoslash-popup-docs-tags"><span class="twoslash-popup-docs-tag"><span class="twoslash-popup-docs-tag-name">@since</span><span class="twoslash-popup-docs-tag-value">v0.1.100</span></span></div></span>log</span></span><span class="μ1">(</span><span class="μ3">"even"</span><span class="μ1">);</span></span>
+<span class="line"><span class="μ1">    </span><span class="μ1"><span class="twoslash-hover"><span class="twoslash-popup-container"><code class="twoslash-popup-code"><span class="μ4">var</span><span class="μ1"> console</span><span class="μ4">:</span><span class="μ5"> Console</span></code></span>console</span></span><span class="μ1">.</span><span class="μ5"><span class="twoslash-hover"><span class="twoslash-popup-container"><code class="twoslash-popup-code"><span class="μ1">Console.</span><span class="μ5">log</span><span class="μ1">(message</span><span class="μ4">?:</span><span class="μ1"> any, </span><span class="μ4">...</span><span class="μ1">optionalParams: any[]): </span><span class="μ4">void</span><span class="μ1"> (</span><span class="μ4">+</span><span class="μ2">1</span><span class="μ1"> overload)</span></code></span>log</span></span><span class="μ1">(</span><span class="μ3">'even'</span><span class="μ1">)</span></span>
 <span class="line"><span class="μ4">  case</span><span class="μ2"> 1</span><span class="μ1">:</span></span>
-<span class="line"><span class="μ1">    </span><span class="μ1"><span class="twoslash-hover"><span class="twoslash-popup-container"><code class="twoslash-popup-code"><span class="μ4">var</span><span class="μ1"> console</span><span class="μ4">:</span><span class="μ5"> Console</span></code><div class="twoslash-popup-docs">The `console` module provides a simple debugging console that is similar to the
-JavaScript console mechanism provided by web browsers.
-
-The module exports two specific components:
-
-* A `Console` class with methods such as `console.log()`, `console.error()` and `console.warn()` that can be used to write to any Node.js stream.
-* A global `console` instance configured to write to [`process.stdout`](https://nodejs.org/docs/latest-v20.x/api/process.html#processstdout) and
-[`process.stderr`](https://nodejs.org/docs/latest-v20.x/api/process.html#processstderr). The global `console` can be used without calling `require('console')`.
-
-_**Warning**_: The global console object's methods are neither consistently
-synchronous like the browser APIs they resemble, nor are they consistently
-asynchronous like all other Node.js streams. See the [`note on process I/O`](https://nodejs.org/docs/latest-v20.x/api/process.html#a-note-on-process-io) for
-more information.
-
-Example using the global `console`:
-
-```js
-console.log('hello world');
-// Prints: hello world, to stdout
-console.log('hello %s', 'world');
-// Prints: hello world, to stdout
-console.error(new Error('Whoops, something bad happened'));
-// Prints error message and stack trace to stderr:
-//   Error: Whoops, something bad happened
-//     at [eval]:5:15
-//     at Script.runInThisContext (node:vm:132:18)
-//     at Object.runInThisContext (node:vm:309:38)
-//     at node:internal/process/execution:77:19
-//     at [eval]-wrapper:6:22
-//     at evalScript (node:internal/process/execution:76:60)
-//     at node:internal/main/eval_string:23:3
-
-const name = 'Will Robinson';
-console.warn(`Danger ${name}! Danger!`);
-// Prints: Danger Will Robinson! Danger!, to stderr
-```
-
-Example using the `Console` class:
-
-```js
-const out = getStreamSomehow();
-const err = getStreamSomehow();
-const myConsole = new console.Console(out, err);
-
-myConsole.log('hello world');
-// Prints: hello world, to out
-myConsole.log('hello %s', 'world');
-// Prints: hello world, to out
-myConsole.error(new Error('Whoops, something bad happened'));
-// Prints: [Error: Whoops, something bad happened], to err
-
-const name = 'Will Robinson';
-myConsole.warn(`Danger ${name}! Danger!`);
-// Prints: Danger Will Robinson! Danger!, to err
-```</div><div class="twoslash-popup-docs twoslash-popup-docs-tags"><span class="twoslash-popup-docs-tag"><span class="twoslash-popup-docs-tag-name">@see</span><span class="twoslash-popup-docs-tag-value">[source](https://github.com/nodejs/node/blob/v20.11.1/lib/console.js)</span></span></div></span>console</span></span><span class="μ1">.</span><span class="μ5"><span class="twoslash-hover"><span class="twoslash-popup-container"><code class="twoslash-popup-code"><span class="μ1">Console.</span><span class="μ5">log</span><span class="μ1">(message</span><span class="μ4">?:</span><span class="μ1"> any, </span><span class="μ4">...</span><span class="μ1">optionalParams: any[]): </span><span class="μ4">void</span><span class="μ1"> (</span><span class="μ4">+</span><span class="μ2">1</span><span class="μ1"> overload)</span></code><div class="twoslash-popup-docs">Prints to `stdout` with newline. Multiple arguments can be passed, with the
-first used as the primary message and all additional used as substitution
-values similar to [`printf(3)`](http://man7.org/linux/man-pages/man3/printf.3.html)
-(the arguments are all passed to [`util.format()`](https://nodejs.org/docs/latest-v20.x/api/util.html#utilformatformat-args)).
-
-```js
-const count = 5;
-console.log('count: %d', count);
-// Prints: count: 5, to stdout
-console.log('count:', count);
-// Prints: count: 5, to stdout
-```
-
-See [`util.format()`](https://nodejs.org/docs/latest-v20.x/api/util.html#utilformatformat-args) for more information.</div><div class="twoslash-popup-docs twoslash-popup-docs-tags"><span class="twoslash-popup-docs-tag"><span class="twoslash-popup-docs-tag-name">@since</span><span class="twoslash-popup-docs-tag-value">v0.1.100</span></span></div></span>log</span></span><span class="μ1">(</span><span class="μ3">"odd"</span><span class="μ1">);</span></span>
-<span class="line"><span class="μ4">    break</span><span class="μ1">;</span></span>
+<span class="line"><span class="μ1">    </span><span class="μ1"><span class="twoslash-hover"><span class="twoslash-popup-container"><code class="twoslash-popup-code"><span class="μ4">var</span><span class="μ1"> console</span><span class="μ4">:</span><span class="μ5"> Console</span></code></span>console</span></span><span class="μ1">.</span><span class="μ5"><span class="twoslash-hover"><span class="twoslash-popup-container"><code class="twoslash-popup-code"><span class="μ1">Console.</span><span class="μ5">log</span><span class="μ1">(message</span><span class="μ4">?:</span><span class="μ1"> any, </span><span class="μ4">...</span><span class="μ1">optionalParams: any[]): </span><span class="μ4">void</span><span class="μ1"> (</span><span class="μ4">+</span><span class="μ2">1</span><span class="μ1"> overload)</span></code></span>log</span></span><span class="μ1">(</span><span class="μ3">'odd'</span><span class="μ1">)</span></span>
+<span class="line"><span class="μ4">    break</span></span>
 <span class="line"><span class="μ1">}</span></span></code></pre>
 <h5 id="noimplicitoverride-true">noImplicitOverride: true</h5>
 <p>不允许直接覆盖父类的方法，除非加一个 <code>override</code> 关键字。</p>
@@ -687,84 +419,21 @@ See [`util.format()`](https://nodejs.org/docs/latest-v20.x/api/util.html#utilfor
 <li><code>alwaysStrict: false</code>，默认不产生 <code>&quot;use strict&quot;</code></li>
 <li><code>noImplicitAny: false</code>，隐式 <code>any</code> 不会报错，所以你可以写下面这个东东<pre class="shiki shiki-themes github-light github-dark μ0" tabindex="0"><code><span class="line"><span class="μ1">window.foo </span><span class="μ4">=</span><span class="μ3"> 'bar'</span></span>
 <span class="line"><span class="μ6">// 否则你必须标记成</span></span>
-<span class="line"><span class="μ1">(window </span><span class="μ4">as</span><span class="μ2"> any</span><span class="μ1">).foo </span><span class="μ4">=</span><span class="μ3"> 'bar'</span></span></code></pre>
+<span class="line"><span class="μ1">;(window </span><span class="μ4">as</span><span class="μ2"> any</span><span class="μ1">).foo </span><span class="μ4">=</span><span class="μ3"> 'bar'</span></span></code></pre>
 </li>
-<li><code>noImplicitThis: false</code>，<code>this</code> 不标类型不会报错，所以你可以写下面这个东东<pre class="shiki shiki-themes github-light github-dark μ0" tabindex="0"><code><span class="line"><span class="μ4">function</span><span class="μ5"> foo</span><span class="μ1">() { </span><span class="μ4">return</span><span class="μ2"> this</span><span class="μ1">.bar }</span></span>
+<li><code>noImplicitThis: false</code>，<code>this</code> 不标类型不会报错，所以你可以写下面这个东东<pre class="shiki shiki-themes github-light github-dark μ0" tabindex="0"><code><span class="line"><span class="μ4">function</span><span class="μ5"> foo</span><span class="μ1">() {</span></span>
+<span class="line"><span class="μ4">  return</span><span class="μ2"> this</span><span class="μ1">.bar</span></span>
+<span class="line"><span class="μ1">}</span></span>
 <span class="line"><span class="μ6">// 否则你必须标记成</span></span>
-<span class="line"><span class="μ4">function</span><span class="μ5"> foo</span><span class="μ1">(</span><span class="μ2">this</span><span class="μ4">:</span><span class="μ1"> { </span><span class="μ7">bar</span><span class="μ4">:</span><span class="μ2"> unknown</span><span class="μ1"> }) { </span><span class="μ4">return</span><span class="μ2"> this</span><span class="μ1">.bar }</span></span></code></pre>
+<span class="line"><span class="μ4">function</span><span class="μ5"> foo</span><span class="μ1">(</span><span class="μ2">this</span><span class="μ4">:</span><span class="μ1"> { </span><span class="μ7">bar</span><span class="μ4">:</span><span class="μ2"> unknown</span><span class="μ1"> }) {</span></span>
+<span class="line"><span class="μ4">  return</span><span class="μ2"> this</span><span class="μ1">.bar</span></span>
+<span class="line"><span class="μ1">}</span></span></code></pre>
 </li>
 <li><code>strictNullChecks: false</code>，不会检查 <code>null | undefined</code>，但是目前 VS Code 和 Sublime LSP TypeScript 都是默认开启这个检查的 (有可能是 tsserver 默认开启)，所以实际上可以理解成仍然会检查 null。下面这段代码可以用 tsc 编译过但是常见编辑器里会有提示<pre class="shiki shiki-themes github-light github-dark twoslash lsp μ0" tabindex="0"><code><span class="line"><span class="μ4">declare</span><span class="μ4"> const</span><span class="μ2"> </span><span class="μ2"><span class="twoslash-hover"><span class="twoslash-popup-container"><code class="twoslash-popup-code"><span class="μ4">const</span><span class="μ2"> a</span><span class="μ4">:</span><span class="μ2"> string</span><span class="μ4"> |</span><span class="μ2"> null</span></code></span>a</span></span><span class="μ4">:</span><span class="μ2"> string</span><span class="μ4"> |</span><span class="μ2"> null</span></span>
-<span class="line"><span class="μ1"><span class="twoslash-hover"><span class="twoslash-popup-container"><code class="twoslash-popup-code"><span class="μ4">var</span><span class="μ1"> console</span><span class="μ4">:</span><span class="μ5"> Console</span></code><div class="twoslash-popup-docs">The `console` module provides a simple debugging console that is similar to the
-JavaScript console mechanism provided by web browsers.
-
-The module exports two specific components:
-
-* A `Console` class with methods such as `console.log()`, `console.error()` and `console.warn()` that can be used to write to any Node.js stream.
-* A global `console` instance configured to write to [`process.stdout`](https://nodejs.org/docs/latest-v20.x/api/process.html#processstdout) and
-[`process.stderr`](https://nodejs.org/docs/latest-v20.x/api/process.html#processstderr). The global `console` can be used without calling `require('console')`.
-
-_**Warning**_: The global console object's methods are neither consistently
-synchronous like the browser APIs they resemble, nor are they consistently
-asynchronous like all other Node.js streams. See the [`note on process I/O`](https://nodejs.org/docs/latest-v20.x/api/process.html#a-note-on-process-io) for
-more information.
-
-Example using the global `console`:
-
-```js
-console.log('hello world');
-// Prints: hello world, to stdout
-console.log('hello %s', 'world');
-// Prints: hello world, to stdout
-console.error(new Error('Whoops, something bad happened'));
-// Prints error message and stack trace to stderr:
-//   Error: Whoops, something bad happened
-//     at [eval]:5:15
-//     at Script.runInThisContext (node:vm:132:18)
-//     at Object.runInThisContext (node:vm:309:38)
-//     at node:internal/process/execution:77:19
-//     at [eval]-wrapper:6:22
-//     at evalScript (node:internal/process/execution:76:60)
-//     at node:internal/main/eval_string:23:3
-
-const name = 'Will Robinson';
-console.warn(`Danger ${name}! Danger!`);
-// Prints: Danger Will Robinson! Danger!, to stderr
-```
-
-Example using the `Console` class:
-
-```js
-const out = getStreamSomehow();
-const err = getStreamSomehow();
-const myConsole = new console.Console(out, err);
-
-myConsole.log('hello world');
-// Prints: hello world, to out
-myConsole.log('hello %s', 'world');
-// Prints: hello world, to out
-myConsole.error(new Error('Whoops, something bad happened'));
-// Prints: [Error: Whoops, something bad happened], to err
-
-const name = 'Will Robinson';
-myConsole.warn(`Danger ${name}! Danger!`);
-// Prints: Danger Will Robinson! Danger!, to err
-```</div><div class="twoslash-popup-docs twoslash-popup-docs-tags"><span class="twoslash-popup-docs-tag"><span class="twoslash-popup-docs-tag-name">@see</span><span class="twoslash-popup-docs-tag-value">[source](https://github.com/nodejs/node/blob/v20.11.1/lib/console.js)</span></span></div></span>console</span></span><span class="μ1">.</span><span class="μ5"><span class="twoslash-hover"><span class="twoslash-popup-container"><code class="twoslash-popup-code"><span class="μ1">Console.</span><span class="μ5">log</span><span class="μ1">(message</span><span class="μ4">?:</span><span class="μ1"> any, </span><span class="μ4">...</span><span class="μ1">optionalParams: any[]): </span><span class="μ4">void</span><span class="μ1"> (</span><span class="μ4">+</span><span class="μ2">1</span><span class="μ1"> overload)</span></code><div class="twoslash-popup-docs">Prints to `stdout` with newline. Multiple arguments can be passed, with the
-first used as the primary message and all additional used as substitution
-values similar to [`printf(3)`](http://man7.org/linux/man-pages/man3/printf.3.html)
-(the arguments are all passed to [`util.format()`](https://nodejs.org/docs/latest-v20.x/api/util.html#utilformatformat-args)).
-
-```js
-const count = 5;
-console.log('count: %d', count);
-// Prints: count: 5, to stdout
-console.log('count:', count);
-// Prints: count: 5, to stdout
-```
-
-See [`util.format()`](https://nodejs.org/docs/latest-v20.x/api/util.html#utilformatformat-args) for more information.</div><div class="twoslash-popup-docs twoslash-popup-docs-tags"><span class="twoslash-popup-docs-tag"><span class="twoslash-popup-docs-tag-name">@since</span><span class="twoslash-popup-docs-tag-value">v0.1.100</span></span></div></span>log</span></span><span class="μ1">(</span><span class="twoslash-error"><span class="μ1">a</span></span><span class="μ1">.</span><span class="μ5"><span class="twoslash-hover"><span class="twoslash-popup-container"><code class="twoslash-popup-code"><span class="μ1">String.</span><span class="μ5">toLowerCase</span><span class="μ1">(): string</span></code><div class="twoslash-popup-docs">Converts all the alphabetic characters in a string to lowercase.</div></span>toLowerCase</span></span><span class="μ1">())</span></span><div class="twoslash-meta-line twoslash-error-line">'a' is possibly 'null'.</div></code></pre>
+<span class="line"><span class="μ1"><span class="twoslash-hover"><span class="twoslash-popup-container"><code class="twoslash-popup-code"><span class="μ4">var</span><span class="μ1"> console</span><span class="μ4">:</span><span class="μ5"> Console</span></code></span>console</span></span><span class="μ1">.</span><span class="μ5"><span class="twoslash-hover"><span class="twoslash-popup-container"><code class="twoslash-popup-code"><span class="μ1">Console.</span><span class="μ5">log</span><span class="μ1">(message</span><span class="μ4">?:</span><span class="μ1"> any, </span><span class="μ4">...</span><span class="μ1">optionalParams: any[]): </span><span class="μ4">void</span><span class="μ1"> (</span><span class="μ4">+</span><span class="μ2">1</span><span class="μ1"> overload)</span></code></span>log</span></span><span class="μ1">(</span><span class="twoslash-error"><span class="μ1">a</span></span><span class="μ1">.</span><span class="μ5"><span class="twoslash-hover"><span class="twoslash-popup-container"><code class="twoslash-popup-code"><span class="μ1">String.</span><span class="μ5">toLowerCase</span><span class="μ1">(): string</span></code></span>toLowerCase</span></span><span class="μ1">())</span></span><div class="twoslash-meta-line twoslash-error-line">'a' is possibly 'null'.</div></code></pre>
 </li>
 <li><code>strictPropertyInitialization: false</code>，不会检查未初始化的属性<pre class="shiki shiki-themes github-light github-dark μ0" tabindex="0"><code><span class="line"><span class="μ4">class</span><span class="μ5"> Foo</span><span class="μ1"> {</span></span>
-<span class="line"><span class="μ7">  bar</span><span class="μ4">:</span><span class="μ2"> string</span><span class="μ1">;</span></span>
+<span class="line"><span class="μ7">  bar</span><span class="μ4">:</span><span class="μ2"> string</span></span>
 <span class="line"><span class="μ4">  constructor</span><span class="μ1">() {</span></span>
 <span class="line"><span class="μ6">    // Not initializing 'bar' here and no error</span></span>
 <span class="line"><span class="μ1">  }</span></span>
