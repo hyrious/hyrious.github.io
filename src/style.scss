@@ -12,6 +12,10 @@
   --pre-color: rgba(0, 0, 0, 0.05);
   --popup-bg-color: #f6f8fa;
 
+  --scrollbar-track-color: transparent;
+  --scrollbar-color-hover: #969696b3;
+  --scrollbar-color: #96969666;
+
   @media (prefers-color-scheme: dark) {
     --title-color: #dddddc;
     --link-color: #79c0ff;
@@ -22,6 +26,16 @@
     --pre-color: rgba(255, 255, 255, 0.05);
     --popup-bg-color: #1c2128;
   }
+}
+
+:root {
+  scrollbar-color: var(--scrollbar-color) var(--scrollbar-track-color);
+  transition: scrollbar-color 0.8s;
+}
+
+:hover {
+  scrollbar-color: var(--scrollbar-color-hover) var(--scrollbar-track-color);
+  transition-duration: 0s;
 }
 
 // Fix chinese quotes “”‘’, credits: https://github.com/vuejs/vitepress/commit/81ae1c7
