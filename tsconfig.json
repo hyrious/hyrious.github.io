@@ -2,7 +2,6 @@
   "include": ["src"],
   "extends": "@hyrious/configs/tsconfig.casual.json",
   "compilerOptions": {
-    "module": "ESNext",
     "lib": ["ESNext", "DOM", "DOM.Iterable"],
     "types": ["vite/client"]
   }
