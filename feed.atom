@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://hyrious.me/</id>
     <title>hyrious.log</title>
-    <updated>2024-09-27T03:07:00.258Z</updated>
+    <updated>2024-12-13T17:01:53.716Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <author>
         <name>hyrious</name>
@@ -1263,10 +1263,10 @@ dist/p/hello-world.html  12.11 kB
 <span class="line"><span class="μ3">  [</span><span class="μ5">:M</span><span class="μ3">, [</span><span class="μ5">:M</span><span class="μ3">, </span><span class="μ6">'*'</span><span class="μ3">, </span><span class="μ5">:T</span><span class="μ3">]],</span></span>
 <span class="line"><span class="μ3">  [</span><span class="μ5">:M</span><span class="μ3">, [</span><span class="μ5">:M</span><span class="μ3">, </span><span class="μ6">'/'</span><span class="μ3">, </span><span class="μ5">:T</span><span class="μ3">]],</span></span>
 <span class="line"><span class="μ3">  [</span><span class="μ5">:M</span><span class="μ3">, [</span><span class="μ5">:T</span><span class="μ3">]],</span></span>
-<span class="line"><span class="μ3">  [</span><span class="μ5">:T</span><span class="μ3">, [</span><span class="μ6">/</span><span class="μ7">^</span><span style="--s-light:#22863A;--s-dark:#85E89D;--s-light-font-weight:bold;--s-dark-font-weight:bold">\d</span><span class="μ7">+$</span><span class="μ6">/</span><span class="μ3">]],</span></span>
+<span class="line"><span class="μ3">  [</span><span class="μ5">:T</span><span class="μ3">, [</span><span class="μ6">/</span><span class="μ7">^</span><span style="--s-light:#22863A;--s-light-font-weight:bold;--s-dark:#85E89D;--s-dark-font-weight:bold">\d</span><span class="μ7">+$</span><span class="μ6">/</span><span class="μ3">]],</span></span>
 <span class="line"><span class="μ3">]).parse(</span><span class="μ6">'2 + 3 - 4'</span><span class="μ3">) { |s|</span></span>
-<span class="line"><span class="μ3">  s.slice!(</span><span class="μ6">/</span><span class="μ7">^</span><span style="--s-light:#22863A;--s-dark:#85E89D;--s-light-font-weight:bold;--s-dark-font-weight:bold">\s</span><span class="μ7">+</span><span class="μ6">/</span><span class="μ3">)</span></span>
-<span class="line"><span class="μ3">  s.slice!(</span><span class="μ6">/</span><span class="μ7">^</span><span style="--s-light:#22863A;--s-dark:#85E89D;--s-light-font-weight:bold;--s-dark-font-weight:bold">\d</span><span class="μ7">+|</span><span style="--s-light:#22863A;--s-dark:#85E89D;--s-light-font-weight:bold;--s-dark-font-weight:bold">\+</span><span class="μ7">|</span><span style="--s-light:#22863A;--s-dark:#85E89D;--s-light-font-weight:bold;--s-dark-font-weight:bold">\-</span><span class="μ7">|</span><span style="--s-light:#22863A;--s-dark:#85E89D;--s-light-font-weight:bold;--s-dark-font-weight:bold">\*</span><span class="μ7">|</span><span style="--s-light:#22863A;--s-dark:#85E89D;--s-light-font-weight:bold;--s-dark-font-weight:bold">\/</span><span class="μ6">/</span><span class="μ3">)</span></span>
+<span class="line"><span class="μ3">  s.slice!(</span><span class="μ6">/</span><span class="μ7">^</span><span style="--s-light:#22863A;--s-light-font-weight:bold;--s-dark:#85E89D;--s-dark-font-weight:bold">\s</span><span class="μ7">+</span><span class="μ6">/</span><span class="μ3">)</span></span>
+<span class="line"><span class="μ3">  s.slice!(</span><span class="μ6">/</span><span class="μ7">^</span><span style="--s-light:#22863A;--s-light-font-weight:bold;--s-dark:#85E89D;--s-dark-font-weight:bold">\d</span><span class="μ7">+|</span><span style="--s-light:#22863A;--s-light-font-weight:bold;--s-dark:#85E89D;--s-dark-font-weight:bold">\+</span><span class="μ7">|</span><span style="--s-light:#22863A;--s-light-font-weight:bold;--s-dark:#85E89D;--s-dark-font-weight:bold">\-</span><span class="μ7">|</span><span style="--s-light:#22863A;--s-light-font-weight:bold;--s-dark:#85E89D;--s-dark-font-weight:bold">\*</span><span class="μ7">|</span><span style="--s-light:#22863A;--s-light-font-weight:bold;--s-dark:#85E89D;--s-dark-font-weight:bold">\/</span><span class="μ6">/</span><span class="μ3">)</span></span>
 <span class="line"><span class="μ3">}</span></span></code></pre>
 <h4 id="最后">最后</h4>
 <p>Earley parser 是一个自顶向下的算法，有一个与之类似的操作叫 <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/CYK_algorithm">CYK 算法</a> 是自下而上的。</p>]]></content>
