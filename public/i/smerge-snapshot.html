@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>画一个 Sublime Merge 同款 Commit Graph</title>
+  <meta name="color-scheme" content="light dark">
+  <style>
+    html { height: 100%; box-sizing: border-box; }
+    *, *::before, *::after { box-sizing: inherit; }
+    body { margin: 0; height: 100%; font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Segoe WPC", "Segoe UI", "Microsoft YaHei", "Source Han Sans CN", "Source Han Sans", sans-serif; }
+    .commits { position: relative; height: 100%; font-size: 12px; }
+
+    :root {
+      --accent: #000;
+      --foreground: #3B3B3B;
+      --background: #FFFFFF;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --accent: #fff;
+        --foreground: #CCCCCC;
+        --background: #1F1F1F;
+      }
+    }
+
+    html {
+      --gray: color-mix(in srgb, var(--foreground) 75%, var(--background));
+      --dim: color-mix(in srgb, var(--foreground) 50%, var(--background));
+      --tag: color-mix(in srgb, var(--foreground) 20%, var(--background));
+      --border: color-mix(in srgb, var(--foreground) 15%, var(--background));
+      --hover: color-mix(in srgb, var(--foreground) 10%, var(--background));
+      --section: color-mix(in srgb, var(--foreground) 5%, var(--background));
+      --selected: color-mix(in srgb, var(--foreground) 12%, var(--background));
+      --track: var(--foreground);
+    }
+
+    :root {
+      --track-0: light-dark(#1A85ff,#3794FF);
+      --track-1: light-dark(#652D90,#B180D7);
+      --track-2: light-dark(#E51400,#F14C4C);
+      --track-3: #D18616;
+      --track-4: light-dark(#BF8803,#CCA700);
+      --track-5: light-dark(#388A34,#89D185);
+    }
+
+    .commit {
+      display: flex;
+      overflow: hidden;
+      padding-left: 5px;
+    }
+    .commit:hover {
+      background: var(--hover);
+    }
+    .tracks {
+      flex: none;
+      display: flex;
+    }
+    .track {
+      flex: none;
+      width: 12px;
+    }
+    .commit-content {
+      flex: 1;
+      line-height: 20px;
+      padding-top: 5px;
+      overflow: hidden;
+    }
+    .message-wrapper {
+      display: flex;
+      padding: 0 5px;
+    }
+    .message {
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .changes {
+      flex: none;
+      align-self: center;
+      line-height: 1;
+      padding: 0.25em;
+      background: var(--border);
+      border-radius: 5px;
+    }
+    .changes:empty {
+      display: none;
+    }
+    .footer {
+      display: flex;
+      padding: 0 5px;
+      color: var(--gray);
+    }
+    .author {
+      flex: 1;
+      font-style: italic;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .date {
+      flex: none;
+      font-variant-numeric: tabular-nums;
+      display: none;
+    }
+    .refs {
+      flex: none;
+      display: flex;
+      font-size: 11px;
+    }
+    .refs:empty {
+      display: none;
+    }
+    .footer:has(.refs:empty) .date {
+      display: block;
+    }
+    .ref {
+      align-self: center;
+      display: inline-block;
+      line-height: 1;
+      margin-left: 4px;
+      padding: 2px 4px;
+      border-radius: 3px;
+      background: var(--tag);
+    }
+    .head {
+      background: var(--track-0);
+      color: var(--background);
+    }
+    .tag {
+      background: var(--track-4);
+      color: var(--background);
+    }
+  </style>
+</head>
+<body>
+  <div class="commits" style="overflow: hidden; contain: strict;"><div style="height: 635328px;"><div class="commit" tabindex="-1" style="position: absolute; width: 100%; line-height: 48px; height: 48px; top: 194496px;"><div class="tracks" style="width: 48px;"><div class="track"><svg width="48" height="50" viewBox="0 0 48 50" fill="none" stroke="var(--track)" style="margin-left: 0px"><path d="M6 0 C6 12, 6 13, 6 25" stroke="var(--track-0)"></path><path d="M30 0 C30 12, 6 13, 6 25" stroke="var(--track-2)"></path><path d="M6 25 C6 37, 6 38, 6 50" stroke="var(--track-0)"></path><path d="M6 25 C6 37, 30 38, 30 50" stroke="var(--track-2)"></path><circle cx="6" cy="25" r="4" fill="var(--track-0)" stroke="none"></circle></svg></div><div class="track"><svg width="48" height="50" viewBox="-12 0 48 50" fill="none" stroke="var(--track)" style="margin-left: -12px"><path d="M6 0 C6 12, 6 13, 6 25" stroke="var(--track-1)"></path><path d="M6 25 C6 37, 6 38, 6 50" stroke="var(--track-1)"></path></svg></div><div class="track"></div><div class="track"><svg width="48" height="50" viewBox="-36 0 48 50" fill="none" stroke="var(--track)" style="margin-left: -36px"><path d="M6 0 C6 12, 6 13, 6 25" stroke="var(--track-3)"></path><path d="M6 25 C6 37, 6 38, 6 50" stroke="var(--track-3)"></path></svg></div></div><div class="commit-content"><div class="message-wrapper"><div class="message" data-key="e3566f4e47e462ad239e09d0d79473f2d8c67e0c" title="Merge branch 'test/skip-ext-process-port-test-case' into 'v1.19.x'
+
+    ">Merge branch 'test/skip-ext-process-port-test-case' into 'v1.19.x'
+    </div><div class="changes"></div></div><div class="footer"><div class="author" title="danwu.wdw@alibaba-inc.com">erha19</div><div class="date" title="Commit:	Tue Sep 29 2020 15:04:00 GMT+0800 (中国标准时间)
+    Author:	Tue Sep 29 2020 15:04:00 GMT+0800 (中国标准时间)">2020-09-29 15:04</div><div class="refs"></div></div></div></div><div class="commit" tabindex="-1" style="position: absolute; width: 100%; line-height: 48px; height: 48px; top: 194544px;"><div class="tracks" style="width: 48px;"><div class="track"><svg width="48" height="50" viewBox="0 0 48 50" fill="none" stroke="var(--track)" style="margin-left: 0px"><path d="M6 0 C6 12, 6 13, 6 25" stroke="var(--track-0)"></path><path d="M6 25 C6 37, 6 38, 6 50" stroke="var(--track-0)"></path></svg></div><div class="track"><svg width="48" height="50" viewBox="-12 0 48 50" fill="none" stroke="var(--track)" style="margin-left: -12px"><path d="M6 0 C6 12, 6 13, 6 25" stroke="var(--track-1)"></path><path d="M6 25 C6 37, 6 38, 6 50" stroke="var(--track-1)"></path></svg></div><div class="track"><svg width="48" height="50" viewBox="-24 0 48 50" fill="none" stroke="var(--track)" style="margin-left: -24px"><path d="M6 0 C6 12, 6 13, 6 25" stroke="var(--track-2)"></path><path d="M6 25 C6 37, 6 38, 6 50" stroke="var(--track-2)"></path><circle cx="6" cy="25" r="4" fill="var(--track-2)" stroke="none"></circle></svg></div><div class="track"><svg width="48" height="50" viewBox="-36 0 48 50" fill="none" stroke="var(--track)" style="margin-left: -36px"><path d="M6 0 C6 12, 6 13, 6 25" stroke="var(--track-3)"></path><path d="M6 25 C6 37, 6 38, 6 50" stroke="var(--track-3)"></path></svg></div></div><div class="commit-content"><div class="message-wrapper"><div class="message" data-key="26fd02ab7f42e68ebca7eebec8084e2b9feb3f6b" title="test: skip ext process inspect port test case">test: skip ext process inspect port test case</div><div class="changes"></div></div><div class="footer"><div class="author" title="xubing.bxb@alibaba-inc.com">Aaaaash</div><div class="date" title="Commit:	Tue Sep 29 2020 11:53:03 GMT+0800 (中国标准时间)
+    Author:	Tue Sep 29 2020 11:35:12 GMT+0800 (中国标准时间)">2020-09-29 11:35</div><div class="refs"></div></div></div></div><div class="commit" tabindex="-1" style="position: absolute; width: 100%; line-height: 48px; height: 48px; top: 194592px;"><div class="tracks" style="width: 48px;"><div class="track"><svg width="48" height="50" viewBox="0 0 48 50" fill="none" stroke="var(--track)" style="margin-left: 0px"><path d="M6 0 C6 12, 6 13, 6 25" stroke="var(--track-0)"></path><path d="M30 0 C30 12, 6 13, 6 25" stroke="var(--track-2)"></path><path d="M6 25 C6 37, 6 38, 6 50" stroke="var(--track-0)"></path><path d="M6 25 C6 37, 30 38, 30 50" stroke="var(--track-2)"></path><circle cx="6" cy="25" r="4" fill="var(--track-0)" stroke="none"></circle></svg></div><div class="track"><svg width="48" height="50" viewBox="-12 0 48 50" fill="none" stroke="var(--track)" style="margin-left: -12px"><path d="M6 0 C6 12, 6 13, 6 25" stroke="var(--track-1)"></path><path d="M6 25 C6 37, 6 38, 6 50" stroke="var(--track-1)"></path></svg></div><div class="track"></div><div class="track"><svg width="48" height="50" viewBox="-36 0 48 50" fill="none" stroke="var(--track)" style="margin-left: -36px"><path d="M6 0 C6 12, 6 13, 6 25" stroke="var(--track-3)"></path><path d="M6 25 C6 37, 6 38, 6 50" stroke="var(--track-3)"></path></svg></div></div><div class="commit-content"><div class="message-wrapper"><div class="message" data-key="b977b3248b0052af8243c57013b6f58f8710b5c9" title="Merge branch 'fix/terminal/lowercase-id' into 'v1.19.x'
+
+    ">Merge branch 'fix/terminal/lowercase-id' into 'v1.19.x'
+    </div><div class="changes"></div></div><div class="footer"><div class="author" title="danwu.wdw@alibaba-inc.com">erha19</div><div class="date" title="Commit:	Mon Sep 28 2020 14:29:14 GMT+0800 (中国标准时间)
+    Author:	Mon Sep 28 2020 14:29:14 GMT+0800 (中国标准时间)">2020-09-28 14:29</div><div class="refs"></div></div></div></div><div class="commit" tabindex="-1" style="position: absolute; width: 100%; line-height: 48px; height: 48px; top: 194640px;"><div class="tracks" style="width: 48px;"><div class="track"><svg width="48" height="50" viewBox="0 0 48 50" fill="none" stroke="var(--track)" style="margin-left: 0px"><path d="M6 0 C6 12, 6 13, 6 25" stroke="var(--track-0)"></path><path d="M6 25 C6 37, 6 38, 6 50" stroke="var(--track-0)"></path></svg></div><div class="track"><svg width="48" height="50" viewBox="-12 0 48 50" fill="none" stroke="var(--track)" style="margin-left: -12px"><path d="M6 0 C6 12, 6 13, 6 25" stroke="var(--track-1)"></path><path d="M6 25 C6 37, 6 38, 6 50" stroke="var(--track-1)"></path></svg></div><div class="track"><svg width="48" height="50" viewBox="-24 0 48 50" fill="none" stroke="var(--track)" style="margin-left: -24px"><path d="M6 0 C6 12, 6 13, 6 25" stroke="var(--track-2)"></path><path d="M6 25 C6 37, 6 38, 6 50" stroke="var(--track-2)"></path></svg></div><div class="track"><svg width="48" height="50" viewBox="-36 0 48 50" fill="none" stroke="var(--track)" style="margin-left: -36px"><path d="M6 0 C6 12, 6 13, 6 25" stroke="var(--track-3)"></path><path d="M6 25 C6 37, 6 38, 6 50" stroke="var(--track-3)"></path><circle cx="6" cy="25" r="4" fill="var(--track-3)" stroke="none"></circle></svg></div></div><div class="commit-content"><div class="message-wrapper"><div class="message" data-key="dab2cec92346fe3bd49a914cb270b1ed553a39a9" title="chore: 清理不用的 monaco command">chore: 清理不用的 monaco command</div><div class="changes">2</div></div><div class="footer"><div class="author" title="xinglong.wangwxl@alibaba-inc.com">hacke2</div><div class="date" title="Commit:	Mon Sep 28 2020 10:50:27 GMT+0800 (中国标准时间)
+    Author:	Mon Sep 28 2020 10:50:27 GMT+0800 (中国标准时间)">2020-09-28 10:50</div><div class="refs"></div></div></div></div><div class="commit" tabindex="-1" style="position: absolute; width: 100%; line-height: 48px; height: 48px; top: 194688px;"><div class="tracks" style="width: 60px;"><div class="track"><svg width="60" height="50" viewBox="0 0 60 50" fill="none" stroke="var(--track)" style="margin-left: 0px"><path d="M6 0 C6 12, 6 13, 6 25" stroke="var(--track-0)"></path><path d="M6 25 C6 37, 6 38, 6 50" stroke="var(--track-0)"></path></svg></div><div class="track"><svg width="60" height="50" viewBox="-12 0 60 50" fill="none" stroke="var(--track)" style="margin-left: -12px"><path d="M6 0 C6 12, 6 13, 6 25" stroke="var(--track-1)"></path><path d="M6 25 C6 37, 6 38, 6 50" stroke="var(--track-1)"></path></svg></div><div class="track"><svg width="60" height="50" viewBox="-24 0 60 50" fill="none" stroke="var(--track)" style="margin-left: -24px"><path d="M6 0 C6 12, 6 13, 6 25" stroke="var(--track-2)"></path><path d="M6 25 C6 37, 6 38, 6 50" stroke="var(--track-2)"></path></svg></div><div class="track"><svg width="60" height="50" viewBox="-36 0 60 50" fill="none" stroke="var(--track)" style="margin-left: -36px"><path d="M6 0 C6 12, 6 13, 6 25" stroke="var(--track-3)"></path><path d="M6 25 C6 37, 6 38, 6 50" stroke="var(--track-3)"></path><path d="M6 25 C6 37, 18 38, 18 50" stroke="var(--track-4)"></path><circle cx="6" cy="25" r="4" fill="var(--track-3)" stroke="none"></circle></svg></div></div><div class="commit-content"><div class="message-wrapper"><div class="message" data-key="d8621c369112badd427a2abcb9aa998394f2273b" title="Merge branch 'fix/comment-show' into 'develop'
+
+    ">Merge branch 'fix/comment-show' into 'develop'
+    </div><div class="changes"></div></div><div class="footer"><div class="author" title="danwu.wdw@alibaba-inc.com">erha19</div><div class="date" title="Commit:	Mon Sep 28 2020 09:59:08 GMT+0800 (中国标准时间)
+    Author:	Mon Sep 28 2020 09:59:08 GMT+0800 (中国标准时间)">2020-09-28 09:59</div><div class="refs"></div></div></div></div><div class="commit" tabindex="-1" style="position: absolute; width: 100%; line-height: 48px; height: 48px; top: 194736px;"><div class="tracks" style="width: 60px;"><div class="track"><svg width="60" height="50" viewBox="0 0 60 50" fill="none" stroke="var(--track)" style="margin-left: 0px"><path d="M6 0 C6 12, 6 13, 6 25" stroke="var(--track-0)"></path><path d="M6 25 C6 37, 6 38, 6 50" stroke="var(--track-0)"></path></svg></div><div class="track"><svg width="60" height="50" viewBox="-12 0 60 50" fill="none" stroke="var(--track)" style="margin-left: -12px"><path d="M6 0 C6 12, 6 13, 6 25" stroke="var(--track-1)"></path><path d="M6 25 C6 37, 6 38, 6 50" stroke="var(--track-1)"></path></svg></div><div class="track"><svg width="60" height="50" viewBox="-24 0 60 50" fill="none" stroke="var(--track)" style="margin-left: -24px"><path d="M6 0 C6 12, 6 13, 6 25" stroke="var(--track-2)"></path><path d="M6 25 C6 37, 6 38, 6 50" stroke="var(--track-2)"></path></svg></div><div class="track"><svg width="60" height="50" viewBox="-36 0 60 50" fill="none" stroke="var(--track)" style="margin-left: -36px"><path d="M6 0 C6 12, 6 13, 6 25" stroke="var(--track-3)"></path><path d="M6 25 C6 37, 6 38, 6 50" stroke="var(--track-3)"></path></svg></div><div class="track"><svg width="60" height="50" viewBox="-48 0 60 50" fill="none" stroke="var(--track)" style="margin-left: -48px"><path d="M6 0 C6 12, 6 13, 6 25" stroke="var(--track-4)"></path><path d="M6 25 C6 37, 6 38, 6 50" stroke="var(--track-4)"></path><circle cx="6" cy="25" r="4" fill="var(--track-4)" stroke="none"></circle></svg></div></div><div class="commit-content"><div class="message-wrapper"><div class="message" data-key="4a8832541290d27da62a99d96e4d02bce24d1510" title="fix: 评论组件恢复当时的显隐状态">fix: 评论组件恢复当时的显隐状态</div><div class="changes">5</div></div><div class="footer"><div class="author" title="xinglong.wangwxl@alibaba-inc.com">hacke2</div><div class="date" title="Commit:	Sun Sep 27 2020 21:40:26 GMT+0800 (中国标准时间)
+    Author:	Sun Sep 27 2020 21:40:26 GMT+0800 (中国标准时间)">2020-09-27 21:40</div><div class="refs"></div></div></div></div><div class="commit" tabindex="-1" style="position: absolute; width: 100%; line-height: 48px; height: 48px; top: 194784px;"><div class="tracks" style="width: 60px;"><div class="track"><svg width="60" height="50" viewBox="0 0 60 50" fill="none" stroke="var(--track)" style="margin-left: 0px"><path d="M6 0 C6 12, 6 13, 6 25" stroke="var(--track-0)"></path><path d="M6 25 C6 37, 6 38, 6 50" stroke="var(--track-0)"></path></svg></div><div class="track"><svg width="60" height="50" viewBox="-12 0 60 50" fill="none" stroke="var(--track)" style="margin-left: -12px"><path d="M6 0 C6 12, 6 13, 6 25" stroke="var(--track-1)"></path><path d="M6 25 C6 37, 6 38, 6 50" stroke="var(--track-1)"></path></svg></div><div class="track"><svg width="60" height="50" viewBox="-24 0 60 50" fill="none" stroke="var(--track)" style="margin-left: -24px"><path d="M6 0 C6 12, 6 13, 6 25" stroke="var(--track-2)"></path><path d="M6 25 C6 37, 6 38, 6 50" stroke="var(--track-2)"></path><circle cx="6" cy="25" r="4" fill="var(--track-2)" stroke="none"></circle></svg></div><div class="track"><svg width="60" height="50" viewBox="-36 0 60 50" fill="none" stroke="var(--track)" style="margin-left: -36px"><path d="M6 0 C6 12, 6 13, 6 25" stroke="var(--track-3)"></path><path d="M6 25 C6 37, 6 38, 6 50" stroke="var(--track-3)"></path></svg></div><div class="track"><svg width="60" height="50" viewBox="-48 0 60 50" fill="none" stroke="var(--track)" style="margin-left: -48px"><path d="M6 0 C6 12, 6 13, 6 25" stroke="var(--track-4)"></path><path d="M6 25 C6 37, 6 38, 6 50" stroke="var(--track-4)"></path></svg></div></div><div class="commit-content"><div class="message-wrapper"><div class="message" data-key="9246f235ee47b6a3c1e710add6533edee31a4c97" title="fix: 使用小写的terminal containerId">fix: 使用小写的terminal containerId</div><div class="changes"></div></div><div class="footer"><div class="author" title="zheyanglv@qq.com">ensorrow</div><div class="date" title="Commit:	Sun Sep 27 2020 16:04:55 GMT+0800 (中国标准时间)
+    Author:	Sun Sep 27 2020 16:04:55 GMT+0800 (中国标准时间)">2020-09-27 16:04</div><div class="refs"></div></div></div></div><div class="commit" tabindex="-1" style="position: absolute; width: 100%; line-height: 48px; height: 48px; top: 194832px;"><div class="tracks" style="width: 72px;"><div class="track"><svg width="72" height="50" viewBox="0 0 72 50" fill="none" stroke="var(--track)" style="margin-left: 0px"><path d="M6 0 C6 12, 6 13, 6 25" stroke="var(--track-0)"></path><path d="M6 25 C6 37, 6 38, 6 50" stroke="var(--track-0)"></path><path d="M6 25 C6 37, 66 38, 66 50" stroke="var(--track-5)"></path><circle cx="6" cy="25" r="4" fill="var(--track-0)" stroke="none"></circle></svg></div><div class="track"><svg width="72" height="50" viewBox="-12 0 72 50" fill="none" stroke="var(--track)" style="margin-left: -12px"><path d="M6 0 C6 12, 6 13, 6 25" stroke="var(--track-1)"></path><path d="M6 25 C6 37, 6 38, 6 50" stroke="var(--track-1)"></path></svg></div><div class="track"><svg width="72" height="50" viewBox="-24 0 72 50" fill="none" stroke="var(--track)" style="margin-left: -24px"><path d="M6 0 C6 12, 6 13, 6 25" stroke="var(--track-2)"></path><path d="M6 25 C6 37, 6 38, 6 50" stroke="var(--track-2)"></path></svg></div><div class="track"><svg width="72" height="50" viewBox="-36 0 72 50" fill="none" stroke="var(--track)" style="margin-left: -36px"><path d="M6 0 C6 12, 6 13, 6 25" stroke="var(--track-3)"></path><path d="M6 25 C6 37, 6 38, 6 50" stroke="var(--track-3)"></path></svg></div><div class="track"><svg width="72" height="50" viewBox="-48 0 72 50" fill="none" stroke="var(--track)" style="margin-left: -48px"><path d="M6 0 C6 12, 6 13, 6 25" stroke="var(--track-4)"></path><path d="M6 25 C6 37, 6 38, 6 50" stroke="var(--track-4)"></path></svg></div></div><div class="commit-content"><div class="message-wrapper"><div class="message" data-key="f6d8f7518a25b5c8de4947f8900b6ec9423164f9" title="Merge branch 'fix/disable-in-inline-actions' into 'v1.19.x'
+
+    ">Merge branch 'fix/disable-in-inline-actions' into 'v1.19.x'
+    </div><div class="changes"></div></div><div class="footer"><div class="author" title="danwu.wdw@alibaba-inc.com">erha19</div><div class="date" title="Commit:	Sun Sep 27 2020 15:52:24 GMT+0800 (中国标准时间)
+    Author:	Sun Sep 27 2020 15:52:24 GMT+0800 (中国标准时间)">2020-09-27 15:52</div><div class="refs"></div></div></div></div><div class="commit" tabindex="-1" style="position: absolute; width: 100%; line-height: 48px; height: 48px; top: 194880px;"><div class="tracks" style="width: 72px;"><div class="track"><svg width="72" height="50" viewBox="0 0 72 50" fill="none" stroke="var(--track)" style="margin-left: 0px"><path d="M6 0 C6 12, 6 13, 6 25" stroke="var(--track-0)"></path><path d="M6 25 C6 37, 6 38, 6 50" stroke="var(--track-0)"></path></svg></div><div class="track"><svg width="72" height="50" viewBox="-12 0 72 50" fill="none" stroke="var(--track)" style="margin-left: -12px"><path d="M6 0 C6 12, 6 13, 6 25" stroke="var(--track-1)"></path><path d="M6 25 C6 37, 6 38, 6 50" stroke="var(--track-1)"></path></svg></div><div class="track"><svg width="72" height="50" viewBox="-24 0 72 50" fill="none" stroke="var(--track)" style="margin-left: -24px"><path d="M6 0 C6 12, 6 13, 6 25" stroke="var(--track-2)"></path><path d="M6 25 C6 37, 6 38, 6 50" stroke="var(--track-2)"></path></svg></div><div class="track"><svg width="72" height="50" viewBox="-36 0 72 50" fill="none" stroke="var(--track)" style="margin-left: -36px"><path d="M6 0 C6 12, 6 13, 6 25" stroke="var(--track-3)"></path><path d="M18 0 C18 12, 6 13, 6 25" stroke="var(--track-4)"></path><path d="M6 25 C6 37, 6 38, 6 50" stroke="var(--track-3)"></path><path d="M6 25 C6 37, 18 38, 18 50" stroke="var(--track-4)"></path><circle cx="6" cy="25" r="4" fill="var(--track-3)" stroke="none"></circle></svg></div><div class="track"></div><div class="track"><svg width="72" height="50" viewBox="-60 0 72 50" fill="none" stroke="var(--track)" style="margin-left: -60px"><path d="M6 0 C6 12, 6 13, 6 25" stroke="var(--track-5)"></path><path d="M6 25 C6 37, 6 38, 6 50" stroke="var(--track-5)"></path></svg></div></div><div class="commit-content"><div class="message-wrapper"><div class="message" data-key="0626f87795228d0fac77d0050ddbd4a6cbfece38" title="Merge branch 'fix/wait-app-ready' into 'develop'
+
+    ">Merge branch 'fix/wait-app-ready' into 'develop'
+    </div><div class="changes"></div></div><div class="footer"><div class="author" title="kengtou.mh@antfin.com">MMhunter</div><div class="date" title="Commit:	Sun Sep 27 2020 13:36:24 GMT+0800 (中国标准时间)
+    Author:	Sun Sep 27 2020 13:36:24 GMT+0800 (中国标准时间)">2020-09-27 13:36</div><div class="refs"></div></div></div></div><div class="commit" tabindex="-1" style="position: absolute; width: 100%; line-height: 48px; height: 48px; top: 194928px;"><div class="tracks" style="width: 84px;"><div class="track"><svg width="84" height="50" viewBox="0 0 84 50" fill="none" stroke="var(--track)" style="margin-left: 0px"><path d="M6 0 C6 12, 6 13, 6 25" stroke="var(--track-0)"></path><path d="M6 25 C6 37, 6 38, 6 50" stroke="var(--track-0)"></path><path d="M6 25 C6 37, 78 38, 78 50" stroke="var(--track-0)"></path><circle cx="6" cy="25" r="4" fill="var(--track-0)" stroke="none"></circle></svg></div><div class="track"><svg width="84" height="50" viewBox="-12 0 84 50" fill="none" stroke="var(--track)" style="margin-left: -12px"><path d="M6 0 C6 12, 6 13, 6 25" stroke="var(--track-1)"></path><path d="M6 25 C6 37, 6 38, 6 50" stroke="var(--track-1)"></path></svg></div><div class="track"><svg width="84" height="50" viewBox="-24 0 84 50" fill="none" stroke="var(--track)" style="margin-left: -24px"><path d="M6 0 C6 12, 6 13, 6 25" stroke="var(--track-2)"></path><path d="M6 25 C6 37, 6 38, 6 50" stroke="var(--track-2)"></path></svg></div><div class="track"><svg width="84" height="50" viewBox="-36 0 84 50" fill="none" stroke="var(--track)" style="margin-left: -36px"><path d="M6 0 C6 12, 6 13, 6 25" stroke="var(--track-3)"></path><path d="M6 25 C6 37, 6 38, 6 50" stroke="var(--track-3)"></path></svg></div><div class="track"><svg width="84" height="50" viewBox="-48 0 84 50" fill="none" stroke="var(--track)" style="margin-left: -48px"><path d="M6 0 C6 12, 6 13, 6 25" stroke="var(--track-4)"></path><path d="M6 25 C6 37, 6 38, 6 50" stroke="var(--track-4)"></path></svg></div><div class="track"><svg width="84" height="50" viewBox="-60 0 84 50" fill="none" stroke="var(--track)" style="margin-left: -60px"><path d="M6 0 C6 12, 6 13, 6 25" stroke="var(--track-5)"></path><path d="M6 25 C6 37, 6 38, 6 50" stroke="var(--track-5)"></path></svg></div></div><div class="commit-content"><div class="message-wrapper"><div class="message" data-key="953d6cabb50868ade3cece06de5d4f6ce6ad8d3f" title="Merge branch 'fix/markdown-string' into 'v1.19.x'
+
+    ">Merge branch 'fix/markdown-string' into 'v1.19.x'
+    </div><div class="changes"></div></div><div class="footer"><div class="author" title="danwu.wdw@alibaba-inc.com">erha19</div><div class="date" title="Commit:	Sun Sep 27 2020 13:08:34 GMT+0800 (中国标准时间)
+    Author:	Sun Sep 27 2020 13:08:34 GMT+0800 (中国标准时间)">2020-09-27 13:08</div><div class="refs"></div></div></div></div><div class="commit" tabindex="-1" style="position: absolute; width: 100%; line-height: 48px; height: 48px; top: 194976px;"><div class="tracks" style="width: 84px;"><div class="track"><svg width="84" height="50" viewBox="0 0 84 50" fill="none" stroke="var(--track)" style="margin-left: 0px"><path d="M6 0 C6 12, 6 13, 6 25" stroke="var(--track-0)"></path><path d="M6 25 C6 37, 6 38, 6 50" stroke="var(--track-0)"></path></svg></div><div class="track"><svg width="84" height="50" viewBox="-12 0 84 50" fill="none" stroke="var(--track)" style="margin-left: -12px"><path d="M6 0 C6 12, 6 13, 6 25" stroke="var(--track-1)"></path><path d="M6 25 C6 37, 6 38, 6 50" stroke="var(--track-1)"></path></svg></div><div class="track"><svg width="84" height="50" viewBox="-24 0 84 50" fill="none" stroke="var(--track)" style="margin-left: -24px"><path d="M6 0 C6 12, 6 13, 6 25" stroke="var(--track-2)"></path><path d="M6 25 C6 37, 6 38, 6 50" stroke="var(--track-2)"></path></svg></div><div class="track"><svg width="84" height="50" viewBox="-36 0 84 50" fill="none" stroke="var(--track)" style="margin-left: -36px"><path d="M6 0 C6 12, 6 13, 6 25" stroke="var(--track-3)"></path><path d="M6 25 C6 37, 6 38, 6 50" stroke="var(--track-3)"></path></svg></div><div class="track"><svg width="84" height="50" viewBox="-48 0 84 50" fill="none" stroke="var(--track)" style="margin-left: -48px"><path d="M6 0 C6 12, 6 13, 6 25" stroke="var(--track-4)"></path><path d="M6 25 C6 37, 6 38, 6 50" stroke="var(--track-4)"></path></svg></div><div class="track"><svg width="84" height="50" viewBox="-60 0 84 50" fill="none" stroke="var(--track)" style="margin-left: -60px"><path d="M6 0 C6 12, 6 13, 6 25" stroke="var(--track-5)"></path><path d="M6 25 C6 37, 6 38, 6 50" stroke="var(--track-5)"></path></svg></div><div class="track"><svg width="84" height="50" viewBox="-72 0 84 50" fill="none" stroke="var(--track)" style="margin-left: -72px"><path d="M6 0 C6 12, 6 13, 6 25" stroke="var(--track-0)"></path><path d="M6 25 C6 37, 6 38, 6 50" stroke="var(--track-0)"></path><circle cx="6" cy="25" r="4" fill="var(--track-0)" stroke="none"></circle></svg></div></div><div class="commit-content"><div class="message-wrapper"><div class="message" data-key="0f15ae3dffd6f2de6b5ee4a3cbdd03fd129feb72" title="fix: 修正导出到插件进程的markdownString错误">fix: 修正导出到插件进程的markdownString错误</div><div class="changes"></div></div><div class="footer"><div class="author" title="zheyanglv@qq.com">ensorrow</div><div class="date" title="Commit:	Sun Sep 27 2020 09:35:21 GMT+0800 (中国标准时间)
+    Author:	Sun Sep 27 2020 09:35:21 GMT+0800 (中国标准时间)">2020-09-27 09:35</div><div class="refs"></div></div></div></div><div class="commit" tabindex="-1" style="position: absolute; width: 100%; line-height: 48px; height: 48px; top: 195024px;"><div class="tracks" style="width: 84px;"><div class="track"><svg width="84" height="50" viewBox="0 0 84 50" fill="none" stroke="var(--track)" style="margin-left: 0px"><path d="M6 0 C6 12, 6 13, 6 25" stroke="var(--track-0)"></path><path d="M6 25 C6 37, 6 38, 6 50" stroke="var(--track-0)"></path></svg></div><div class="track"><svg width="84" height="50" viewBox="-12 0 84 50" fill="none" stroke="var(--track)" style="margin-left: -12px"><path d="M6 0 C6 12, 6 13, 6 25" stroke="var(--track-1)"></path><path d="M6 25 C6 37, 6 38, 6 50" stroke="var(--track-1)"></path></svg></div><div class="track"><svg width="84" height="50" viewBox="-24 0 84 50" fill="none" stroke="var(--track)" style="margin-left: -24px"><path d="M6 0 C6 12, 6 13, 6 25" stroke="var(--track-2)"></path><path d="M6 25 C6 37, 6 38, 6 50" stroke="var(--track-2)"></path></svg></div><div class="track"><svg width="84" height="50" viewBox="-36 0 84 50" fill="none" stroke="var(--track)" style="margin-left: -36px"><path d="M6 0 C6 12, 6 13, 6 25" stroke="var(--track-3)"></path><path d="M6 25 C6 37, 6 38, 6 50" stroke="var(--track-3)"></path></svg></div><div class="track"><svg width="84" height="50" viewBox="-48 0 84 50" fill="none" stroke="var(--track)" style="margin-left: -48px"><path d="M6 0 C6 12, 6 13, 6 25" stroke="var(--track-4)"></path><path d="M6 25 C6 37, 6 38, 6 50" stroke="var(--track-4)"></path><circle cx="6" cy="25" r="4" fill="var(--track-4)" stroke="none"></circle></svg></div><div class="track"><svg width="84" height="50" viewBox="-60 0 84 50" fill="none" stroke="var(--track)" style="margin-left: -60px"><path d="M6 0 C6 12, 6 13, 6 25" stroke="var(--track-5)"></path><path d="M6 25 C6 37, 6 38, 6 50" stroke="var(--track-5)"></path></svg></div><div class="track"><svg width="84" height="50" viewBox="-72 0 84 50" fill="none" stroke="var(--track)" style="margin-left: -72px"><path d="M6 0 C6 12, 6 13, 6 25" stroke="var(--track-0)"></path><path d="M6 25 C6 37, 6 38, 6 50" stroke="var(--track-0)"></path></svg></div></div><div class="commit-content"><div class="message-wrapper"><div class="message" data-key="57cf91b4227201cdd7fb1e98a59f287ad86d4d84" title="fix: electronMainApp init 需要等待 ready 后再返回">fix: electronMainApp init 需要等待 ready 后再返回</div><div class="changes"></div></div><div class="footer"><div class="author" title="yutian.yz@alibaba-inc.com">yantze</div><div class="date" title="Commit:	Fri Sep 25 2020 19:58:13 GMT+0800 (中国标准时间)
+    Author:	Fri Sep 25 2020 19:58:13 GMT+0800 (中国标准时间)">2020-09-25 19:58</div><div class="refs"></div></div></div></div><div class="commit" tabindex="-1" style="position: absolute; width: 100%; line-height: 48px; height: 48px; top: 195072px;"><div class="tracks" style="width: 84px;"><div class="track"><svg width="84" height="50" viewBox="0 0 84 50" fill="none" stroke="var(--track)" style="margin-left: 0px"><path d="M6 0 C6 12, 6 13, 6 25" stroke="var(--track-0)"></path><path d="M6 25 C6 37, 6 38, 6 50" stroke="var(--track-0)"></path></svg></div><div class="track"><svg width="84" height="50" viewBox="-12 0 84 50" fill="none" stroke="var(--track)" style="margin-left: -12px"><path d="M6 0 C6 12, 6 13, 6 25" stroke="var(--track-1)"></path><path d="M6 25 C6 37, 6 38, 6 50" stroke="var(--track-1)"></path></svg></div><div class="track"><svg width="84" height="50" viewBox="-24 0 84 50" fill="none" stroke="var(--track)" style="margin-left: -24px"><path d="M6 0 C6 12, 6 13, 6 25" stroke="var(--track-2)"></path><path d="M6 25 C6 37, 6 38, 6 50" stroke="var(--track-2)"></path></svg></div><div class="track"><svg width="84" height="50" viewBox="-36 0 84 50" fill="none" stroke="var(--track)" style="margin-left: -36px"><path d="M6 0 C6 12, 6 13, 6 25" stroke="var(--track-3)"></path><path d="M18 0 C18 12, 6 13, 6 25" stroke="var(--track-4)"></path><path d="M6 25 C6 37, 6 38, 6 50" stroke="var(--track-3)"></path><path d="M6 25 C6 37, -30 38, -30 50" stroke="var(--track-0)"></path><circle cx="6" cy="25" r="4" fill="var(--track-3)" stroke="none"></circle></svg></div><div class="track"></div><div class="track"><svg width="84" height="50" viewBox="-60 0 84 50" fill="none" stroke="var(--track)" style="margin-left: -60px"><path d="M6 0 C6 12, 6 13, 6 25" stroke="var(--track-5)"></path><path d="M6 25 C6 37, 6 38, 6 50" stroke="var(--track-5)"></path></svg></div><div class="track"><svg width="84" height="50" viewBox="-72 0 84 50" fill="none" stroke="var(--track)" style="margin-left: -72px"><path d="M6 0 C6 12, 6 13, 6 25" stroke="var(--track-0)"></path><path d="M6 25 C6 37, 6 38, 6 50" stroke="var(--track-0)"></path></svg></div></div><div class="commit-content"><div class="message-wrapper"><div class="message" data-key="307bc44623294672218922b3fd3cdf1d0a129dd8" title="Merge branch 'v1.19.x' into 'develop'
+
+    ">Merge branch 'v1.19.x' into 'develop'
+    </div><div class="changes"></div></div><div class="footer"><div class="author" title="danwu.wdw@alibaba-inc.com">erha19</div><div class="date" title="Commit:	Fri Sep 25 2020 19:49:44 GMT+0800 (中国标准时间)
+    Author:	Fri Sep 25 2020 19:49:44 GMT+0800 (中国标准时间)">2020-09-25 19:49</div><div class="refs"></div></div></div></div></div></div>
+
+  <script>
+    function show_all_iframe() {
+      const iframes = parent.document.getElementsByTagName('iframe')
+      for (let i = 0; i < iframes.length; ++i) {
+        iframes[i].style.visibility = 'revert'
+      }
+    }
+    onload = function load() {
+      document.querySelector('.commits').scrollTop = 194495;
+      show_all_iframe()
+    }
+    document.readyState === "complete" && onload()
+  </script>
+</body>
+</html>
