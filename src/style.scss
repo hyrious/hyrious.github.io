@@ -82,9 +82,7 @@ a {
   text-decoration-color: transparent;
   text-decoration-thickness: 2px;
   text-underline-offset: var(--offset, 0.1em);
-  transition:
-    text-decoration-color 0.2s,
-    --offset 0.2s;
+  transition: text-decoration-color 0.2s, --offset 0.2s;
   box-shadow: 0 -0.7em var(--link-bg-color, #deefff) inset;
 
   &:hover {
@@ -100,9 +98,7 @@ a {
 
 @supports not (background: paint(something)) {
   a {
-    transition:
-      text-decoration-color 0.2s,
-      text-underline-offset 0.2s;
+    transition: text-decoration-color 0.2s, text-underline-offset 0.2s;
 
     &:hover,
     &:focus {
@@ -152,7 +148,7 @@ h4 {
 
 footer {
   font-size: 15px;
-  padding: 2ch 0;
+  padding: 4ch 0 2ch;
   color: var(--gray-color);
   position: sticky;
   top: 100vh;
