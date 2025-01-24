@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://hyrious.me/</id>
     <title>hyrious.log</title>
-    <updated>2024-12-13T17:01:53.716Z</updated>
+    <updated>2025-01-24T10:47:50.471Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <author>
         <name>hyrious</name>
@@ -14,6 +14,95 @@
     <subtitle>hyrious.log</subtitle>
     <icon>https://hyrious.me/favicon.svg</icon>
     <rights>CC0 1.0</rights>
+    <entry>
+        <title type="html"><![CDATA[画一个 Sublime Merge 同款 Commit Graph]]></title>
+        <id>smerge</id>
+        <link href="https://hyrious.me/p/smerge"/>
+        <updated>2025-01-24T00:00:00.000Z</updated>
+        <content type="html"><![CDATA[<style>.μ0{color:#24292e;background-color:#fff}.μ1{color:#D73A49}.μ2{color:#6F42C1}.μ3{color:#24292E}.μ4{color:#6A737D}.μ5{color:#E36209}.μ6{color:#005CC5}@media(prefers-color-scheme:dark){.μ0{color:#e1e4e8;background-color:#24292e}.μ1{color:#F97583}.μ2{color:#B392F0}.μ3{color:#E1E4E8}.μ4{color:#6A737D}.μ5{color:#FFAB70}.μ6{color:#79B8FF}}</style><iframe src="https://hyrious.me/i/smerge-snapshot.html" width="100%" height="300px"></iframe>
+
+<p>上面的 Git 记录来自这个真实的仓库：<a target="_blank" rel="noopener" href="https://github.com/opensumi/core">https://github.com/opensumi/core</a></p>
+<p>我从起码 <a target="_blank" rel="noopener" href="https://github.com/desktop/desktop/issues/9452">5 年前</a> 就想画这玩意儿了，但一直缺少某些前置条件：a. 解析 Git Log 的东西和 b. 想明白这个图是怎么画的。前者我在 VS Code 的 <a target="_blank" rel="noopener" href="https://github.com/microsoft/vscode/blob/c4c7c61/extensions/git/src/git.ts#L885">内置 Git 插件</a> 里抄到了，于是问题变成：</p>
+<p>已知每个 Commit（看成列表里的元素）包含以下信息：</p>
+<pre class="shiki shiki-themes github-light github-dark μ0" tabindex="0"><code><span class="line"><span class="μ1">interface</span><span class="μ2"> Commit</span><span class="μ3"> {</span></span>
+<span class="line"><span class="μ4">  // 当前 commit ID</span></span>
+<span class="line"><span class="μ5">  hash</span><span class="μ1">:</span><span class="μ6"> string</span></span>
+<span class="line"><span class="μ4">  // 上一个 commit 是谁，如果是 merge commit 会有两个 parent</span></span>
+<span class="line"><span class="μ5">  parents</span><span class="μ1">:</span><span class="μ6"> string</span><span class="μ3">[]</span></span>
+<span class="line"><span class="μ3">}</span></span></code></pre>
+<p>想办法用它（和它前后的 commit，如果需要的话）计算出绘制 Graph（也就是上面例子中左侧的图形）的必要信息。</p>
+<p>考虑到现实场景中存在 <a target="_blank" rel="noopener" href="https://github.com/microsoft/vscode">几十万</a> 条 commits 的情况，显然 Sublime 不可能是离线（就是需要先获取到所有 commits 再计算结果）算的。因为 Sublime Merge 直接有最终效果供参考，可以通过<abbr title="找规律">瞪眼法</abbr>先盲猜一下每一行需要的信息是什么：</p>
+<ul>
+<li>有 N 列路径</li>
+<li>对每条路径，往上看可能有 I（I &ge; 0）条输入路径</li>
+<li>往下看类似，有 O（O &ge; 0）条输出路径</li>
+<li>如果一条路消失了，它不会导致右侧的线向左移动，而是留下空位</li>
+<li>如果出现新的端点，他会优先寻找空位，没有再往右添加</li>
+</ul>
+<p>再仔细看看，会发现：</p>
+<ul>
+<li>每一行只能出现一个「点」，代表当前 commit</li>
+<li>只有这个点上会出现 merge（也就是多根线合并到一起的情况）</li>
+<li>每列路径有一个东西是不变的：它总是在等待对的 parent commit 出现</li>
+</ul>
+<p>那么可以先这么定义一下中间状态：</p>
+<pre class="shiki shiki-themes github-light github-dark μ0" tabindex="0"><code><span class="line"><span class="μ4">// 一开始会有一根预置的线表示正在等待 HEAD commit 出现</span></span>
+<span class="line"><span class="μ1">let</span><span class="μ3"> currentTracks </span><span class="μ1">=</span><span class="μ3"> [</span><span class="μ6">HEAD</span><span class="μ3">.hash]</span></span>
+<span class="line"><span class="μ1">let</span><span class="μ2"> update</span><span class="μ1"> =</span><span class="μ3"> (</span><span class="μ5">commit</span><span class="μ3">) </span><span class="μ1">=></span><span class="μ3"> {</span></span>
+<span class="line"><span class="μ4">  // 更新 currentTracks 并计算图</span></span>
+<span class="line"><span class="μ3">}</span></span></code></pre>
+<p>每次要处理某个 commit 时，对「上一次出来的线」计算「这一次他们变道到了哪一路」。什么情况下会变道呢？只有「出现了正在等待的 commit」时，这些线才会合并到第一根上，否则保持直线向下。</p>
+<pre class="shiki shiki-themes github-light github-dark μ0" tabindex="0"><code><span class="line"><span class="μ1">type</span><span class="μ2"> Track</span><span class="μ1"> =</span><span class="μ3"> { </span><span class="μ5">depth</span><span class="μ1">:</span><span class="μ6"> number</span><span class="μ3">; </span><span class="μ5">in</span><span class="μ1">:</span><span class="μ6"> number</span><span class="μ3">[]; </span><span class="μ5">out</span><span class="μ1">:</span><span class="μ6"> number</span><span class="μ3">[] }</span></span>
+<span class="line"><span class="μ1">let</span><span class="μ3"> nextTracks </span><span class="μ1">=</span><span class="μ3"> []</span></span>
+<span class="line"><span class="μ1">let</span><span class="μ3"> merged</span><span class="μ1">:</span><span class="μ2"> Track</span><span class="μ1"> |</span><span class="μ6"> undefined</span></span>
+<span class="line"><span class="μ1">let</span><span class="μ3"> k </span><span class="μ1">=</span><span class="μ6"> 0</span><span class="μ4"> // 取 commit.parents 用</span></span>
+<span class="line"><span class="μ1">for</span><span class="μ3"> (</span><span class="μ1">let</span><span class="μ3"> j </span><span class="μ1">=</span><span class="μ6"> 0</span><span class="μ3">; j </span><span class="μ1">&#x3C;</span><span class="μ3"> currentTracks.</span><span class="μ6">length</span><span class="μ3">; j</span><span class="μ1">++</span><span class="μ3">) {</span></span>
+<span class="line"><span class="μ1">  let</span><span class="μ3"> parent </span><span class="μ1">=</span><span class="μ3"> currentTracks[j]</span></span>
+<span class="line"><span class="μ1">  if</span><span class="μ3"> (parent) {</span></span>
+<span class="line"><span class="μ1">    if</span><span class="μ3"> (parent </span><span class="μ1">===</span><span class="μ3"> commit.hash) {</span></span>
+<span class="line"><span class="μ1">      if</span><span class="μ3"> (</span><span class="μ1">!</span><span class="μ3">merged) {</span></span>
+<span class="line"><span class="μ4">        // 出现了，直接合并</span></span>
+<span class="line"><span class="μ3">        nextTracks[j] </span><span class="μ1">=</span><span class="μ3"> commit.parents[k</span><span class="μ1">++</span><span class="μ3">] </span><span class="μ4">// 这根线接下来要找另一个 parent 了</span></span>
+<span class="line"><span class="μ3">        merged </span><span class="μ1">=</span><span class="μ3"> { depth: j, in: [j], out: nextTracks[j] </span><span class="μ1">?</span><span class="μ3"> [j] </span><span class="μ1">:</span><span class="μ3"> [] }</span></span>
+<span class="line"><span class="μ3">      } </span><span class="μ1">else</span><span class="μ3"> {</span></span>
+<span class="line"><span class="μ4">        // 合并到第一根上，所以下一次没有这根线了</span></span>
+<span class="line"><span class="μ3">        nextTracks[j] </span><span class="μ1">=</span><span class="μ6"> null</span></span>
+<span class="line"><span class="μ3">        merged.in.</span><span class="μ2">push</span><span class="μ3">(j)</span></span>
+<span class="line"><span class="μ3">      }</span></span>
+<span class="line"><span class="μ3">    } </span><span class="μ1">else</span><span class="μ3"> {</span></span>
+<span class="line"><span class="μ4">      // 无关的线继续向下</span></span>
+<span class="line"><span class="μ3">      nextTracks[j] </span><span class="μ1">=</span><span class="μ3"> parent</span></span>
+<span class="line"><span class="μ3">    }</span></span>
+<span class="line"><span class="μ3">  } </span><span class="μ1">else</span><span class="μ3"> {</span></span>
+<span class="line"><span class="μ4">    // 空的还是空的</span></span>
+<span class="line"><span class="μ3">    nextTracks[j] </span><span class="μ1">=</span><span class="μ6"> null</span></span>
+<span class="line"><span class="μ3">  }</span></span>
+<span class="line"><span class="μ3">}</span></span>
+<span class="line"><span class="μ4">// 此时没被 merge 的 parents 要么往左合并，要么往右分叉</span></span>
+<span class="line"><span class="μ1">while</span><span class="μ3"> (commit.parents[k]) {</span></span>
+<span class="line"><span class="μ1">  let</span><span class="μ3"> exist </span><span class="μ1">=</span><span class="μ3"> currentTracks.</span><span class="μ2">indexOf</span><span class="μ3">(commit.parents[k])</span></span>
+<span class="line"><span class="μ1">  if</span><span class="μ3"> (exist) {</span></span>
+<span class="line"><span class="μ4">    // 已经往左合并了</span></span>
+<span class="line"><span class="μ3">    merged?.out.</span><span class="μ2">push</span><span class="μ3">(exist)</span></span>
+<span class="line"><span class="μ3">    nextTracks[exist] </span><span class="μ1">=</span><span class="μ3"> commit.parents[k</span><span class="μ1">++</span><span class="μ3">]</span></span>
+<span class="line"><span class="μ3">  } </span><span class="μ1">else</span><span class="μ3"> {</span></span>
+<span class="line"><span class="μ4">    // 分叉，往右找到第一个空位</span></span>
+<span class="line"><span class="μ1">    let</span><span class="μ3"> index </span><span class="μ1">=</span><span class="μ3"> nextTracks.</span><span class="μ2">indexOf</span><span class="μ3">(</span><span class="μ6">null</span><span class="μ3">)</span></span>
+<span class="line"><span class="μ1">    if</span><span class="μ3"> (index </span><span class="μ1">&#x3C;</span><span class="μ6"> 0</span><span class="μ3">) index </span><span class="μ1">=</span><span class="μ3"> nextTracks.</span><span class="μ6">length</span></span>
+<span class="line"><span class="μ3">    nextTracks[index] </span><span class="μ1">=</span><span class="μ3"> commit.parents[k</span><span class="μ1">++</span><span class="μ3">]</span></span>
+<span class="line"><span class="μ1">    if</span><span class="μ3"> (merged) {</span></span>
+<span class="line"><span class="μ4">      // 添加到当前 merge commit 的输出里</span></span>
+<span class="line"><span class="μ3">      merged.out.</span><span class="μ2">push</span><span class="μ3">(index)</span></span>
+<span class="line"><span class="μ3">    } </span><span class="μ1">else</span><span class="μ3"> {</span></span>
+<span class="line"><span class="μ4">      // 如果没有 merge commit，那么新的 parent 自动形成一路</span></span>
+<span class="line"><span class="μ3">      merged </span><span class="μ1">=</span><span class="μ3"> { depth: index, in: [], out: [index] }</span></span>
+<span class="line"><span class="μ3">    }</span></span>
+<span class="line"><span class="μ3">  }</span></span>
+<span class="line"><span class="μ3">}</span></span>
+<span class="line"></span>
+<span class="line"><span class="μ3">currentTracks </span><span class="μ1">=</span><span class="μ3"> nextTracks</span></span></code></pre>
+<p>上述实现已经在 <a target="_blank" rel="noopener" href="https://github.com/hyrious/git-tm">https://github.com/hyrious/git-tm</a> 里使用了，感兴趣可以用用。</p>]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[基于 Lezer Parser 写一个 Formatter]]></title>
         <id>lezer-formatter</id>
@@ -604,7 +693,7 @@
         <id>crdt</id>
         <link href="https://hyrious.me/p/crdt"/>
         <updated>2023-11-23T00:00:00.000Z</updated>
-        <content type="html"><![CDATA[<style>.μ0{color:#24292e;background-color:#fff}.μ1{color:#24292E}.μ2{color:#D73A49}.μ3{color:#005CC5}.μ4{color:#E36209}@media(prefers-color-scheme:dark){.μ0{color:#e1e4e8;background-color:#24292e}.μ1{color:#E1E4E8}.μ2{color:#F97583}.μ3{color:#79B8FF}.μ4{color:#FFAB70}}</style><p>以前写过一篇 <a href="./crdt-fractional-indexing">&laquo;CRDT: 分数排序&raquo;</a>。我认为，CRDT 可能是未来实现大部分软件的最佳选择。有了它，你就免费获得了离线编辑、协作、历史记录、撤销重做等等功能，传统的软件开发中以上任何一条都是非常难设计和实现的。</p>
+        <content type="html"><![CDATA[<style>.μ0{color:#24292e;background-color:#fff}.μ1{color:#6F42C1}.μ2{color:#D73A49}.μ3{color:#24292E}.μ4{color:#005CC5}.μ5{color:#E36209}@media(prefers-color-scheme:dark){.μ0{color:#e1e4e8;background-color:#24292e}.μ1{color:#B392F0}.μ2{color:#F97583}.μ3{color:#E1E4E8}.μ4{color:#79B8FF}.μ5{color:#FFAB70}}</style><p>以前写过一篇 <a href="./crdt-fractional-indexing">&laquo;CRDT: 分数排序&raquo;</a>。我认为，CRDT 可能是未来实现大部分软件的最佳选择。有了它，你就免费获得了离线编辑、协作、历史记录、撤销重做等等功能，传统的软件开发中以上任何一条都是非常难设计和实现的。</p>
 <h3 id="定义">定义</h3>
 <p>Conflict-free Replicated Data Type，无冲突数据结构。什么叫冲突？这通常需要根据具体场景来理解和定义，对于大家最熟悉的文本编辑场景，冲突就是两个或以上用户的编辑最终变成了重叠、错位、不一致的情况。CRDT 的目标就是针对各种不同的场景，<strong>分别</strong>设计出特定的数据结构，使得它们可以符合大多数人的预期、保持一致。由于 CRDT 不是一种，有的时候大家也会用 CRDTs 来代指所有的 CRDT。下文中还会列举一些常见的实现。</p>
 <h4 id="问题框架">问题框架</h4>
@@ -643,36 +732,36 @@
 <h4 id="投票系统">投票系统</h4>
 <p>假如你在做一个直播类软件，软件上有一个点赞按钮，所有观众都可以点击此按钮为主播的人气值 +1，你该如何实现：有一万个人同时点击这个按钮，如何让主播最终看到人气值 = 一万，且服务器不炸。</p>
 <p><strong>解</strong>: 可以设计这样一种数据结构，它的消息体里只有一个 <code>1</code>，主播拿到消息后立刻增加人气值。回想上文中的信道，显然，既然消息都可以到达，那么最终收到的 <code>1</code> 的数量一定是完整的一万。</p>
-<pre class="shiki shiki-themes github-light github-dark μ0" tabindex="0"><code><span class="line"><span class="μ1">点赞 </span><span class="μ2">=</span><span class="μ1"> () </span><span class="μ2">=></span><span class="μ1"> 观众.发送(</span><span class="μ3">1</span><span class="μ1">)</span></span>
+<pre class="shiki shiki-themes github-light github-dark μ0" tabindex="0"><code><span class="line"><span class="μ1">点赞</span><span class="μ2"> =</span><span class="μ3"> () </span><span class="μ2">=></span><span class="μ3"> 观众.</span><span class="μ1">发送</span><span class="μ3">(</span><span class="μ4">1</span><span class="μ3">)</span></span>
 <span class="line"></span>
-<span class="line"><span class="μ1">收到 </span><span class="μ2">=</span><span class="μ1"> (点赞) </span><span class="μ2">=></span><span class="μ1"> {</span></span>
-<span class="line"><span class="μ3">  this</span><span class="μ1">.人气值 </span><span class="μ2">+=</span><span class="μ1"> 点赞</span></span>
-<span class="line"><span class="μ1">}</span></span></code></pre>
+<span class="line"><span class="μ1">收到</span><span class="μ2"> =</span><span class="μ3"> (</span><span class="μ5">点赞</span><span class="μ3">) </span><span class="μ2">=></span><span class="μ3"> {</span></span>
+<span class="line"><span class="μ4">  this</span><span class="μ3">.人气值 </span><span class="μ2">+=</span><span class="μ3"> 点赞</span></span>
+<span class="line"><span class="μ3">}</span></span></code></pre>
 <h4 id="分组投票系统">分组投票系统</h4>
 <p>还是上面的场景，但是你想看到具体每个人点了多少次赞。</p>
 <p><strong>解</strong>: 可以让消息体里带上观众的 ID，主播那里分别统计每个人的点赞次数。</p>
-<pre class="shiki shiki-themes github-light github-dark μ0" tabindex="0"><code><span class="line"><span class="μ1">点赞 </span><span class="μ2">=</span><span class="μ1"> () </span><span class="μ2">=></span><span class="μ1"> 观众.发送(</span><span class="μ3">this</span><span class="μ1">.id, </span><span class="μ3">1</span><span class="μ1">)</span></span>
+<pre class="shiki shiki-themes github-light github-dark μ0" tabindex="0"><code><span class="line"><span class="μ1">点赞</span><span class="μ2"> =</span><span class="μ3"> () </span><span class="μ2">=></span><span class="μ3"> 观众.</span><span class="μ1">发送</span><span class="μ3">(</span><span class="μ4">this</span><span class="μ3">.id, </span><span class="μ4">1</span><span class="μ3">)</span></span>
 <span class="line"></span>
-<span class="line"><span class="μ1">收到 </span><span class="μ2">=</span><span class="μ1"> ([谁, 点赞]) </span><span class="μ2">=></span><span class="μ1"> {</span></span>
-<span class="line"><span class="μ3">  this</span><span class="μ1">.人气值[谁] </span><span class="μ2">+=</span><span class="μ1"> 点赞</span></span>
-<span class="line"><span class="μ1">}</span></span></code></pre>
+<span class="line"><span class="μ1">收到</span><span class="μ2"> =</span><span class="μ3"> ([</span><span class="μ5">谁</span><span class="μ3">, </span><span class="μ5">点赞</span><span class="μ3">]) </span><span class="μ2">=></span><span class="μ3"> {</span></span>
+<span class="line"><span class="μ4">  this</span><span class="μ3">.人气值[谁] </span><span class="μ2">+=</span><span class="μ3"> 点赞</span></span>
+<span class="line"><span class="μ3">}</span></span></code></pre>
 <h4 id="礼物系统-set">礼物系统 (Set)</h4>
 <p>还是上面的场景，但是这次不要求统计赞数，而是要求知道主播收到了哪些种类的礼物。</p>
 <p><strong>解</strong>: 可以让消息体里带上礼物的 ID，主播那里把收到的礼物 ID 放到一个集合里。</p>
-<pre class="shiki shiki-themes github-light github-dark μ0" tabindex="0"><code><span class="line"><span class="μ1">发送礼物 </span><span class="μ2">=</span><span class="μ1"> () </span><span class="μ2">=></span><span class="μ1"> 观众.发送(礼物.id)</span></span>
+<pre class="shiki shiki-themes github-light github-dark μ0" tabindex="0"><code><span class="line"><span class="μ1">发送礼物</span><span class="μ2"> =</span><span class="μ3"> () </span><span class="μ2">=></span><span class="μ3"> 观众.</span><span class="μ1">发送</span><span class="μ3">(礼物.id)</span></span>
 <span class="line"></span>
-<span class="line"><span class="μ1">收到 </span><span class="μ2">=</span><span class="μ1"> ([谁, 礼物]) </span><span class="μ2">=></span><span class="μ1"> {</span></span>
-<span class="line"><span class="μ3">  this</span><span class="μ1">.收到的[礼物] </span><span class="μ2">=</span><span class="μ3"> true</span></span>
-<span class="line"><span class="μ1">}</span></span></code></pre>
+<span class="line"><span class="μ1">收到</span><span class="μ2"> =</span><span class="μ3"> ([</span><span class="μ5">谁</span><span class="μ3">, </span><span class="μ5">礼物</span><span class="μ3">]) </span><span class="μ2">=></span><span class="μ3"> {</span></span>
+<span class="line"><span class="μ4">  this</span><span class="μ3">.收到的[礼物] </span><span class="μ2">=</span><span class="μ4"> true</span></span>
+<span class="line"><span class="μ3">}</span></span></code></pre>
 <h4 id="知乎">知乎</h4>
 <p>这次不光可以点赞，还可以点踩。只需要知道最后 <code>赞 - 踩</code> 是多少即可。</p>
 <p><strong>解</strong>: 可以设计两种消息，一个 <code>+1</code>，一个 <code>-1</code>，主播累加所有消息。</p>
-<pre class="shiki shiki-themes github-light github-dark μ0" tabindex="0"><code><span class="line"><span class="μ1">点赞 </span><span class="μ2">=</span><span class="μ1"> () </span><span class="μ2">=></span><span class="μ1"> 观众.发送(</span><span class="μ2">+</span><span class="μ3">1</span><span class="μ1">)</span></span>
-<span class="line"><span class="μ1">点踩 </span><span class="μ2">=</span><span class="μ1"> () </span><span class="μ2">=></span><span class="μ1"> 观众.发送(</span><span class="μ2">-</span><span class="μ3">1</span><span class="μ1">)</span></span>
+<pre class="shiki shiki-themes github-light github-dark μ0" tabindex="0"><code><span class="line"><span class="μ1">点赞</span><span class="μ2"> =</span><span class="μ3"> () </span><span class="μ2">=></span><span class="μ3"> 观众.</span><span class="μ1">发送</span><span class="μ3">(</span><span class="μ2">+</span><span class="μ4">1</span><span class="μ3">)</span></span>
+<span class="line"><span class="μ1">点踩</span><span class="μ2"> =</span><span class="μ3"> () </span><span class="μ2">=></span><span class="μ3"> 观众.</span><span class="μ1">发送</span><span class="μ3">(</span><span class="μ2">-</span><span class="μ4">1</span><span class="μ3">)</span></span>
 <span class="line"></span>
-<span class="line"><span class="μ1">收到 </span><span class="μ2">=</span><span class="μ1"> (点赞或点踩) </span><span class="μ2">=></span><span class="μ1"> {</span></span>
-<span class="line"><span class="μ3">  this</span><span class="μ1">.人气值 </span><span class="μ2">+=</span><span class="μ1"> 点赞或点踩</span></span>
-<span class="line"><span class="μ1">}</span></span></code></pre>
+<span class="line"><span class="μ1">收到</span><span class="μ2"> =</span><span class="μ3"> (</span><span class="μ5">点赞或点踩</span><span class="μ3">) </span><span class="μ2">=></span><span class="μ3"> {</span></span>
+<span class="line"><span class="μ4">  this</span><span class="μ3">.人气值 </span><span class="μ2">+=</span><span class="μ3"> 点赞或点踩</span></span>
+<span class="line"><span class="μ3">}</span></span></code></pre>
 <h4 id="通用-map">通用 (Map)</h4>
 <p>对于一些元信息类的数据，只需要保留最后一次修改的结果。例如文章标题、卡片颜色等等。</p>
 <p><strong>注意</strong>: 上文中的信道是不保序的，因此你不能依赖消息到达的顺序来实现。</p>
@@ -680,15 +769,15 @@
 <blockquote>
 <p>Lamport 时钟是指这样一个数：初始化为 0，每次发送消息一起发出去且 +1，每次收到消息时设为最新消息的时钟 +1。</p>
 </blockquote>
-<pre class="shiki shiki-themes github-light github-dark μ0" tabindex="0"><code><span class="line"><span class="μ1">写入 </span><span class="μ2">=</span><span class="μ1"> (</span><span class="μ4">key</span><span class="μ1">, </span><span class="μ4">value</span><span class="μ1">) </span><span class="μ2">=></span><span class="μ1"> {</span></span>
-<span class="line"><span class="μ3">  this</span><span class="μ1">.发送(</span><span class="μ3">this</span><span class="μ1">.lamport</span><span class="μ2">++</span><span class="μ1">, key, value)</span></span>
-<span class="line"><span class="μ1">}</span></span>
-<span class="line"><span class="μ1">收到 </span><span class="μ2">=</span><span class="μ1"> (</span><span class="μ4">lamport</span><span class="μ1">, </span><span class="μ4">key</span><span class="μ1">, </span><span class="μ4">value</span><span class="μ1">) </span><span class="μ2">=></span><span class="μ1"> {</span></span>
-<span class="line"><span class="μ2">  if</span><span class="μ1"> (</span><span class="μ3">this</span><span class="μ1">.lamport </span><span class="μ2">&#x3C;</span><span class="μ1"> lamport) {</span></span>
-<span class="line"><span class="μ3">    this</span><span class="μ1">.lamport </span><span class="μ2">=</span><span class="μ1"> lamport </span><span class="μ2">+</span><span class="μ3"> 1</span></span>
-<span class="line"><span class="μ3">    this</span><span class="μ1">.数据[key] </span><span class="μ2">=</span><span class="μ1"> value</span></span>
-<span class="line"><span class="μ1">  }</span></span>
-<span class="line"><span class="μ1">}</span></span></code></pre>
+<pre class="shiki shiki-themes github-light github-dark μ0" tabindex="0"><code><span class="line"><span class="μ1">写入</span><span class="μ2"> =</span><span class="μ3"> (</span><span class="μ5">key</span><span class="μ3">, </span><span class="μ5">value</span><span class="μ3">) </span><span class="μ2">=></span><span class="μ3"> {</span></span>
+<span class="line"><span class="μ4">  this</span><span class="μ3">.</span><span class="μ1">发送</span><span class="μ3">(</span><span class="μ4">this</span><span class="μ3">.lamport</span><span class="μ2">++</span><span class="μ3">, key, value)</span></span>
+<span class="line"><span class="μ3">}</span></span>
+<span class="line"><span class="μ1">收到</span><span class="μ2"> =</span><span class="μ3"> (</span><span class="μ5">lamport</span><span class="μ3">, </span><span class="μ5">key</span><span class="μ3">, </span><span class="μ5">value</span><span class="μ3">) </span><span class="μ2">=></span><span class="μ3"> {</span></span>
+<span class="line"><span class="μ2">  if</span><span class="μ3"> (</span><span class="μ4">this</span><span class="μ3">.lamport </span><span class="μ2">&#x3C;</span><span class="μ3"> lamport) {</span></span>
+<span class="line"><span class="μ4">    this</span><span class="μ3">.lamport </span><span class="μ2">=</span><span class="μ3"> lamport </span><span class="μ2">+</span><span class="μ4"> 1</span></span>
+<span class="line"><span class="μ4">    this</span><span class="μ3">.数据[key] </span><span class="μ2">=</span><span class="μ3"> value</span></span>
+<span class="line"><span class="μ3">  }</span></span>
+<span class="line"><span class="μ3">}</span></span></code></pre>
 <h4 id="列表-list">列表 (List)</h4>
 <p>对于记事本等小型列表场景，直接替换整个列表似乎有点浪费带宽。</p>
 <p><a target="_blank" rel="noopener" href="https://madebyevan.com/algos/crdt-fractional-indexing/">Evan</a> 提出给元素增加一个分数信息表示列表位置的方法，详见 <a href="./crdt-fractional-indexing">&laquo;CRDT: 分数排序&raquo;</a>。</p>
@@ -1021,7 +1110,7 @@ dist/p/hello-world.html  12.11 kB
 <pre class="shiki shiki-themes github-light github-dark μ0" tabindex="0"><code><span class="line"><span class="μ2">magic_alias </span><span class="μ4">:old_meth</span><span class="μ2">, </span><span class="μ4">:meth</span></span>
 <span class="line"><span class="μ2">...</span></span></code></pre>
 <p>如果上下文里已经有 <code>old_meth</code>，说明已经执行过一次，什么都不做就行：</p>
-<pre class="shiki shiki-themes github-light github-dark μ0" tabindex="0"><code><span class="line"><span class="μ1">class</span><span class="μ1"> &#x3C;&#x3C;</span><span class="μ2"> self</span></span>
+<pre class="shiki shiki-themes github-light github-dark μ0" tabindex="0"><code><span class="line"><span class="μ1">class</span><span class="μ1"> &#x3C;&#x3C;</span><span class="μ4"> self</span></span>
 <span class="line"><span class="μ1">  def</span><span class="μ3"> magic_alias</span><span class="μ2">(name, value)</span></span>
 <span class="line"><span class="μ1">    return</span><span class="μ1"> if</span><span class="μ2"> method_defined? name</span></span>
 <span class="line"><span class="μ1">    alias_method</span><span class="μ2"> name, value </span><span class="μ5"># 否则正常使用原 alias 效果</span></span>
@@ -1203,7 +1292,7 @@ dist/p/hello-world.html  12.11 kB
         <id>earley-parser</id>
         <link href="https://hyrious.me/p/earley-parser"/>
         <updated>2017-09-27T00:00:00.000Z</updated>
-        <content type="html"><![CDATA[<style>.μ0{color:#24292e;background-color:#fff}.μ1{color:#D73A49}.μ2{color:#6F42C1}.μ3{color:#24292E}.μ4{color:#6A737D}.μ5{color:#005CC5}.μ6{color:#032F62}.μ7{color:#032F62}@media(prefers-color-scheme:dark){.μ0{color:#e1e4e8;background-color:#24292e}.μ1{color:#F97583}.μ2{color:#B392F0}.μ3{color:#E1E4E8}.μ4{color:#6A737D}.μ5{color:#79B8FF}.μ6{color:#9ECBFF}.μ7{color:#DBEDFF}}</style><ul>
+        <content type="html"><![CDATA[<style>.μ0{color:#24292e;background-color:#fff}.μ1{color:#D73A49}.μ2{color:#6F42C1}.μ3{color:#24292E}.μ4{color:#6A737D}.μ5{color:#005CC5}.μ6{color:#E36209}.μ7{color:#032F62}.μ8{color:#032F62}@media(prefers-color-scheme:dark){.μ0{color:#e1e4e8;background-color:#24292e}.μ1{color:#F97583}.μ2{color:#B392F0}.μ3{color:#E1E4E8}.μ4{color:#6A737D}.μ5{color:#79B8FF}.μ6{color:#FFAB70}.μ7{color:#9ECBFF}.μ8{color:#DBEDFF}}</style><ul>
 <li><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Earley_parser">Earley parser - Wikipedia</a></li>
 <li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/bitpeach/p/3602522.html">模式识别之 Earley 算法入门详讲 - bitpeach</a></li>
 </ul>
@@ -1220,7 +1309,7 @@ dist/p/hello-world.html  12.11 kB
 <p>注意：<span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.05764em;">S</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.03148em;">k</span><span class="mclose">)</span></span></span></span> 是一个 <strong>集合</strong>，里面没有重复的 State。</p>
 <p>设输入有 n 个 token，我们在 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.05764em;">S</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span> 中找到所有 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6595em;"></span><span class="mord mathnormal">i</span></span></span></span> 是 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0</span></span></span></span> 的，说明我们已经匹配完成了全部的规则，找到的都是合法的生成树。</p>
 <h4 id="简单实现">简单实现</h4>
-<pre class="shiki shiki-themes github-light github-dark μ0" tabindex="0"><code><span class="line"><span class="μ1">class</span><span class="μ2"> Earley</span></span>
+<pre class="shiki shiki-themes github-light github-dark μ0" tabindex="0"><code><span class="line"><span class="μ1">class</span><span class="μ5"> Earley</span></span>
 <span class="line"><span class="μ1">  def</span><span class="μ2"> initialize</span><span class="μ3"> rules </span><span class="μ1">=</span><span class="μ3"> []</span></span>
 <span class="line"><span class="μ3">    @rules </span><span class="μ1">=</span><span class="μ3"> rules</span></span>
 <span class="line"><span class="μ1">  end</span></span>
@@ -1228,23 +1317,23 @@ dist/p/hello-world.html  12.11 kB
 <span class="line"><span class="μ1">    yield</span><span class="μ3"> arr[i], (i </span><span class="μ1">+=</span><span class="μ5"> 1</span><span class="μ3">) </span><span class="μ1">-</span><span class="μ5"> 1</span><span class="μ1"> while</span><span class="μ3"> arr[i]</span></span>
 <span class="line"><span class="μ1">  end</span></span>
 <span class="line"><span class="μ1">  def</span><span class="μ2"> uniq_bfs</span><span class="μ3"> start </span><span class="μ1">=</span><span class="μ3"> [], i </span><span class="μ1">=</span><span class="μ5"> 0</span></span>
-<span class="line"><span class="μ1">    yield</span><span class="μ3"> start[(i </span><span class="μ1">+=</span><span class="μ5"> 1</span><span class="μ3">) </span><span class="μ1">-</span><span class="μ5"> 1</span><span class="μ3">], </span><span class="μ5">-></span><span class="μ3"> x { start.push(x).uniq!; x } </span><span class="μ1">while</span><span class="μ3"> start[i]</span></span>
+<span class="line"><span class="μ1">    yield</span><span class="μ3"> start[(i </span><span class="μ1">+=</span><span class="μ5"> 1</span><span class="μ3">) </span><span class="μ1">-</span><span class="μ5"> 1</span><span class="μ3">], </span><span class="μ5">-></span><span class="μ3"> x { start.</span><span class="μ2">push</span><span class="μ3">(x).</span><span class="μ2">uniq!</span><span class="μ3">; x } </span><span class="μ1">while</span><span class="μ3"> start[i]</span></span>
 <span class="line"><span class="μ1">  end</span></span>
 <span class="line"><span class="μ1">  def</span><span class="μ2"> parse</span><span class="μ3"> str, </span><span class="μ1">&#x26;</span><span class="μ3">lex</span></span>
-<span class="line"><span class="μ3">    s </span><span class="μ1">=</span><span class="μ3"> [[[@rules[</span><span class="μ5">0</span><span class="μ3">], </span><span class="μ5">0</span><span class="μ3">, </span><span class="μ5">0</span><span class="μ3">]]]</span></span>
-<span class="line"><span class="μ3">    lazy_each_with_index(s) { |set, k|</span></span>
-<span class="line"><span class="μ3">      s.push [] </span><span class="μ1">if</span><span class="μ3"> token </span><span class="μ1">=</span><span class="μ3"> lex.(str)</span></span>
-<span class="line"><span class="μ3">      uniq_bfs(set) { |((n, rule), i, j), u|</span></span>
-<span class="line"><span class="μ1">        if</span><span class="μ3"> rule.size </span><span class="μ1">==</span><span class="μ3"> i</span></span>
-<span class="line"><span class="μ3">          s[j].</span><span class="μ5">select</span><span class="μ3"> { |(_, rule), i, _| rule[i] </span><span class="μ1">==</span><span class="μ3"> n }.each { |e, i, j| u.([e, i </span><span class="μ1">+</span><span class="μ5"> 1</span><span class="μ3">, j]) }</span></span>
-<span class="line"><span class="μ1">        elsif</span><span class="μ3"> rule[i].is_a? </span><span class="μ5">Symbol</span></span>
-<span class="line"><span class="μ3">          @rules.</span><span class="μ5">select</span><span class="μ3"> { |e, _| rule[i] </span><span class="μ1">==</span><span class="μ3"> e }.each { |e| u.([e, </span><span class="μ5">0</span><span class="μ3">, k]) }</span></span>
+<span class="line"><span class="μ6">    s</span><span class="μ3"> = [[[@rules[</span><span class="μ5">0</span><span class="μ3">], </span><span class="μ5">0</span><span class="μ3">, </span><span class="μ5">0</span><span class="μ3">]]]</span></span>
+<span class="line"><span class="μ2">    lazy_each_with_index</span><span class="μ3">(s) { |set, k|</span></span>
+<span class="line"><span class="μ3">      s.</span><span class="μ2">push</span><span class="μ3"> [] </span><span class="μ1">if</span><span class="μ6"> token</span><span class="μ3"> = lex.(str)</span></span>
+<span class="line"><span class="μ2">      uniq_bfs</span><span class="μ3">(set) { |((n, rule), i, j), u|</span></span>
+<span class="line"><span class="μ1">        if</span><span class="μ3"> rule.</span><span class="μ2">size</span><span class="μ1"> ==</span><span class="μ3"> i</span></span>
+<span class="line"><span class="μ3">          s[j].</span><span class="μ5">select</span><span class="μ3"> { |(</span><span class="μ5">_</span><span class="μ3">, rule), i, </span><span class="μ5">_</span><span class="μ3">| rule[i] </span><span class="μ1">==</span><span class="μ3"> n }.</span><span class="μ2">each</span><span class="μ3"> { |e, i, j| u.([e, i </span><span class="μ1">+</span><span class="μ5"> 1</span><span class="μ3">, j]) }</span></span>
+<span class="line"><span class="μ1">        elsif</span><span class="μ3"> rule[i].</span><span class="μ2">is_a?</span><span class="μ5"> Symbol</span></span>
+<span class="line"><span class="μ3">          @rules.</span><span class="μ5">select</span><span class="μ3"> { |e, </span><span class="μ5">_</span><span class="μ3">| rule[i] </span><span class="μ1">==</span><span class="μ3"> e }.</span><span class="μ2">each</span><span class="μ3"> { |e| u.([e, </span><span class="μ5">0</span><span class="μ3">, k]) }</span></span>
 <span class="line"><span class="μ1">        elsif</span><span class="μ3"> match rule[i], token</span></span>
-<span class="line"><span class="μ3">          s[k </span><span class="μ1">+</span><span class="μ5"> 1</span><span class="μ3">].push [[n, rule], i </span><span class="μ1">+</span><span class="μ5"> 1</span><span class="μ3">, j]</span></span>
+<span class="line"><span class="μ3">          s[k </span><span class="μ1">+</span><span class="μ5"> 1</span><span class="μ3">].</span><span class="μ2">push</span><span class="μ3"> [[n, rule], i </span><span class="μ1">+</span><span class="μ5"> 1</span><span class="μ3">, j]</span></span>
 <span class="line"><span class="μ1">        end</span></span>
 <span class="line"><span class="μ3">      }</span></span>
 <span class="line"><span class="μ3">    }</span></span>
-<span class="line"><span class="μ3">    s[</span><span class="μ1">-</span><span class="μ5">1</span><span class="μ3">].any? { |(n, rule), i, j| n </span><span class="μ1">==</span><span class="μ3"> @rules[</span><span class="μ5">0</span><span class="μ3">][</span><span class="μ5">0</span><span class="μ3">] </span><span class="μ1">&#x26;&#x26;</span><span class="μ3"> rule.size </span><span class="μ1">==</span><span class="μ3"> i </span><span class="μ1">&#x26;&#x26;</span><span class="μ3"> j.zero? }</span></span>
+<span class="line"><span class="μ3">    s[</span><span class="μ1">-</span><span class="μ5">1</span><span class="μ3">].</span><span class="μ2">any?</span><span class="μ3"> { |(n, rule), i, j| n </span><span class="μ1">==</span><span class="μ3"> @rules[</span><span class="μ5">0</span><span class="μ3">][</span><span class="μ5">0</span><span class="μ3">] </span><span class="μ1">&#x26;&#x26;</span><span class="μ3"> rule.</span><span class="μ2">size</span><span class="μ1"> ==</span><span class="μ3"> i </span><span class="μ1">&#x26;&#x26;</span><span class="μ3"> j.</span><span class="μ2">zero?</span><span class="μ3"> }</span></span>
 <span class="line"><span class="μ1">  end</span></span>
 <span class="line"><span class="μ1">  def</span><span class="μ2"> match</span><span class="μ3"> pattern, token</span></span>
 <span class="line"><span class="μ1">    case</span><span class="μ3"> pattern</span></span>
@@ -1257,16 +1346,16 @@ dist/p/hello-world.html  12.11 kB
 <span class="line"></span>
 <span class="line"><span class="μ5">p</span><span class="μ5"> Earley</span><span class="μ3">.</span><span class="μ1">new</span><span class="μ3">([</span></span>
 <span class="line"><span class="μ3">  [</span><span class="μ5">:P</span><span class="μ3">, [</span><span class="μ5">:S</span><span class="μ3">]],</span></span>
-<span class="line"><span class="μ3">  [</span><span class="μ5">:S</span><span class="μ3">, [</span><span class="μ5">:S</span><span class="μ3">, </span><span class="μ6">'+'</span><span class="μ3">, </span><span class="μ5">:M</span><span class="μ3">]],</span></span>
-<span class="line"><span class="μ3">  [</span><span class="μ5">:S</span><span class="μ3">, [</span><span class="μ5">:S</span><span class="μ3">, </span><span class="μ6">'-'</span><span class="μ3">, </span><span class="μ5">:M</span><span class="μ3">]],</span></span>
+<span class="line"><span class="μ3">  [</span><span class="μ5">:S</span><span class="μ3">, [</span><span class="μ5">:S</span><span class="μ3">, </span><span class="μ7">'+'</span><span class="μ3">, </span><span class="μ5">:M</span><span class="μ3">]],</span></span>
+<span class="line"><span class="μ3">  [</span><span class="μ5">:S</span><span class="μ3">, [</span><span class="μ5">:S</span><span class="μ3">, </span><span class="μ7">'-'</span><span class="μ3">, </span><span class="μ5">:M</span><span class="μ3">]],</span></span>
 <span class="line"><span class="μ3">  [</span><span class="μ5">:S</span><span class="μ3">, [</span><span class="μ5">:M</span><span class="μ3">]],</span></span>
-<span class="line"><span class="μ3">  [</span><span class="μ5">:M</span><span class="μ3">, [</span><span class="μ5">:M</span><span class="μ3">, </span><span class="μ6">'*'</span><span class="μ3">, </span><span class="μ5">:T</span><span class="μ3">]],</span></span>
-<span class="line"><span class="μ3">  [</span><span class="μ5">:M</span><span class="μ3">, [</span><span class="μ5">:M</span><span class="μ3">, </span><span class="μ6">'/'</span><span class="μ3">, </span><span class="μ5">:T</span><span class="μ3">]],</span></span>
+<span class="line"><span class="μ3">  [</span><span class="μ5">:M</span><span class="μ3">, [</span><span class="μ5">:M</span><span class="μ3">, </span><span class="μ7">'*'</span><span class="μ3">, </span><span class="μ5">:T</span><span class="μ3">]],</span></span>
+<span class="line"><span class="μ3">  [</span><span class="μ5">:M</span><span class="μ3">, [</span><span class="μ5">:M</span><span class="μ3">, </span><span class="μ7">'/'</span><span class="μ3">, </span><span class="μ5">:T</span><span class="μ3">]],</span></span>
 <span class="line"><span class="μ3">  [</span><span class="μ5">:M</span><span class="μ3">, [</span><span class="μ5">:T</span><span class="μ3">]],</span></span>
-<span class="line"><span class="μ3">  [</span><span class="μ5">:T</span><span class="μ3">, [</span><span class="μ6">/</span><span class="μ7">^</span><span style="--s-light:#22863A;--s-light-font-weight:bold;--s-dark:#85E89D;--s-dark-font-weight:bold">\d</span><span class="μ7">+$</span><span class="μ6">/</span><span class="μ3">]],</span></span>
-<span class="line"><span class="μ3">]).parse(</span><span class="μ6">'2 + 3 - 4'</span><span class="μ3">) { |s|</span></span>
-<span class="line"><span class="μ3">  s.slice!(</span><span class="μ6">/</span><span class="μ7">^</span><span style="--s-light:#22863A;--s-light-font-weight:bold;--s-dark:#85E89D;--s-dark-font-weight:bold">\s</span><span class="μ7">+</span><span class="μ6">/</span><span class="μ3">)</span></span>
-<span class="line"><span class="μ3">  s.slice!(</span><span class="μ6">/</span><span class="μ7">^</span><span style="--s-light:#22863A;--s-light-font-weight:bold;--s-dark:#85E89D;--s-dark-font-weight:bold">\d</span><span class="μ7">+|</span><span style="--s-light:#22863A;--s-light-font-weight:bold;--s-dark:#85E89D;--s-dark-font-weight:bold">\+</span><span class="μ7">|</span><span style="--s-light:#22863A;--s-light-font-weight:bold;--s-dark:#85E89D;--s-dark-font-weight:bold">\-</span><span class="μ7">|</span><span style="--s-light:#22863A;--s-light-font-weight:bold;--s-dark:#85E89D;--s-dark-font-weight:bold">\*</span><span class="μ7">|</span><span style="--s-light:#22863A;--s-light-font-weight:bold;--s-dark:#85E89D;--s-dark-font-weight:bold">\/</span><span class="μ6">/</span><span class="μ3">)</span></span>
+<span class="line"><span class="μ3">  [</span><span class="μ5">:T</span><span class="μ3">, [</span><span class="μ8">/^</span><span style="--s-light:#22863A;--s-light-font-weight:bold;--s-dark:#85E89D;--s-dark-font-weight:bold">\d</span><span class="μ8">+$/</span><span class="μ3">]],</span></span>
+<span class="line"><span class="μ3">]).</span><span class="μ2">parse</span><span class="μ3">(</span><span class="μ7">'2 + 3 - 4'</span><span class="μ3">) { |s|</span></span>
+<span class="line"><span class="μ3">  s.</span><span class="μ2">slice!</span><span class="μ3">(</span><span class="μ8">/^</span><span style="--s-light:#22863A;--s-light-font-weight:bold;--s-dark:#85E89D;--s-dark-font-weight:bold">\s</span><span class="μ8">+/</span><span class="μ3">)</span></span>
+<span class="line"><span class="μ3">  s.</span><span class="μ2">slice!</span><span class="μ3">(</span><span class="μ8">/^</span><span style="--s-light:#22863A;--s-light-font-weight:bold;--s-dark:#85E89D;--s-dark-font-weight:bold">\d</span><span class="μ8">+|</span><span style="--s-light:#22863A;--s-light-font-weight:bold;--s-dark:#85E89D;--s-dark-font-weight:bold">\+</span><span class="μ8">|</span><span style="--s-light:#22863A;--s-light-font-weight:bold;--s-dark:#85E89D;--s-dark-font-weight:bold">\-</span><span class="μ8">|</span><span style="--s-light:#22863A;--s-light-font-weight:bold;--s-dark:#85E89D;--s-dark-font-weight:bold">\*</span><span class="μ8">|</span><span style="--s-light:#22863A;--s-light-font-weight:bold;--s-dark:#85E89D;--s-dark-font-weight:bold">\/</span><span class="μ8">/</span><span class="μ3">)</span></span>
 <span class="line"><span class="μ3">}</span></span></code></pre>
 <h4 id="最后">最后</h4>
 <p>Earley parser 是一个自顶向下的算法，有一个与之类似的操作叫 <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/CYK_algorithm">CYK 算法</a> 是自下而上的。</p>]]></content>
