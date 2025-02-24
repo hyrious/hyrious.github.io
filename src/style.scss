@@ -353,33 +353,3 @@ iframe {
     padding: 0;
   }
 }
-
-// https://antfu.me/posts/sliding-enter-animation
-// @keyframes slide-enter {
-//   0% {
-//     transform: translateY(10px);
-//     opacity: 0;
-//   }
-//   to {
-//     transform: translateY(0);
-//     opacity: 100;
-//   }
-// }
-
-// .post > * {
-//   --stagger: 0;
-//   --delay: 90ms;
-//   --start: 0ms;
-//   animation: none;
-
-//   @media (prefers-reduced-motion: no-preference) {
-//     animation: slide-enter 1s both 1;
-//     animation-delay: calc(var(--start) + var(--stagger) * var(--delay));
-//   }
-// }
-
-// @for $i from 1 through 20 {
-//   .post > *:nth-child(#{$i}) {
-//     --stagger: #{$i};
-//   }
-// }

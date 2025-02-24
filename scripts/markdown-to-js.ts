@@ -2,11 +2,13 @@ import katex from 'katex'
 import matter from 'gray-matter'
 import QuickLRU from 'quick-lru'
 import { apStyleTitleCase } from 'ap-style-title-case'
-import { marked, Renderer, type TokenizerAndRendererExtension } from 'marked'
+import { marked, Renderer, type TokenizerAndRendererExtension, type Tokens } from 'marked'
 import { gfmHeadingId } from 'marked-gfm-heading-id'
 import { markedHighlight } from 'marked-highlight'
 import { default as markedLinkifyIt } from 'marked-linkify-it'
 import { bundledLanguages, createHighlighter } from 'shiki'
+import { createJavaScriptRegexEngine } from 'shiki/engine/javascript'
+import { transformerStyleToClass } from '@shikijs/transformers'
 import { rendererRich, transformerTwoslash } from '@shikijs/twoslash'
 
 export interface Parsed {
@@ -30,6 +32,7 @@ const emptyParsed: Parsed = {
 const shiki_p = createHighlighter({
   themes: ['github-dark', 'github-light'],
   langs: Object.keys(bundledLanguages),
+  engine: createJavaScriptRegexEngine(),
 })
 
 const twoslashCache = new QuickLRU<string, string>({ maxSize: 114 })
@@ -65,9 +68,9 @@ const highlight = markedHighlight({
   },
 })
 // Patch the renderer object because shiki returns <pre> already, I don't want double <pre>
-const highlight_code = highlight.renderer!.code! as any
-;(highlight.renderer as any).code = function custom_code(token): string | false {
-  let str = highlight_code.call(this, token.text, token.info, token.escaped)
+const highlight_code = highlight.renderer!.code! as any;
+highlight.renderer!.code = function custom_code(token: Tokens.Code): string | false {
+  let str = highlight_code.call(this, token)
   if (str && str.startsWith('<pre><code') && str.includes('shiki')) {
     const start = str.indexOf('<pre', 1)
     const end = str.lastIndexOf('</code>')
@@ -167,59 +170,47 @@ marked.use({
     },
   },
   hooks: {
-    preprocess: (a) => a,
     postprocess: optimizeShiki,
   },
 })
 
 function optimizeShiki(html: string): string {
-  const colorRe =
-    /style="--s-light:#[0-9a-f]{6};--s-dark:#[0-9a-f]{6}(;--s-light-bg:#fff;--s-dark-bg:#[0-9a-f]{6})?"/gi
-  let seen = new Set<string>()
-  html.replaceAll(colorRe, (s) => {
-    seen.add(s)
-    return ''
-  })
-  if (seen.size > 0) {
-    const colors = new Map<string, number>()
-    const darks: string[] = []
-    let style = ''
-    for (const s of seen) {
-      const ss = s.slice(7, -1).split(';')
-      if (ss.length === 2 || ss.length === 4) {
-        const k = colors.size
-        const light = ss
-          .filter((_, i) => i % 2 === 0)
-          .join(';')
-          .replace('--s-light-bg', 'background-color')
-          .replace('--s-light', 'color')
-        const dark = ss
-          .filter((_, i) => i % 2 === 1)
-          .join(';')
-          .replace('--s-dark-bg', 'background-color')
-          .replace('--s-dark', 'color')
-        style += `.μ${k}{${light}}`
-        colors.set(s, k)
-        darks.push(dark)
-      } else {
-        throw new Error('shiki styles mismatch!', { cause: ss })
-      }
+  const shikiRegex = /style="--s-[^"]+"/gi
+  const styles = new Set<string>()
+  html.replaceAll(shikiRegex, s => (styles.add(s), ''))
+  if (styles.size > 0) {
+    const styleToClass = new Map<string, number>()
+    const light: string[] = [], dark: string[] = []
+    for (const style of styles) {
+      extractStyle(style, styleToClass, light, dark)
     }
-    style += '@media(prefers-color-scheme:dark){'
-    darks.forEach((dark, i) => {
-      style += `.μ${i}{${dark}}`
-    })
-    style += '}'
+    const style: string = light.join('') + '@media(prefers-color-scheme:dark){' + dark.join('') + '}'
     html = `<style>${style}</style>${html}`
-    html = html.replaceAll(colorRe, (s) => {
-      const i = colors.get(s)!
-      return `class="μ${i}"`
-    })
-    html = html.replaceAll(/\bclass="(.+?)" class="(.+?)"/gi, (_, a, b) => {
-      return `class="${a} ${b}"`
-    })
+    html = html.replaceAll(shikiRegex, s => `class="μ${styleToClass.get(s)}"`)
+    html = html.replaceAll(/\bclass="([^"]+)" class="([^"]+)"/gi, (_, a, b) => `class="${a} ${b}"`)
   }
   return html
+}
+
+function extractStyle(style: string, map: Map<string, number>, light_: string[], dark_: string[]) {
+  if (map.has(style)) return;
+  const light: string[] = [], dark: string[] = []
+  const declarations = style.slice(7, -1).split(';')
+  for (const declaration of declarations) {
+    const [cssVar, value] = declaration.split(':')
+    switch (cssVar) {
+      case '--s-light': light.push(`color:${value}`); break
+      case '--s-dark': dark.push(`color:${value}`); break
+      case '--s-light-bg': light.push(`background-color:${value}`); break
+      case '--s-dark-bg': dark.push(`background-color:${value}`); break
+      case '--s-light-font-weight': light.push(`font-weight:${value}`); break
+      case '--s-dark-font-weight': dark.push(`font-weight:${value}`); break
+      default: throw new Error(`Unprocessed shiki var: ${style}`)
+    }
+  }
+  light_.push(`.μ${map.size}{${light.join(';')}}`)
+  dark_.push(`.μ${map.size}{${dark.join(';')}}`)
+  map.set(style, map.size)
 }
 
 export async function markdownToJs(file: string, raw: string): Promise<Parsed> {
