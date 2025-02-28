@@ -2,6 +2,7 @@ import fs from 'fs'
 import c from 'chalk'
 import PQueue from 'p-queue'
 import { join } from 'path'
+import { pathToFileURL } from 'url'
 import { type ResolvedConfig, resolveConfig, build as viteBuild } from 'vite'
 import { compile, makeArgs, mergeHTML } from './compile-template'
 import type { Post } from '../src/main'
@@ -81,7 +82,7 @@ async function build() {
 
   fs.mkdirSync(join(out, 'p'), { recursive: true })
 
-  const serverEntry = join(process.platform === 'win32' ? 'file://' : '', ssrOut, 'main.js')
+  const serverEntry = pathToFileURL(join(ssrOut, 'main.js'))
   const { templates: templates_, posts: posts_ } = (await import(serverEntry)) as {
     templates: { [path: string]: string }
     posts: { [path: string]: Required<Post> }
@@ -142,15 +143,18 @@ async function build() {
 
   console.log()
   logEnd('Build finished.')
-
-  const waitInSeconds = 15
-  setTimeout(() => {
-    log(`Force exit after ${waitInSeconds}s.`)
-    process.exit()
-  }, waitInSeconds * 1000).unref()
 }
 
 await build()
 
 // Now './dist' exists, write feed.xml there
+console.log()
+log('Build RSS feed...')
 await import('./rss')
+logEnd('Build finished.')
+
+const waitInSeconds = 15
+setTimeout(() => {
+  log(`Force exit after ${waitInSeconds}s.`)
+  process.exit()
+}, waitInSeconds * 1000).unref()
