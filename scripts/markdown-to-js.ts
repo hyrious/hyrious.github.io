@@ -7,8 +7,8 @@ import { gfmHeadingId } from 'marked-gfm-heading-id'
 import { markedHighlight } from 'marked-highlight'
 import { default as markedLinkifyIt } from 'marked-linkify-it'
 import { bundledLanguages, createHighlighter } from 'shiki'
+import { transformerMetaWordHighlight, transformerNotationDiff } from '@shikijs/transformers'
 import { createJavaScriptRegexEngine } from 'shiki/engine/javascript'
-import { transformerStyleToClass } from '@shikijs/transformers'
 import { rendererRich, transformerTwoslash } from '@shikijs/twoslash'
 
 export interface Parsed {
@@ -56,6 +56,7 @@ const highlight = markedHighlight({
             explicitTrigger: true,
             renderer: rendererRich({ jsdoc: false }),
           }),
+          transformerNotationDiff(),
         ],
       })
       if (info.includes('twoslash')) {

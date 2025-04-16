@@ -353,3 +353,30 @@ iframe {
     padding: 0;
   }
 }
+
+.has-diff .line::before {
+  content: ' ';
+}
+
+.line.diff {
+  display: inline-block;
+  width: 100%;
+}
+
+.line.diff.remove {
+  opacity: 0.7;
+
+  &::before {
+    content: '-';
+    color: red;
+  }
+}
+
+.line.diff.add {
+  background: rgba(0 255 0 / 0.1);
+
+  &::before {
+    content: '+';
+    color: green;
+  }
+}
