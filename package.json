@@ -9,39 +9,29 @@
   "dependencies": {
     "ap-style-title-case": "^2.0.0",
     "gray-matter": "^4.0.3",
-    "katex": "^0.16.21",
-    "marked": "^15.0.7",
+    "katex": "^0.16.22",
+    "marked": "^15.0.12",
     "marked-gfm-heading-id": "^4.1.1",
     "marked-highlight": "^2.2.1",
     "marked-linkify-it": "^3.1.12",
     "sanitize.css": "^13.0.0"
   },
   "devDependencies": {
-    "@hyrious/configs": "^0.1.3",
+    "@hyrious/configs": "^0.1.4",
     "@hyrious/esbuild-dev": "^0.10.12",
-    "@shikijs/transformers": "^3.2.2",
-    "@shikijs/twoslash": "^3.0.0",
+    "@shikijs/transformers": "^3.7.0",
+    "@shikijs/twoslash": "^3.7.0",
     "@types/html-minifier": "^4.0.5",
     "@types/katex": "^0.16.7",
     "@types/node": "^22.13.5",
     "chalk": "^5.4.1",
-    "feed": "^4.2.2",
+    "feed": "^5.1.0",
     "github-slugger": "^2.0.0",
     "html-minifier": "^4.0.0",
     "p-queue": "^8.1.0",
-    "quick-lru": "^7.0.0",
-    "sass": "^1.85.0",
-    "shiki": "^3.0.0",
-    "vite": "^6.1.1"
-  },
-  "pnpm": {
-    "overrides": {
-      "html-minifier>commander": "npm:noop-package@1.0.0",
-      "sass>@parcel/watcher": "npm:noop-package@1.0.0"
-    },
-    "patchedDependencies": {
-      "feed@4.2.2": "patches/feed@4.2.2.patch"
-    },
-    "neverBuiltDependencies": []
+    "quick-lru": "^7.0.1",
+    "sass": "^1.89.2",
+    "shiki": "^3.7.0",
+    "vite": "^6.3.5"
   }
 }

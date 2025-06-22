@@ -1,0 +1,25 @@
+diff --git a/lib/feed.js b/lib/feed.js
+index a954dea011b9d7e4b116fba1d1ba6309f15bafeb..18410df6cdd881b747eec37fac8912dbd96b7e85 100644
+--- a/lib/feed.js
++++ b/lib/feed.js
+@@ -176,7 +176,7 @@ const formatCategory$1 = (category) => {
+ var json_default = (ins) => {
+ 	const { options, items, extensions } = ins;
+ 	const feed = {
+-		version: "https://jsonfeed.org/version/1",
++		version: "https://jsonfeed.org/version/1.1",
+ 		title: options.title
+ 	};
+ 	if (options.link) feed.home_page_url = options.link;
+@@ -188,6 +188,8 @@ var json_default = (ins) => {
+ 		if (options.author.name) feed.author.name = options.author.name;
+ 		if (options.author.link) feed.author.url = options.author.link;
+ 		if (options.author.avatar) feed.author.avatar = options.author.avatar;
++		feed.authors = [feed.author];
++		delete feed.author;
+ 	}
+ 	extensions.map((e) => {
+ 		feed[e.name] = e.objects;
+diff --git a/lib/feed.js.map b/lib/feed.js.map
+deleted file mode 100644
+index 87ac65764760a58283cdf9f2a1e8e82bf5858bb9..0000000000000000000000000000000000000000
