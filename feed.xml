@@ -4,7 +4,7 @@
         <title>hyrious.log</title>
         <link>https://hyrious.me/</link>
         <description>hyrious.log</description>
-        <lastBuildDate>Thu, 17 Apr 2025 06:09:46 GMT</lastBuildDate>
+        <lastBuildDate>Sun, 22 Jun 2025 14:04:07 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <copyright>CC0 1.0</copyright>
@@ -12,7 +12,7 @@
         <item>
             <title><![CDATA[魔改之道 · 以 RPG Maker MZ 为例]]></title>
             <link>https://hyrious.me/p/fork</link>
-            <guid>fork</guid>
+            <guid isPermaLink="false">fork</guid>
             <pubDate>Wed, 16 Apr 2025 00:00:00 GMT</pubDate>
             <content:encoded><![CDATA[<style>.μ0{color:#24292e;background-color:#fff}.μ1{color:#6F42C1}.μ2{color:#032F62}.μ3{color:#005CC5}.μ4{color:#6A737D}.μ5{color:#D73A49}.μ6{color:#24292E}.μ7{color:#E36209}@media(prefers-color-scheme:dark){.μ0{color:#e1e4e8;background-color:#24292e}.μ1{color:#B392F0}.μ2{color:#9ECBFF}.μ3{color:#79B8FF}.μ4{color:#6A737D}.μ5{color:#F97583}.μ6{color:#E1E4E8}.μ7{color:#FFAB70}}</style><p>经常 fork 的朋友都知道，魔改一时爽 rebase 火葬场。本文将介绍一种可持续性魔改办法，让你在面对<abbr title="原版">上游</abbr>不停的改动下仍然泰然自若，及时更新。</p>
 <p>为什么用 RPG Maker 呢，因为这个软件会更新项目的引擎部分，你可以看一下它上一代 <a target="_blank" rel="noopener" href="https://github.com/rpgtkoolmv/corescript">RMMV 的这部分文件</a><small>（因为某些原因开源了，但 RMMZ 的这部分其实是不开源的）</small>。所谓更新其实就是直接把相关文件都覆盖掉，所以如果你对这部分代码有任何改动都会丢失。</p>
@@ -80,7 +80,7 @@
         <item>
             <title><![CDATA[画一个 Sublime Merge 同款 Commit Graph]]></title>
             <link>https://hyrious.me/p/smerge</link>
-            <guid>smerge</guid>
+            <guid isPermaLink="false">smerge</guid>
             <pubDate>Fri, 24 Jan 2025 00:00:00 GMT</pubDate>
             <content:encoded><![CDATA[<style>.μ0{color:#24292e;background-color:#fff}.μ1{color:#D73A49}.μ2{color:#6F42C1}.μ3{color:#24292E}.μ4{color:#6A737D}.μ5{color:#E36209}.μ6{color:#005CC5}@media(prefers-color-scheme:dark){.μ0{color:#e1e4e8;background-color:#24292e}.μ1{color:#F97583}.μ2{color:#B392F0}.μ3{color:#E1E4E8}.μ4{color:#6A737D}.μ5{color:#FFAB70}.μ6{color:#79B8FF}}</style><iframe src="https://hyrious.me/i/smerge-snapshot.html" width="100%" height="300px"></iframe>
 
@@ -169,7 +169,7 @@
         <item>
             <title><![CDATA[基于 Lezer Parser 写一个 Formatter]]></title>
             <link>https://hyrious.me/p/lezer-formatter</link>
-            <guid>lezer-formatter</guid>
+            <guid isPermaLink="false">lezer-formatter</guid>
             <pubDate>Wed, 19 Jun 2024 00:00:00 GMT</pubDate>
             <content:encoded><![CDATA[<style>.μ0{color:#24292e;background-color:#fff}.μ1{color:#D73A49}.μ2{color:#24292E}.μ3{color:#032F62}.μ4{color:#6F42C1}.μ5{color:#E36209}.μ6{color:#6A737D}.μ7{color:#005CC5}@media(prefers-color-scheme:dark){.μ0{color:#e1e4e8;background-color:#24292e}.μ1{color:#F97583}.μ2{color:#E1E4E8}.μ3{color:#9ECBFF}.μ4{color:#B392F0}.μ5{color:#FFAB70}.μ6{color:#6A737D}.μ7{color:#79B8FF}}</style><p>我不止一次萌生过自己写一个代码格式化工具的想法，但几乎都以失败告终。究其原因，正如 Anthony Fu 在 <a target="_blank" rel="noopener" href="https://antfu.me/posts/why-not-prettier-zh">为什么我不使用 Prettier</a> 中抱怨的，Prettier 这个工具总是有一些不尽如人意的格式化结果。但这一次，我发现了一个简单的实现方式。</p>
 <p>Prettier 的 <a target="_blank" rel="noopener" href="https://prettier.io/docs/en/technical-details">实现方式</a> 十分容易理解：首先将代码解析成 AST，然后对着它重新输出一遍格式化好的代码。有趣的地方是他在输出一个子语法树的时候，可以对比不同的输出方式（比如使用换行或者不换行）来决定最<q>好看</q>的结果。</p>
@@ -297,7 +297,7 @@
         <item>
             <title><![CDATA[Electron 实现多窗口踩坑]]></title>
             <link>https://hyrious.me/p/electron-multi-window-tips</link>
-            <guid>electron-multi-window-tips</guid>
+            <guid isPermaLink="false">electron-multi-window-tips</guid>
             <pubDate>Fri, 31 May 2024 00:00:00 GMT</pubDate>
             <content:encoded><![CDATA[<style>.μ0{color:#24292e;background-color:#fff}.μ1{color:#D73A49}.μ2{color:#24292E}.μ3{color:#6F42C1}.μ4{color:#032F62}.μ5{color:#005CC5}.μ6{color:#E36209}@media(prefers-color-scheme:dark){.μ0{color:#e1e4e8;background-color:#24292e}.μ1{color:#F97583}.μ2{color:#E1E4E8}.μ3{color:#B392F0}.μ4{color:#9ECBFF}.μ5{color:#79B8FF}.μ6{color:#FFAB70}}</style><p>想在 electron 里打开一个新窗口，除了在主进程 <code>new BrowserWindow()</code> 外，也可以在渲染进程执行 <code>window.open()</code>。后者其实在正常浏览器里也可以用来打开弹窗，而且如果没有跨域限制的话，可以随意访问和修改后者的 <code>document</code>：</p>
 <pre class="shiki shiki-themes github-light github-dark μ0" tabindex="0"><code><span class="line"><span class="μ1">var</span><span class="μ2"> w </span><span class="μ1">=</span><span class="μ2"> window.</span><span class="μ3">open</span><span class="μ2">(</span><span class="μ4">"about:blank"</span><span class="μ2">, </span><span class="μ4">''</span><span class="μ2">, </span><span class="μ4">'popup'</span><span class="μ2">)</span></span>
@@ -321,7 +321,7 @@
         <item>
             <title><![CDATA[Debug 生产环境的 Electron 应用]]></title>
             <link>https://hyrious.me/p/debug-prod-electron</link>
-            <guid>debug-prod-electron</guid>
+            <guid isPermaLink="false">debug-prod-electron</guid>
             <pubDate>Thu, 28 Mar 2024 00:00:00 GMT</pubDate>
             <content:encoded><![CDATA[<style>.μ0{color:#24292e;background-color:#fff}.μ1{color:#24292E}.μ2{color:#6F42C1}@media(prefers-color-scheme:dark){.μ0{color:#e1e4e8;background-color:#24292e}.μ1{color:#E1E4E8}.μ2{color:#B392F0}}</style><p>首先启动应用，在任务管理器 / 活动监视器里找到该应用主进程的 PID，注意只有不带 Helper 后缀的才是主进程。</p>
 <p>然后用 Node.js 往这个进程发送 <code>SIGUSR1</code> 信号：</p>
@@ -333,7 +333,7 @@
         <item>
             <title><![CDATA[过定点的贝塞尔曲线]]></title>
             <link>https://hyrious.me/p/bezier-through-points</link>
-            <guid>bezier-through-points</guid>
+            <guid isPermaLink="false">bezier-through-points</guid>
             <pubDate>Fri, 08 Mar 2024 00:00:00 GMT</pubDate>
             <content:encoded><![CDATA[<style>.μ0{color:#24292e;background-color:#fff}.μ1{color:#6A737D}.μ2{color:#005CC5}.μ3{color:#24292E}.μ4{color:#6F42C1}.μ5{color:#D73A49}.μ6{color:#E36209}@media(prefers-color-scheme:dark){.μ0{color:#e1e4e8;background-color:#24292e}.μ1{color:#6A737D}.μ2{color:#79B8FF}.μ3{color:#E1E4E8}.μ4{color:#B392F0}.μ5{color:#F97583}.μ6{color:#FFAB70}}</style><blockquote>
 <p>原文：<a target="_blank" rel="noopener" href="https://apoorvaj.io/cubic-bezier-through-four-points/">&laquo;Constructing a cubic Bezier that passes through four points&raquo;</a></p>
@@ -402,7 +402,7 @@
         <item>
             <title><![CDATA[网格布局一把梭]]></title>
             <link>https://hyrious.me/p/css-subgrid</link>
-            <guid>css-subgrid</guid>
+            <guid isPermaLink="false">css-subgrid</guid>
             <pubDate>Mon, 22 Jan 2024 00:00:00 GMT</pubDate>
             <content:encoded><![CDATA[<style>.μ0{color:#24292e;background-color:#fff}.μ1{color:#24292E}.μ2{color:#22863A}.μ3{color:#6F42C1}.μ4{color:#032F62}.μ5{color:#005CC5}.μ6{color:#D73A49}.μ7{color:#6A737D}@media(prefers-color-scheme:dark){.μ0{color:#e1e4e8;background-color:#24292e}.μ1{color:#E1E4E8}.μ2{color:#85E89D}.μ3{color:#B392F0}.μ4{color:#9ECBFF}.μ5{color:#79B8FF}.μ6{color:#F97583}.μ7{color:#6A737D}}</style><blockquote>
 <p>参考：<a target="_blank" rel="noopener" href="https://web.dev/articles/css-subgrid">https://web.dev/articles/css-subgrid</a></p>
@@ -443,7 +443,7 @@
         <item>
             <title><![CDATA[最小 tsconfig.json]]></title>
             <link>https://hyrious.me/p/minimal-tsconfig</link>
-            <guid>minimal-tsconfig</guid>
+            <guid isPermaLink="false">minimal-tsconfig</guid>
             <pubDate>Mon, 18 Dec 2023 00:00:00 GMT</pubDate>
             <content:encoded><![CDATA[<style>.μ0{color:#24292e;background-color:#fff}.μ1{color:#24292E}.μ2{color:#005CC5}.μ3{color:#032F62}.μ4{color:#D73A49}.μ5{color:#6F42C1}.μ6{color:#6A737D}.μ7{color:#E36209}@media(prefers-color-scheme:dark){.μ0{color:#e1e4e8;background-color:#24292e}.μ1{color:#E1E4E8}.μ2{color:#79B8FF}.μ3{color:#9ECBFF}.μ4{color:#F97583}.μ5{color:#B392F0}.μ6{color:#6A737D}.μ7{color:#FFAB70}}</style><p>TypeScript 发展至今积累了许多过时配置项以及重复配置项，本文试图按现在<a target="_blank" rel="noopener" href="https://aka.ms/tsconfig">最新</a>的文档，给出最小的 tsconfig.json 配置。</p>
 <h3 id="tldr">TL;DR</h3>
@@ -612,7 +612,7 @@
         <item>
             <title><![CDATA[TypeScript 小技巧]]></title>
             <link>https://hyrious.me/p/typescript-tips</link>
-            <guid>typescript-tips</guid>
+            <guid isPermaLink="false">typescript-tips</guid>
             <pubDate>Fri, 15 Dec 2023 00:00:00 GMT</pubDate>
             <content:encoded><![CDATA[<style>.μ0{color:#24292e;background-color:#fff}.μ1{color:#D73A49}.μ2{color:#6F42C1}.μ3{color:#24292E}.μ4{color:#E36209}.μ5{color:#005CC5}.μ6{color:#6A737D}@media(prefers-color-scheme:dark){.μ0{color:#e1e4e8;background-color:#24292e}.μ1{color:#F97583}.μ2{color:#B392F0}.μ3{color:#E1E4E8}.μ4{color:#FFAB70}.μ5{color:#79B8FF}.μ6{color:#6A737D}}</style><h3 id="implicit-nominal-typing">Implicit Nominal Typing</h3>
 <p>不知道中文该叫什么，<q>隐式标称类型</q>？咳咳，简单来说我们想标记一类特定的对象是某个类型的，但是又没有也不想在他身上加个脏脏的标记字段，如下面的例子：</p>
@@ -696,7 +696,7 @@
         <item>
             <title><![CDATA[代码分割并不简单]]></title>
             <link>https://hyrious.me/p/code-splitting-is-not-trivial</link>
-            <guid>code-splitting-is-not-trivial</guid>
+            <guid isPermaLink="false">code-splitting-is-not-trivial</guid>
             <pubDate>Mon, 27 Nov 2023 00:00:00 GMT</pubDate>
             <content:encoded><![CDATA[<style>.μ0{color:#24292e;background-color:#fff}.μ1{color:#6A737D}.μ2{color:#D73A49}.μ3{color:#24292E}.μ4{color:#005CC5}.μ5{color:#032F62}.μ6{color:#6F42C1}@media(prefers-color-scheme:dark){.μ0{color:#e1e4e8;background-color:#24292e}.μ1{color:#6A737D}.μ2{color:#F97583}.μ3{color:#E1E4E8}.μ4{color:#79B8FF}.μ5{color:#9ECBFF}.μ6{color:#B392F0}}</style><p>Code Splitting 一直是前端性能优化的一个重要手段，但是如此重要的功能在 <a target="_blank" rel="noopener" href="https://esbuild.github.io/api/#splitting">esbuild</a> 中时至今日仍然是实验性的，这是为什么呢？下面就来看看。</p>
 <h3 id="一个简单的例子">一个简单的例子</h3>
@@ -754,7 +754,7 @@
         <item>
             <title><![CDATA[CRDT 漫谈]]></title>
             <link>https://hyrious.me/p/crdt</link>
-            <guid>crdt</guid>
+            <guid isPermaLink="false">crdt</guid>
             <pubDate>Thu, 23 Nov 2023 00:00:00 GMT</pubDate>
             <content:encoded><![CDATA[<style>.μ0{color:#24292e;background-color:#fff}.μ1{color:#6F42C1}.μ2{color:#D73A49}.μ3{color:#24292E}.μ4{color:#005CC5}.μ5{color:#E36209}@media(prefers-color-scheme:dark){.μ0{color:#e1e4e8;background-color:#24292e}.μ1{color:#B392F0}.μ2{color:#F97583}.μ3{color:#E1E4E8}.μ4{color:#79B8FF}.μ5{color:#FFAB70}}</style><p>以前写过一篇 <a href="./crdt-fractional-indexing">&laquo;CRDT: 分数排序&raquo;</a>。我认为，CRDT 可能是未来实现大部分软件的最佳选择。有了它，你就免费获得了离线编辑、协作、历史记录、撤销重做等等功能，传统的软件开发中以上任何一条都是非常难设计和实现的。</p>
 <h3 id="定义">定义</h3>
@@ -856,7 +856,7 @@
         <item>
             <title><![CDATA[Hello, world!]]></title>
             <link>https://hyrious.me/p/hello-world</link>
-            <guid>hello-world</guid>
+            <guid isPermaLink="false">hello-world</guid>
             <pubDate>Fri, 17 Nov 2023 00:00:00 GMT</pubDate>
             <content:encoded><![CDATA[<style>.μ0{color:#24292e;background-color:#fff}.μ1{color:#6A737D}.μ2{color:#D73A49}.μ3{color:#005CC5}.μ4{color:#24292E}.μ5{color:#6F42C1}.μ6{color:#032F62}@media(prefers-color-scheme:dark){.μ0{color:#e1e4e8;background-color:#24292e}.μ1{color:#6A737D}.μ2{color:#F97583}.μ3{color:#79B8FF}.μ4{color:#E1E4E8}.μ5{color:#B392F0}.μ6{color:#9ECBFF}}</style><p>我又㕛叕重写了一遍博客，这次用上了 <a target="_blank" rel="noopener" href="https://vitejs.dev/">Vite</a>。其实我以前用过不少博客生成器，包括 <a target="_blank" rel="noopener" href="https://jekyllrb.com/">Jekyll</a>、<a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>、<a target="_blank" rel="noopener" href="https://www.gatsbyjs.com/">Gatsby</a> 等等，但是他们要么渲染太慢，要么安装成本太大。我<a target="_blank" rel="noopener" href="https://github.com/hyrious/hyrious/issues/5">曾经</a>口胡过详细的需求，简单来说我需要这个生成器拥有以下功能：</p>
 <ul>
@@ -911,7 +911,7 @@ dist/p/hello-world.html  12.11 kB
         <item>
             <title><![CDATA[打破 React Portal]]></title>
             <link>https://hyrious.me/p/break-react-portal</link>
-            <guid>break-react-portal</guid>
+            <guid isPermaLink="false">break-react-portal</guid>
             <pubDate>Wed, 01 Mar 2023 00:00:00 GMT</pubDate>
             <content:encoded><![CDATA[<style>.μ0{color:#24292e;background-color:#fff}.μ1{color:#6F42C1}.μ2{color:#24292E}.μ3{color:#005CC5}.μ4{color:#D73A49}.μ5{color:#6A737D}@media(prefers-color-scheme:dark){.μ0{color:#e1e4e8;background-color:#24292e}.μ1{color:#B392F0}.μ2{color:#E1E4E8}.μ3{color:#79B8FF}.μ4{color:#F97583}.μ5{color:#6A737D}}</style><p><a target="_blank" rel="noopener" href="https://zh-hans.react.dev/reference/react-dom/createPortal">Portal</a> 是 React 的 <q>DOM 传送门</q>，它可以把虚拟 DOM 转移到其他真实 DOM 下渲染，同时还会保持虚拟 DOM 树的事件冒泡。但实际使用时我们可能反而不想要事件冒泡被<q>传送</q>走，只需要两行 CSS 即可达到这个目的，下面就来看看。</p>
 <h3 id="tldr">TL;DR</h3>
@@ -947,7 +947,7 @@ dist/p/hello-world.html  12.11 kB
         <item>
             <title><![CDATA[TypeScript <code>object</code> vs <code>record</code> vs <code>{}</code>]]></title>
             <link>https://hyrious.me/p/ts-object</link>
-            <guid>ts-object</guid>
+            <guid isPermaLink="false">ts-object</guid>
             <pubDate>Tue, 21 Feb 2023 00:00:00 GMT</pubDate>
             <content:encoded><![CDATA[<style>.μ0{color:#24292e;background-color:#fff}.μ1{color:#D73A49}.μ2{color:#24292E}.μ3{color:#005CC5}.μ4{color:#6A737D}.μ5{color:#6F42C1}.μ6{color:#E36209}.μ7{color:#032F62}@media(prefers-color-scheme:dark){.μ0{color:#e1e4e8;background-color:#24292e}.μ1{color:#F97583}.μ2{color:#E1E4E8}.μ3{color:#79B8FF}.μ4{color:#6A737D}.μ5{color:#B392F0}.μ6{color:#FFAB70}.μ7{color:#9ECBFF}}</style><p>TypeScript 中存在三种可以用来描述<q>对象</q>的类型：<code>object</code>、<code>Record&lt;string, any&gt;</code>、<code>{}</code>，该用哪种？下面就来看看。</p>
 <h3 id="-空的形状"><code>{}</code> 空的形状</h3>
@@ -1013,7 +1013,7 @@ dist/p/hello-world.html  12.11 kB
         <item>
             <title><![CDATA[CRDT: 分数排序]]></title>
             <link>https://hyrious.me/p/crdt-fractional-indexing</link>
-            <guid>crdt-fractional-indexing</guid>
+            <guid isPermaLink="false">crdt-fractional-indexing</guid>
             <pubDate>Thu, 19 Jan 2023 00:00:00 GMT</pubDate>
             <content:encoded><![CDATA[<style>.μ0{color:#24292e;background-color:#fff}.μ1{color:#D73A49}.μ2{color:#24292E}.μ3{color:#032F62}.μ4{color:#005CC5}.μ5{color:#6A737D}@media(prefers-color-scheme:dark){.μ0{color:#e1e4e8;background-color:#24292e}.μ1{color:#F97583}.μ2{color:#E1E4E8}.μ3{color:#9ECBFF}.μ4{color:#79B8FF}.μ5{color:#6A737D}}</style><blockquote>
 <p>原文：<a target="_blank" rel="noopener" href="https://madebyevan.com/algos/crdt-fractional-indexing">&laquo;CRDT: Fractional Indexing&raquo;</a>
@@ -1052,7 +1052,7 @@ dist/p/hello-world.html  12.11 kB
         <item>
             <title><![CDATA[JS 作用域碎碎念]]></title>
             <link>https://hyrious.me/p/js-scope</link>
-            <guid>js-scope</guid>
+            <guid isPermaLink="false">js-scope</guid>
             <pubDate>Tue, 17 Jan 2023 00:00:00 GMT</pubDate>
             <content:encoded><![CDATA[<style>.μ0{color:#24292e;background-color:#fff}.μ1{color:#D73A49}.μ2{color:#24292E}.μ3{color:#005CC5}.μ4{color:#6F42C1}.μ5{color:#6A737D}.μ6{color:#E36209}@media(prefers-color-scheme:dark){.μ0{color:#e1e4e8;background-color:#24292e}.μ1{color:#F97583}.μ2{color:#E1E4E8}.μ3{color:#79B8FF}.μ4{color:#B392F0}.μ5{color:#6A737D}.μ6{color:#FFAB70}}</style><p>JS 里存在两类<q>块</q>，一种是 block <code>{}</code>，另一种是 function body <code>(){}</code>（包括 method），这两种块对不同的变量声明会有不同的作用域效果，下面就来看看。</p>
 <h4 id="var"><code>var</code></h4>
@@ -1126,7 +1126,7 @@ dist/p/hello-world.html  12.11 kB
         <item>
             <title><![CDATA[NPM Browser: 在线浏览 NPM 包内容]]></title>
             <link>https://hyrious.me/p/npm-browser</link>
-            <guid>npm-browser</guid>
+            <guid isPermaLink="false">npm-browser</guid>
             <pubDate>Wed, 14 Dec 2022 00:00:00 GMT</pubDate>
             <content:encoded><![CDATA[<p><time>2022-12-14</time> 更新</p>
 <p>最近 npm 官网上线了一个查看包内容的 tab <a target="_blank" rel="noopener" href="https://www.npmjs.com/package/npm?activeTab=explore">https://www.npmjs.com/package/npm?activeTab=explore</a>, <a target="_blank" rel="noopener" href="https://github.blog/changelog/2022-12-06-explore-the-content-of-your-npm-packages-with-the-new-code-explorer/">https://github.blog/changelog/2022-12-06-explore-the-content-of-your-npm-packages-with-the-new-code-explorer/</a></p>
@@ -1159,7 +1159,7 @@ dist/p/hello-world.html  12.11 kB
         <item>
             <title><![CDATA[热更新是怎么工作的]]></title>
             <link>https://hyrious.me/p/hmr</link>
-            <guid>hmr</guid>
+            <guid isPermaLink="false">hmr</guid>
             <pubDate>Sat, 19 Feb 2022 00:00:00 GMT</pubDate>
             <content:encoded><![CDATA[<style>.μ0{color:#24292e;background-color:#fff}.μ1{color:#D73A49}.μ2{color:#24292E}.μ3{color:#6F42C1}.μ4{color:#005CC5}.μ5{color:#6A737D}.μ6{color:#032F62}@media(prefers-color-scheme:dark){.μ0{color:#e1e4e8;background-color:#24292e}.μ1{color:#F97583}.μ2{color:#E1E4E8}.μ3{color:#B392F0}.μ4{color:#79B8FF}.μ5{color:#6A737D}.μ6{color:#9ECBFF}}</style><p>注：并非指线上软件不重启更新，而是指开发阶段能够获得更好的开发体验。</p>
 <hr>
@@ -1173,7 +1173,7 @@ dist/p/hello-world.html  12.11 kB
 <pre class="shiki shiki-themes github-light github-dark μ0" tabindex="0"><code><span class="line"><span class="μ2">magic_alias </span><span class="μ4">:old_meth</span><span class="μ2">, </span><span class="μ4">:meth</span></span>
 <span class="line"><span class="μ2">...</span></span></code></pre>
 <p>如果上下文里已经有 <code>old_meth</code>，说明已经执行过一次，什么都不做就行：</p>
-<pre class="shiki shiki-themes github-light github-dark μ0" tabindex="0"><code><span class="line"><span class="μ1">class</span><span class="μ1"> &#x3C;&#x3C;</span><span class="μ4"> self</span></span>
+<pre class="shiki shiki-themes github-light github-dark μ0" tabindex="0"><code><span class="line"><span class="μ1">class</span><span class="μ2"> &#x3C;&#x3C; </span><span class="μ4">self</span></span>
 <span class="line"><span class="μ1">  def</span><span class="μ3"> magic_alias</span><span class="μ2">(name, value)</span></span>
 <span class="line"><span class="μ1">    return</span><span class="μ1"> if</span><span class="μ2"> method_defined? name</span></span>
 <span class="line"><span class="μ1">    alias_method</span><span class="μ2"> name, value </span><span class="μ5"># 否则正常使用原 alias 效果</span></span>
@@ -1230,7 +1230,7 @@ dist/p/hello-world.html  12.11 kB
         <item>
             <title><![CDATA[Sublime Text 插件踩坑]]></title>
             <link>https://hyrious.me/p/sublime-plugin-tips</link>
-            <guid>sublime-plugin-tips</guid>
+            <guid isPermaLink="false">sublime-plugin-tips</guid>
             <pubDate>Sun, 06 Feb 2022 00:00:00 GMT</pubDate>
             <content:encoded><![CDATA[<style>.μ0{color:#24292e;background-color:#fff}.μ1{color:#6A737D}.μ2{color:#D73A49}.μ3{color:#6F42C1}.μ4{color:#24292E}.μ5{color:#E36209}.μ6{color:#032F62}.μ7{color:#005CC5}@media(prefers-color-scheme:dark){.μ0{color:#e1e4e8;background-color:#24292e}.μ1{color:#6A737D}.μ2{color:#F97583}.μ3{color:#B392F0}.μ4{color:#E1E4E8}.μ5{color:#FFAB70}.μ6{color:#9ECBFF}.μ7{color:#79B8FF}}</style><p>春节花了几天写了一个 <a target="_blank" rel="noopener" href="https://github.com/hyrious/prettierd">Sublime Text 插件</a>，这里大概记录一下关于它（主要是 python 部分）的小知识。</p>
 <h3 id="sublimeset_timeout-和-sublimeset_timeout_async"><samp>sublime.set_timeout()</samp> 和 <samp>sublime.set_timeout_async()</samp></h3>
@@ -1274,7 +1274,7 @@ dist/p/hello-world.html  12.11 kB
         <item>
             <title><![CDATA[如何编写更快的 JS]]></title>
             <link>https://hyrious.me/p/fast-js</link>
-            <guid>fast-js</guid>
+            <guid isPermaLink="false">fast-js</guid>
             <pubDate>Fri, 28 Jan 2022 00:00:00 GMT</pubDate>
             <content:encoded><![CDATA[<p>这篇博客主要是对 4 年前的这篇 <q><a target="_blank" rel="noopener" href="https://mrale.ph/blog/2018/02/03/maybe-you-dont-need-rust-to-speed-up-your-js.html">Maybe you don&#39;t need Rust and WASM to speed up your JS</a></q> 的笔记。</p>
 <p><strong>注意</strong>：过早优化是万恶之源，了解这篇博客<strong>可能</strong>有助于你写出更快的 JS/TS，但是不要一味追求写出让人看不懂的代码。</p>
@@ -1294,7 +1294,7 @@ dist/p/hello-world.html  12.11 kB
         <item>
             <title><![CDATA[简单理解 Tree Shaking]]></title>
             <link>https://hyrious.me/p/tree-shaking</link>
-            <guid>tree-shaking</guid>
+            <guid isPermaLink="false">tree-shaking</guid>
             <pubDate>Tue, 25 Jan 2022 00:00:00 GMT</pubDate>
             <content:encoded><![CDATA[<style>.μ0{color:#24292e;background-color:#fff}.μ1{color:#005CC5}.μ2{color:#032F62}.μ3{color:#24292E}.μ4{color:#6F42C1}.μ5{color:#D73A49}.μ6{color:#6A737D}.μ7{color:#E36209}@media(prefers-color-scheme:dark){.μ0{color:#e1e4e8;background-color:#24292e}.μ1{color:#79B8FF}.μ2{color:#9ECBFF}.μ3{color:#E1E4E8}.μ4{color:#B392F0}.μ5{color:#F97583}.μ6{color:#6A737D}.μ7{color:#FFAB70}}</style><p>问：如何分析并删除无用的 JS 代码？Tree-Shaking 给了打包器们一个简单的方法：只需要删除每个闭包里的没有<strong>使用</strong>且没有<strong>副作用</strong>的变量声明/表达式即可。剩下的就是需要给代码块（语法节点）标上有没有被使用、有没有副作用的信息。</p>
 <p>怎么知道一段代码的副作用呢？<span class="half-shrink-left">（</span>换句话说，是不是<q>纯</q>的）</p>
@@ -1353,7 +1353,7 @@ dist/p/hello-world.html  12.11 kB
         <item>
             <title><![CDATA[Earley 算法]]></title>
             <link>https://hyrious.me/p/earley-parser</link>
-            <guid>earley-parser</guid>
+            <guid isPermaLink="false">earley-parser</guid>
             <pubDate>Wed, 27 Sep 2017 00:00:00 GMT</pubDate>
             <content:encoded><![CDATA[<style>.μ0{color:#24292e;background-color:#fff}.μ1{color:#D73A49}.μ2{color:#6F42C1}.μ3{color:#24292E}.μ4{color:#6A737D}.μ5{color:#005CC5}.μ6{color:#E36209}.μ7{color:#032F62}.μ8{color:#032F62}.μ9{color:#22863A;font-weight:bold}@media(prefers-color-scheme:dark){.μ0{color:#e1e4e8;background-color:#24292e}.μ1{color:#F97583}.μ2{color:#B392F0}.μ3{color:#E1E4E8}.μ4{color:#6A737D}.μ5{color:#79B8FF}.μ6{color:#FFAB70}.μ7{color:#9ECBFF}.μ8{color:#DBEDFF}.μ9{color:#85E89D;font-weight:bold}}</style><ul>
 <li><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Earley_parser">Earley parser - Wikipedia</a></li>
@@ -1372,7 +1372,7 @@ dist/p/hello-world.html  12.11 kB
 <p>注意：<span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.05764em;">S</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.03148em;">k</span><span class="mclose">)</span></span></span></span> 是一个 <strong>集合</strong>，里面没有重复的 State。</p>
 <p>设输入有 n 个 token，我们在 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.05764em;">S</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span> 中找到所有 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6595em;"></span><span class="mord mathnormal">i</span></span></span></span> 是 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0</span></span></span></span> 的，说明我们已经匹配完成了全部的规则，找到的都是合法的生成树。</p>
 <h4 id="简单实现">简单实现</h4>
-<pre class="shiki shiki-themes github-light github-dark μ0" tabindex="0"><code><span class="line"><span class="μ1">class</span><span class="μ5"> Earley</span></span>
+<pre class="shiki shiki-themes github-light github-dark μ0" tabindex="0"><code><span class="line"><span class="μ1">class</span><span class="μ2"> Earley</span></span>
 <span class="line"><span class="μ1">  def</span><span class="μ2"> initialize</span><span class="μ3"> rules </span><span class="μ1">=</span><span class="μ3"> []</span></span>
 <span class="line"><span class="μ3">    @rules </span><span class="μ1">=</span><span class="μ3"> rules</span></span>
 <span class="line"><span class="μ1">  end</span></span>
@@ -1383,14 +1383,14 @@ dist/p/hello-world.html  12.11 kB
 <span class="line"><span class="μ1">    yield</span><span class="μ3"> start[(i </span><span class="μ1">+=</span><span class="μ5"> 1</span><span class="μ3">) </span><span class="μ1">-</span><span class="μ5"> 1</span><span class="μ3">], </span><span class="μ5">-></span><span class="μ3"> x { start.</span><span class="μ2">push</span><span class="μ3">(x).</span><span class="μ2">uniq!</span><span class="μ3">; x } </span><span class="μ1">while</span><span class="μ3"> start[i]</span></span>
 <span class="line"><span class="μ1">  end</span></span>
 <span class="line"><span class="μ1">  def</span><span class="μ2"> parse</span><span class="μ3"> str, </span><span class="μ1">&#x26;</span><span class="μ3">lex</span></span>
-<span class="line"><span class="μ6">    s</span><span class="μ3"> = [[[@rules[</span><span class="μ5">0</span><span class="μ3">], </span><span class="μ5">0</span><span class="μ3">, </span><span class="μ5">0</span><span class="μ3">]]]</span></span>
+<span class="line"><span class="μ6">    s</span><span class="μ1"> =</span><span class="μ3"> [[[@rules[</span><span class="μ5">0</span><span class="μ3">], </span><span class="μ5">0</span><span class="μ3">, </span><span class="μ5">0</span><span class="μ3">]]]</span></span>
 <span class="line"><span class="μ2">    lazy_each_with_index</span><span class="μ3">(s) { |set, k|</span></span>
 <span class="line"><span class="μ3">      s.</span><span class="μ2">push</span><span class="μ3"> [] </span><span class="μ1">if</span><span class="μ6"> token</span><span class="μ3"> = lex.(str)</span></span>
 <span class="line"><span class="μ2">      uniq_bfs</span><span class="μ3">(set) { |((n, rule), i, j), u|</span></span>
 <span class="line"><span class="μ1">        if</span><span class="μ3"> rule.</span><span class="μ2">size</span><span class="μ1"> ==</span><span class="μ3"> i</span></span>
-<span class="line"><span class="μ3">          s[j].</span><span class="μ5">select</span><span class="μ3"> { |(</span><span class="μ5">_</span><span class="μ3">, rule), i, </span><span class="μ5">_</span><span class="μ3">| rule[i] </span><span class="μ1">==</span><span class="μ3"> n }.</span><span class="μ2">each</span><span class="μ3"> { |e, i, j| u.([e, i </span><span class="μ1">+</span><span class="μ5"> 1</span><span class="μ3">, j]) }</span></span>
+<span class="line"><span class="μ3">          s[j].</span><span class="μ5">select</span><span class="μ3"> { |(_, rule), i, _| rule[i] </span><span class="μ1">==</span><span class="μ3"> n }.</span><span class="μ2">each</span><span class="μ3"> { |e, i, j| u.([e, i </span><span class="μ1">+</span><span class="μ5"> 1</span><span class="μ3">, j]) }</span></span>
 <span class="line"><span class="μ1">        elsif</span><span class="μ3"> rule[i].</span><span class="μ2">is_a?</span><span class="μ5"> Symbol</span></span>
-<span class="line"><span class="μ3">          @rules.</span><span class="μ5">select</span><span class="μ3"> { |e, </span><span class="μ5">_</span><span class="μ3">| rule[i] </span><span class="μ1">==</span><span class="μ3"> e }.</span><span class="μ2">each</span><span class="μ3"> { |e| u.([e, </span><span class="μ5">0</span><span class="μ3">, k]) }</span></span>
+<span class="line"><span class="μ3">          @rules.</span><span class="μ5">select</span><span class="μ3"> { |e, _| rule[i] </span><span class="μ1">==</span><span class="μ3"> e }.</span><span class="μ2">each</span><span class="μ3"> { |e| u.([e, </span><span class="μ5">0</span><span class="μ3">, k]) }</span></span>
 <span class="line"><span class="μ1">        elsif</span><span class="μ3"> match rule[i], token</span></span>
 <span class="line"><span class="μ3">          s[k </span><span class="μ1">+</span><span class="μ5"> 1</span><span class="μ3">].</span><span class="μ2">push</span><span class="μ3"> [[n, rule], i </span><span class="μ1">+</span><span class="μ5"> 1</span><span class="μ3">, j]</span></span>
 <span class="line"><span class="μ1">        end</span></span>

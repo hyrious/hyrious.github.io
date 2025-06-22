@@ -2,7 +2,7 @@
 <span class="line"><span class="μ1">def</span><span class="μ3"> meth</span></span>
 <span class="line"><span class="μ1">  return</span><span class="μ2"> old_meth </span><span class="μ1">+</span><span class="μ4"> 1</span></span>
 <span class="line"><span class="μ1">end</span></span></code></pre><p>假设有这样的插件代码。仔细观察，我们需要让 <code>old_meth</code> 第二次执行的时候仍然是<q>原方法</q>。怎么做呢？可以换成一个自定义的 <code>alias</code>：</p><pre class="shiki shiki-themes github-light github-dark μ0" tabindex="0"><code><span class="line"><span class="μ2">magic_alias </span><span class="μ4">:old_meth</span><span class="μ2">, </span><span class="μ4">:meth</span></span>
-<span class="line"><span class="μ2">...</span></span></code></pre><p>如果上下文里已经有 <code>old_meth</code>，说明已经执行过一次，什么都不做就行：</p><pre class="shiki shiki-themes github-light github-dark μ0" tabindex="0"><code><span class="line"><span class="μ1">class</span><span class="μ1"> &#x3C;&#x3C;</span><span class="μ4"> self</span></span>
+<span class="line"><span class="μ2">...</span></span></code></pre><p>如果上下文里已经有 <code>old_meth</code>，说明已经执行过一次，什么都不做就行：</p><pre class="shiki shiki-themes github-light github-dark μ0" tabindex="0"><code><span class="line"><span class="μ1">class</span><span class="μ2"> &#x3C;&#x3C; </span><span class="μ4">self</span></span>
 <span class="line"><span class="μ1">  def</span><span class="μ3"> magic_alias</span><span class="μ2">(name, value)</span></span>
 <span class="line"><span class="μ1">    return</span><span class="μ1"> if</span><span class="μ2"> method_defined? name</span></span>
 <span class="line"><span class="μ1">    alias_method</span><span class="μ2"> name, value </span><span class="μ5"># 否则正常使用原 alias 效果</span></span>

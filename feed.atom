@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://hyrious.me/</id>
     <title>hyrious.log</title>
-    <updated>2025-04-17T06:09:46.119Z</updated>
+    <updated>2025-06-22T14:04:07.303Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <author>
         <name>hyrious</name>
@@ -1178,7 +1178,7 @@ dist/p/hello-world.html  12.11 kB
 <pre class="shiki shiki-themes github-light github-dark μ0" tabindex="0"><code><span class="line"><span class="μ2">magic_alias </span><span class="μ4">:old_meth</span><span class="μ2">, </span><span class="μ4">:meth</span></span>
 <span class="line"><span class="μ2">...</span></span></code></pre>
 <p>如果上下文里已经有 <code>old_meth</code>，说明已经执行过一次，什么都不做就行：</p>
-<pre class="shiki shiki-themes github-light github-dark μ0" tabindex="0"><code><span class="line"><span class="μ1">class</span><span class="μ1"> &#x3C;&#x3C;</span><span class="μ4"> self</span></span>
+<pre class="shiki shiki-themes github-light github-dark μ0" tabindex="0"><code><span class="line"><span class="μ1">class</span><span class="μ2"> &#x3C;&#x3C; </span><span class="μ4">self</span></span>
 <span class="line"><span class="μ1">  def</span><span class="μ3"> magic_alias</span><span class="μ2">(name, value)</span></span>
 <span class="line"><span class="μ1">    return</span><span class="μ1"> if</span><span class="μ2"> method_defined? name</span></span>
 <span class="line"><span class="μ1">    alias_method</span><span class="μ2"> name, value </span><span class="μ5"># 否则正常使用原 alias 效果</span></span>
@@ -1377,7 +1377,7 @@ dist/p/hello-world.html  12.11 kB
 <p>注意：<span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.05764em;">S</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.03148em;">k</span><span class="mclose">)</span></span></span></span> 是一个 <strong>集合</strong>，里面没有重复的 State。</p>
 <p>设输入有 n 个 token，我们在 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.05764em;">S</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span> 中找到所有 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6595em;"></span><span class="mord mathnormal">i</span></span></span></span> 是 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0</span></span></span></span> 的，说明我们已经匹配完成了全部的规则，找到的都是合法的生成树。</p>
 <h4 id="简单实现">简单实现</h4>
-<pre class="shiki shiki-themes github-light github-dark μ0" tabindex="0"><code><span class="line"><span class="μ1">class</span><span class="μ5"> Earley</span></span>
+<pre class="shiki shiki-themes github-light github-dark μ0" tabindex="0"><code><span class="line"><span class="μ1">class</span><span class="μ2"> Earley</span></span>
 <span class="line"><span class="μ1">  def</span><span class="μ2"> initialize</span><span class="μ3"> rules </span><span class="μ1">=</span><span class="μ3"> []</span></span>
 <span class="line"><span class="μ3">    @rules </span><span class="μ1">=</span><span class="μ3"> rules</span></span>
 <span class="line"><span class="μ1">  end</span></span>
@@ -1388,14 +1388,14 @@ dist/p/hello-world.html  12.11 kB
 <span class="line"><span class="μ1">    yield</span><span class="μ3"> start[(i </span><span class="μ1">+=</span><span class="μ5"> 1</span><span class="μ3">) </span><span class="μ1">-</span><span class="μ5"> 1</span><span class="μ3">], </span><span class="μ5">-></span><span class="μ3"> x { start.</span><span class="μ2">push</span><span class="μ3">(x).</span><span class="μ2">uniq!</span><span class="μ3">; x } </span><span class="μ1">while</span><span class="μ3"> start[i]</span></span>
 <span class="line"><span class="μ1">  end</span></span>
 <span class="line"><span class="μ1">  def</span><span class="μ2"> parse</span><span class="μ3"> str, </span><span class="μ1">&#x26;</span><span class="μ3">lex</span></span>
-<span class="line"><span class="μ6">    s</span><span class="μ3"> = [[[@rules[</span><span class="μ5">0</span><span class="μ3">], </span><span class="μ5">0</span><span class="μ3">, </span><span class="μ5">0</span><span class="μ3">]]]</span></span>
+<span class="line"><span class="μ6">    s</span><span class="μ1"> =</span><span class="μ3"> [[[@rules[</span><span class="μ5">0</span><span class="μ3">], </span><span class="μ5">0</span><span class="μ3">, </span><span class="μ5">0</span><span class="μ3">]]]</span></span>
 <span class="line"><span class="μ2">    lazy_each_with_index</span><span class="μ3">(s) { |set, k|</span></span>
 <span class="line"><span class="μ3">      s.</span><span class="μ2">push</span><span class="μ3"> [] </span><span class="μ1">if</span><span class="μ6"> token</span><span class="μ3"> = lex.(str)</span></span>
 <span class="line"><span class="μ2">      uniq_bfs</span><span class="μ3">(set) { |((n, rule), i, j), u|</span></span>
 <span class="line"><span class="μ1">        if</span><span class="μ3"> rule.</span><span class="μ2">size</span><span class="μ1"> ==</span><span class="μ3"> i</span></span>
-<span class="line"><span class="μ3">          s[j].</span><span class="μ5">select</span><span class="μ3"> { |(</span><span class="μ5">_</span><span class="μ3">, rule), i, </span><span class="μ5">_</span><span class="μ3">| rule[i] </span><span class="μ1">==</span><span class="μ3"> n }.</span><span class="μ2">each</span><span class="μ3"> { |e, i, j| u.([e, i </span><span class="μ1">+</span><span class="μ5"> 1</span><span class="μ3">, j]) }</span></span>
+<span class="line"><span class="μ3">          s[j].</span><span class="μ5">select</span><span class="μ3"> { |(_, rule), i, _| rule[i] </span><span class="μ1">==</span><span class="μ3"> n }.</span><span class="μ2">each</span><span class="μ3"> { |e, i, j| u.([e, i </span><span class="μ1">+</span><span class="μ5"> 1</span><span class="μ3">, j]) }</span></span>
 <span class="line"><span class="μ1">        elsif</span><span class="μ3"> rule[i].</span><span class="μ2">is_a?</span><span class="μ5"> Symbol</span></span>
-<span class="line"><span class="μ3">          @rules.</span><span class="μ5">select</span><span class="μ3"> { |e, </span><span class="μ5">_</span><span class="μ3">| rule[i] </span><span class="μ1">==</span><span class="μ3"> e }.</span><span class="μ2">each</span><span class="μ3"> { |e| u.([e, </span><span class="μ5">0</span><span class="μ3">, k]) }</span></span>
+<span class="line"><span class="μ3">          @rules.</span><span class="μ5">select</span><span class="μ3"> { |e, _| rule[i] </span><span class="μ1">==</span><span class="μ3"> e }.</span><span class="μ2">each</span><span class="μ3"> { |e| u.([e, </span><span class="μ5">0</span><span class="μ3">, k]) }</span></span>
 <span class="line"><span class="μ1">        elsif</span><span class="μ3"> match rule[i], token</span></span>
 <span class="line"><span class="μ3">          s[k </span><span class="μ1">+</span><span class="μ5"> 1</span><span class="μ3">].</span><span class="μ2">push</span><span class="μ3"> [[n, rule], i </span><span class="μ1">+</span><span class="μ5"> 1</span><span class="μ3">, j]</span></span>
 <span class="line"><span class="μ1">        end</span></span>
