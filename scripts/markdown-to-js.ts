@@ -7,7 +7,7 @@ import { gfmHeadingId } from 'marked-gfm-heading-id'
 import { markedHighlight } from 'marked-highlight'
 import { default as markedLinkifyIt } from 'marked-linkify-it'
 import { bundledLanguages, createHighlighter } from 'shiki'
-import { transformerMetaWordHighlight, transformerNotationDiff } from '@shikijs/transformers'
+import { transformerNotationDiff } from '@shikijs/transformers'
 import { createJavaScriptRegexEngine } from 'shiki/engine/javascript'
 import { rendererRich, transformerTwoslash } from '@shikijs/twoslash'
 

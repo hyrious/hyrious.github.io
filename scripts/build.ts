@@ -83,7 +83,7 @@ async function build() {
   fs.mkdirSync(join(out, 'p'), { recursive: true })
 
   const serverEntry = pathToFileURL(join(ssrOut, 'main.js'))
-  const { templates: templates_, posts: posts_ } = (await import(serverEntry)) as {
+  const { templates: templates_, posts: posts_ } = (await import(serverEntry.toString())) as {
     templates: { [path: string]: string }
     posts: { [path: string]: Required<Post> }
   }
