@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh-Hans-CN" style="height: 100%;">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>让固定比例的 DIV 尽量占满外层元素</title>
+  <meta name="color-scheme" content="light dark">
+  <style>
+    html, body {
+      margin: 0;
+      height: 100%;
+    }
+    body {
+      display: grid;
+      place-content: center;
+    }
+    .container {
+      width: 400px;
+      height: 200px;
+      border: 2px dashed gray;
+      overflow: scroll;
+      scrollbar-width: none;
+      resize: both;
+
+      &::before {
+        content: 'container (resize me)';
+        position: absolute;
+        opacity: 0.3;
+      }
+
+      align-content: center; /* 垂直居中 */
+    }
+    .content {
+      border: 1px solid red;
+      box-sizing: border-box;
+
+      &::before {
+        content: 'content (16:9)';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        opacity: 0.5;
+      }
+
+      aspect-ratio: 16 / 9;
+      max-height: 100%;
+      min-height: 0;
+      margin: 0 auto; /* 水平居中 */
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="content"></div>
+  </div>
+
+  <script>
+    function show_all_iframe() {
+      const iframes = parent.document.getElementsByTagName('iframe')
+      for (let i = 0; i < iframes.length; ++i) {
+        iframes[i].style.visibility = 'revert'
+      }
+    }
+    onload = function load() {
+      show_all_iframe()
+    }
+    document.readyState === "complete" && onload()
+  </script>
+</body>
+</html>
