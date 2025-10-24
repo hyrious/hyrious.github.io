@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://hyrious.me/</id>
     <title>hyrious.log</title>
-    <updated>2025-09-10T01:57:00.552Z</updated>
+    <updated>2025-10-24T02:44:59.409Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <author>
         <name>hyrious</name>
@@ -14,6 +14,43 @@
     <subtitle>hyrious.log</subtitle>
     <icon>https://hyrious.me/favicon.svg</icon>
     <rights>CC0 1.0</rights>
+    <entry>
+        <title type="html"><![CDATA[如何让固定比例的 DIV 尽量占满外层元素？]]></title>
+        <id>center-div-keep-ratio</id>
+        <link href="https://hyrious.me/p/center-div-keep-ratio"/>
+        <updated>2025-10-24T00:00:00.000Z</updated>
+        <content type="html"><![CDATA[<style>.μ0{color:#24292e;background-color:#fff}.μ1{color:#6F42C1}.μ2{color:#24292E}.μ3{color:#005CC5}.μ4{color:#6A737D}.μ5{color:#D73A49}@media(prefers-color-scheme:dark){.μ0{color:#e1e4e8;background-color:#24292e}.μ1{color:#B392F0}.μ2{color:#E1E4E8}.μ3{color:#79B8FF}.μ4{color:#6A737D}.μ5{color:#F97583}}</style><iframe src="https://hyrious.me/i/center-div-keep-ratio.html" width="100%" height="300px"></iframe>
+
+<p>简单来说，我们要实现以下三个目的：</p>
+<ul>
+<li>占满宽高</li>
+<li>垂直居中</li>
+<li>水平居中</li>
+</ul>
+<p><strong>TLDR:</strong></p>
+<pre class="shiki shiki-themes github-light github-dark μ0" tabindex="0"><code><span class="line"><span class="μ1">.container</span><span class="μ2"> {</span></span>
+<span class="line"><span class="μ3">  align-content</span><span class="μ2">: </span><span class="μ3">center</span><span class="μ2">; </span><span class="μ4">/* 垂直居中 */</span></span>
+<span class="line"><span class="μ2">}</span></span>
+<span class="line"><span class="μ1">.content</span><span class="μ2"> {</span></span>
+<span class="line"><span class="μ3">  aspect-ratio</span><span class="μ2">: </span><span class="μ3">16</span><span class="μ2"> / </span><span class="μ3">9</span><span class="μ2">;</span></span>
+<span class="line"><span class="μ3">  max-height</span><span class="μ2">: </span><span class="μ3">100</span><span class="μ5">%</span><span class="μ2">;</span></span>
+<span class="line"><span class="μ3">  min-height</span><span class="μ2">: </span><span class="μ3">0</span><span class="μ2">;</span></span>
+<span class="line"><span class="μ3">  margin</span><span class="μ2">: </span><span class="μ3">0</span><span class="μ3"> auto</span><span class="μ2">; </span><span class="μ4">/* 水平居中 */</span></span>
+<span class="line"><span class="μ2">}</span></span></code></pre>
+<h3 id="占满宽高">占满宽高</h3>
+<p>一个 DIV 元素默认的宽度是 <a target="_blank" rel="noopener" href="https://developer.mozilla.org/en-US/docs/Web/CSS/width#stretch"><code>stretch</code></a>，约等于占满，所以可以不用动。而高度默认是 <a target="_blank" rel="noopener" href="https://developer.mozilla.org/en-US/docs/Web/CSS/height#auto"><code>auto</code></a> 即跟随内容增长，我们需要把他设置为<q>可以占满</q> 即 <code>max-height: 100%</code>。</p>
+<p>注意这里不能使用 <code>height: stretch</code>，因为后者跟 <code>aspect-ratio</code> 同时使用时，不满足 <code>aspect-ratio</code> 的<a target="_blank" rel="noopener" href="https://developer.mozilla.org/en-US/docs/Web/CSS/aspect-ratio#auto_ratio:~:text=At%20least%20one%20of%20the%20box%27s%20sizes%20needs%20to%20be%20automatic">生效条件</a>：</p>
+<blockquote>
+<p>At least one of the box&#39;s sizes needs to be automatic in order for <code>aspect-ratio</code> to have any effect.
+宽高至少得有一项是 <code>auto</code> 才能生效。</p>
+</blockquote>
+<h3 id="垂直居中">垂直居中</h3>
+<p>如果使用 Flex / Grid，这俩货会覆盖内容的尺寸，比如 <code>align-items: center</code> 会让内容高度尽量小，而 <code>align-items: stretch</code> 会直接拉满。这里我们要使用一个比较少见的属性：<code>align-content: center</code> 可以在 <code>display: block</code> 上生效，他会保留 div 本身的宽高。</p>
+<h3 id="水平居中">水平居中</h3>
+<p>刚才说过不能使用 Flex / Grid，所以这里也要使用传统的方式：<code>margin: 0 auto</code>。</p>
+<h3 id="收尾">收尾</h3>
+<p>在写好布局类 UI 之后，最好用一些常见的场景测试一下，比如如果塞了巨长的内容（通常用文本即可）会如何渲染。检查后发现在容器宽度比较窄时，内容会撑高子元素，只需要设置 <code>min-height: 0</code> 让内容无法影响高度即可。</p>]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[如何修复 <code>Readable.fromWeb(response.body)</code> 类型报错？]]></title>
         <id>stream-from-web-fetch</id>
