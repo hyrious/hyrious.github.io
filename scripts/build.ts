@@ -94,6 +94,26 @@ async function build() {
   // const manifest: Manifest = JSON.parse(fs.readFileSync(join(out, 'ssr-manifest.json'), 'utf8'))
   // TODO Preload assets using manifest
 
+  const renderIndexMarkdown = compile(
+    'index.md',
+    [
+      '## hyrious.log',
+      '> 最后更新于 { site.date }',
+      '',
+      '### 友链',
+      '- [taroxd](https://taroxd.github.io)',
+      '- [esphas](https://icefla.me)',
+      '- [⑨](https://cirno.blog)',
+      '- [Ulysses](https://ulysseszh.github.io)',
+      '- [Synth Magic](https://synthesizer.moe)',
+      '',
+      '### 瞎写{#each posts as post}',
+      '- [{ strip_html(post.title) }](/p/{ post.id }.md){/each}',
+      '',
+    ].join('\n'),
+    '{ site, posts, strip_html }',
+  )
+
   const queue = new PQueue({ concurrency: 20 })
   const outFiles: string[] = []
   const output = async (file: string, html: string) => {
@@ -103,13 +123,22 @@ async function build() {
     await fs.promises.writeFile(filename, formatted)
   }
 
+  const outputRaw = async (file: string, text: string) => {
+    outFiles.push(file)
+    const filename = join(out, file)
+    await fs.promises.writeFile(filename, text)
+  }
+
   for (const page of ['index', 'p']) {
     const filename = page === 'index' ? 'index.html' : `${page}/index.html`
     queue.add(() => output(filename, templates[page](makeArgs(posts))))
   }
 
+  queue.add(() => outputRaw('index.md', renderIndexMarkdown(makeArgs(posts))))
+
   for (const post of posts) {
     queue.add(() => output(`p/${post.id}.html`, templates.post(makeArgs(posts, post))))
+    queue.add(() => outputRaw(`p/${post.id}.md`, post.raw))
   }
 
   await queue.start().onIdle()
@@ -141,7 +170,6 @@ async function build() {
     config.logger.info(c.dim(prefix) + c.green(filename) + padding + c.dim.bold(sizeStr))
   }
 
-  console.log()
   logEnd('Build finished.')
 }
 

@@ -43,4 +43,15 @@ for (const post of posts) {
 
 fs.writeFileSync('./dist/feed.xml', feed.rss2())
 fs.writeFileSync('./dist/feed.atom', feed.atom1())
-fs.writeFileSync('./dist/feed.json', feed.json1())
+
+let json: any = Object.entries(JSON.parse(feed.json1()))
+for (const entry of json) {
+  if (entry[0] === 'version') {
+    entry[1] += '.1'
+  } else if (entry[0] === 'author') {
+    entry[0] = 'authors'
+    entry[1] = [entry[1]]
+  }
+}
+json = Object.fromEntries(json)
+fs.writeFileSync('./dist/feed.json', JSON.stringify(json, null, '\t') + '\n')

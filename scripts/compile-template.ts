@@ -122,9 +122,10 @@ export function makeArgs(posts: Required<Post>[], post?: Required<Post>): any {
   posts.map((p) => {
     p.date = new Date(p.date)
     p.date.toString = () => p.date.toISOString().slice(0, 10)
+    p.year = p.date.getFullYear()
   })
   posts.sort((a, b) => +b.date - +a.date)
-  return { site: { date: posts[0].date }, posts, post, strip_html, katex: post?.katex }
+  return { site: { date: posts[0].date, year: posts[0].year }, posts, post, strip_html, katex: post?.katex }
 }
 
 function strip_html(text: string) {

@@ -15,6 +15,7 @@ export interface Parsed {
   id: string
   title: string
   date: Date
+  year: number
   raw: string
   html: string
   katex: boolean
@@ -24,6 +25,7 @@ const emptyParsed: Parsed = {
   id: '',
   title: '',
   date: new Date(),
+  year: new Date().getFullYear(),
   raw: '',
   html: '',
   katex: false,
@@ -69,7 +71,7 @@ const highlight = markedHighlight({
   },
 })
 // Patch the renderer object because shiki returns <pre> already, I don't want double <pre>
-const highlight_code = highlight.renderer!.code! as any;
+const highlight_code = highlight.renderer!.code! as any
 highlight.renderer!.code = function custom_code(token: Tokens.Code): string | false {
   let str = highlight_code.call(this, token)
   if (str && str.startsWith('<pre><code') && str.includes('shiki')) {
@@ -178,35 +180,50 @@ marked.use({
 function optimizeShiki(html: string): string {
   const shikiRegex = /style="--s-[^"]+"/gi
   const styles = new Set<string>()
-  html.replaceAll(shikiRegex, s => (styles.add(s), ''))
+  html.replaceAll(shikiRegex, (s) => (styles.add(s), ''))
   if (styles.size > 0) {
     const styleToClass = new Map<string, number>()
-    const light: string[] = [], dark: string[] = []
+    const light: string[] = [],
+      dark: string[] = []
     for (const style of styles) {
       extractStyle(style, styleToClass, light, dark)
     }
     const style: string = light.join('') + '@media(prefers-color-scheme:dark){' + dark.join('') + '}'
     html = `<style>${style}</style>${html}`
-    html = html.replaceAll(shikiRegex, s => `class="μ${styleToClass.get(s)}"`)
+    html = html.replaceAll(shikiRegex, (s) => `class="μ${styleToClass.get(s)}"`)
     html = html.replaceAll(/\bclass="([^"]+)" class="([^"]+)"/gi, (_, a, b) => `class="${a} ${b}"`)
   }
   return html
 }
 
 function extractStyle(style: string, map: Map<string, number>, light_: string[], dark_: string[]) {
-  if (map.has(style)) return;
-  const light: string[] = [], dark: string[] = []
+  if (map.has(style)) return
+  const light: string[] = [],
+    dark: string[] = []
   const declarations = style.slice(7, -1).split(';')
   for (const declaration of declarations) {
     const [cssVar, value] = declaration.split(':')
     switch (cssVar) {
-      case '--s-light': light.push(`color:${value}`); break
-      case '--s-dark': dark.push(`color:${value}`); break
-      case '--s-light-bg': light.push(`background-color:${value}`); break
-      case '--s-dark-bg': dark.push(`background-color:${value}`); break
-      case '--s-light-font-weight': light.push(`font-weight:${value}`); break
-      case '--s-dark-font-weight': dark.push(`font-weight:${value}`); break
-      default: throw new Error(`Unprocessed shiki var: ${style}`)
+      case '--s-light':
+        light.push(`color:${value}`)
+        break
+      case '--s-dark':
+        dark.push(`color:${value}`)
+        break
+      case '--s-light-bg':
+        light.push(`background-color:${value}`)
+        break
+      case '--s-dark-bg':
+        dark.push(`background-color:${value}`)
+        break
+      case '--s-light-font-weight':
+        light.push(`font-weight:${value}`)
+        break
+      case '--s-dark-font-weight':
+        dark.push(`font-weight:${value}`)
+        break
+      default:
+        throw new Error(`Unprocessed shiki var: ${style}`)
     }
   }
   light_.push(`.μ${map.size}{${light.join(';')}}`)
@@ -228,7 +245,7 @@ export async function markdownToJs(file: string, raw: string): Promise<Parsed> {
   const html = (await marked.parse(content, { async: true })).trimEnd()
   const katex = html.includes('<p class="math"') || html.includes('<span class="katex"')
 
-  return { id, title, date, raw, html, katex }
+  return { id, title, date, year: date.getFullYear(), raw, html, katex }
 }
 
 function filePathToId(file: string): string {
