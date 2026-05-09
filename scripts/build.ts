@@ -143,6 +143,7 @@ async function build() {
 
   await queue.start().onIdle()
 
+  fs.cpSync(join(out, 'index.md'), join(out, 'llms.txt'))
   fs.rmSync(ssrOut, { recursive: true, force: true })
 
   const paths: { file: string; prefix: string; filename: string; length: number }[] = []
