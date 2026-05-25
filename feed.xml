@@ -4,7 +4,7 @@
         <title>hyrious.log</title>
         <link>https://hyrious.me/</link>
         <description>hyrious.log</description>
-        <lastBuildDate>Wed, 06 May 2026 03:56:31 GMT</lastBuildDate>
+        <lastBuildDate>Mon, 25 May 2026 07:27:32 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <copyright>CC0 1.0</copyright>
@@ -55,17 +55,13 @@
 <span class="line"></span>
 <span class="line"><span class="μ1">if</span><span class="μ3"> (</span><span class="μ3"><span class="twoslash-hover"><span class="twoslash-popup-container"><code class="twoslash-popup-code"><span class="μ1">const</span><span class="μ2"> response</span><span class="μ1">:</span><span class="μ4"> Response</span></code></span>response</span></span><span class="μ3">.</span><span class="μ3"><span class="twoslash-hover"><span class="twoslash-popup-container"><code class="twoslash-popup-code"><span class="μ3">Body.body: ReadableStream</span><span class="μ1">&#x3C;</span><span class="μ3">Uint8Array</span><span class="μ1">&#x3C;</span><span class="μ3">ArrayBuffer</span><span class="μ1">>></span><span class="μ1"> |</span><span class="μ2"> null</span></code></span>body</span></span><span class="μ3">) {</span></span>
 <span class="line"><span class="μ3">  </span><span class="μ3"><span class="twoslash-hover"><span class="twoslash-popup-container"><code class="twoslash-popup-code"><span class="μ1">class</span><span class="μ4"> stream</span></code></span>stream</span></span><span class="μ3">.</span><span class="μ3"><span class="twoslash-hover"><span class="twoslash-popup-container"><code class="twoslash-popup-code"><span class="μ1">class</span><span class="μ4"> Stream</span><span class="μ3">.</span><span class="μ4">Readable</span></code></span>Readable</span></span><span class="μ3">.</span><span class="μ4"><span class="twoslash-hover"><span class="twoslash-popup-container"><code class="twoslash-popup-code"><span class="μ3">Stream.Readable.</span><span class="μ4">fromWeb</span><span class="μ3">(readableStream: ReadableStream, options</span><span class="μ1">?:</span><span class="μ3"> Pick</span><span class="μ1">&#x3C;</span><span class="μ3">stream.ReadableOptions, </span><span class="μ5">"encoding"</span><span class="μ1"> |</span><span class="μ5"> "highWaterMark"</span><span class="μ1"> |</span><span class="μ5"> "objectMode"</span><span class="μ1"> |</span><span class="μ5"> "signal"</span><span class="μ1">></span><span class="μ3">): stream.Readable</span></code></span>fromWeb</span></span><span class="μ3">(</span><span class="twoslash-error"><span class="μ3">response</span><span class="μ3">.</span><span class="μ3"><span class="twoslash-hover twoslash-query-persisted"><span class="twoslash-popup-container"><div class="twoslash-popup-arrow"></div><code class="twoslash-popup-code"><span class="μ3">Body.body: ReadableStream</span><span class="μ1">&#x3C;</span><span class="μ3">Uint8Array</span><span class="μ1">&#x3C;</span><span class="μ3">ArrayBuffer</span><span class="μ1">>></span></code></span>body</span></span></span><span class="μ3">)</span></span><div class="twoslash-meta-line twoslash-error-line">Argument of type 'ReadableStream&#x3C;Uint8Array&#x3C;ArrayBuffer>>' is not assignable to parameter of type 'ReadableStream&#x3C;any>'.
-  Types of property 'pipeThrough' are incompatible.
-    Type '&#x3C;T>(transform: ReadableWritablePair&#x3C;T, Uint8Array&#x3C;ArrayBuffer>>, options?: StreamPipeOptions | undefined) => ReadableStream&#x3C;...>' is not assignable to type '&#x3C;T>(transform: ReadableWritablePair&#x3C;T, any>, options?: StreamPipeOptions | undefined) => ReadableStream&#x3C;T>'.
-      Types of parameters 'transform' and 'transform' are incompatible.
-        Type 'ReadableWritablePair&#x3C;T, any>' is not assignable to type 'ReadableWritablePair&#x3C;T | undefined, Uint8Array&#x3C;ArrayBuffer>>'.
-          The types of 'readable.pipeThrough' are incompatible between these types.
-            Type '&#x3C;T>(transform: ReadableWritablePair&#x3C;T, T>, options?: StreamPipeOptions | undefined) => ReadableStream&#x3C;T>' is not assignable to type '&#x3C;T>(transform: ReadableWritablePair&#x3C;T, T | undefined>, options?: StreamPipeOptions | undefined) => ReadableStream&#x3C;T>'.
-              Types of parameters 'transform' and 'transform' are incompatible.
-                Type 'ReadableWritablePair&#x3C;T, T | undefined>' is not assignable to type 'ReadableWritablePair&#x3C;T | undefined, T>'.
-                  The types of 'readable.pipeThrough(...).getReader' are incompatible between these types.
-                    Type '{ (options: { mode: "byob"; }): ReadableStreamBYOBReader; (): ReadableStreamDefaultReader&#x3C;T | undefined>; (options?: ReadableStreamGetReaderOptions | undefined): ReadableStreamReader&#x3C;...>; }' is not assignable to type '{ (options: { mode: "byob"; }): ReadableStreamBYOBReader; (): ReadableStreamDefaultReader&#x3C;T>; (options?: ReadableStreamGetReaderOptions | undefined): ReadableStreamReader&#x3C;...>; }'.
-                      Target signature provides too few arguments. Expected 1 or more, but got 0.</div><span class="line"><span class="μ3">}</span></span></code></pre>
+  The types of 'getReader(...).read' are incompatible between these types.
+    Type '&#x3C;T extends Exclude&#x3C;BufferSource, ArrayBuffer>>(view: T, options?: ReadableStreamBYOBReaderReadOptions | undefined) => Promise&#x3C;ReadableStreamReadResult&#x3C;T>>' is not assignable to type '&#x3C;T extends ArrayBufferView>(view: T, options?: { min?: number | undefined; } | undefined) => Promise&#x3C;ReadableStreamReadResult&#x3C;T>>'.
+      Types of parameters 'view' and 'view' are incompatible.
+        Type 'T' is not assignable to type 'ArrayBufferView&#x3C;ArrayBuffer>'.
+          Type 'ArrayBufferView&#x3C;ArrayBufferLike>' is not assignable to type 'ArrayBufferView&#x3C;ArrayBuffer>'.
+            Type 'ArrayBufferLike' is not assignable to type 'ArrayBuffer'.
+              Type 'SharedArrayBuffer' is missing the following properties from type 'ArrayBuffer': resizable, resize, detached, transfer, transferToFixedLength</div><span class="line"><span class="μ3">}</span></span></code></pre>
 <p>观察 <code>fetch</code> 的类型，会发现他来自 lib.dom.d.ts，可是哪一行代码引入了 DOM 类型呢？</p>
 <pre class="shiki shiki-themes github-light github-dark μ0" tabindex="0"><code><span class="line"><span class="μ7">// tsconfig 里也没写 DOM ... 吗</span></span>
 <span class="line"><span class="μ3">{</span></span>

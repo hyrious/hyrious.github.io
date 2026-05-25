@@ -1,0 +1,35 @@
+## hyrious.log
+> 最后更新于 2025-10-24
+
+### 友链
+- [taroxd](https://taroxd.github.io)
+- [esphas](https://icefla.me)
+- [⑨](https://cirno.blog)
+- [Ulysses](https://ulysseszh.github.io)
+- [Synth Magic](https://synthesizer.moe)
+
+### 瞎写
+- [如何让固定比例的 DIV 尽量占满外层元素？](/p/center-div-keep-ratio.md)
+- [如何修复 Readable.fromWeb(response.body) 类型报错？](/p/stream-from-web-fetch.md)
+- [魔改之道 · 以 RPG Maker MZ 为例](/p/fork.md)
+- [画一个 Sublime Merge 同款 Commit Graph](/p/smerge.md)
+- [基于 Lezer Parser 写一个 Formatter](/p/lezer-formatter.md)
+- [Electron 实现多窗口踩坑](/p/electron-multi-window-tips.md)
+- [Debug 生产环境的 Electron 应用](/p/debug-prod-electron.md)
+- [过定点的贝塞尔曲线](/p/bezier-through-points.md)
+- [网格布局一把梭](/p/css-subgrid.md)
+- [最小 tsconfig.json](/p/minimal-tsconfig.md)
+- [TypeScript 小技巧](/p/typescript-tips.md)
+- [代码分割并不简单](/p/code-splitting-is-not-trivial.md)
+- [CRDT 漫谈](/p/crdt.md)
+- [Hello, world!](/p/hello-world.md)
+- [打破 React Portal](/p/break-react-portal.md)
+- [TypeScript object vs record vs {}](/p/ts-object.md)
+- [CRDT: 分数排序](/p/crdt-fractional-indexing.md)
+- [JS 作用域碎碎念](/p/js-scope.md)
+- [NPM Browser: 在线浏览 NPM 包内容](/p/npm-browser.md)
+- [热更新是怎么工作的](/p/hmr.md)
+- [Sublime Text 插件踩坑](/p/sublime-plugin-tips.md)
+- [如何编写更快的 JS](/p/fast-js.md)
+- [简单理解 Tree Shaking](/p/tree-shaking.md)
+- [Earley 算法](/p/earley-parser.md)
