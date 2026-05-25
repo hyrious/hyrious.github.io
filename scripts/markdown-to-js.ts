@@ -57,6 +57,9 @@ const highlight = markedHighlight({
           transformerTwoslash({
             explicitTrigger: true,
             renderer: rendererRich({ jsdoc: false }),
+            twoslashOptions: {
+              compilerOptions: { types: ['node'] },
+            },
           }),
           transformerNotationDiff(),
         ],

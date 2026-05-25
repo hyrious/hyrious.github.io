@@ -16,9 +16,9 @@ jobs:
       cancel-in-progress: true
     steps:
       - uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
         with:
-          version: latest
+          version: 'latest'
       - uses: actions/setup-node@v6
         with:
           node-version: 'lts/*'
