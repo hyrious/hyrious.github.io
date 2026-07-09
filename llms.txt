@@ -1,5 +1,5 @@
 ## hyrious.log
-> 最后更新于 2025-10-24
+> 最后更新于 2026-07-09
 
 ### 友链
 - [taroxd](https://taroxd.github.io)
@@ -9,6 +9,7 @@
 - [Synth Magic](https://synthesizer.moe)
 
 ### 瞎写
+- [如何去除 IRB 启动时打印的 ▽](/p/suppress-irb-width-test.md)
 - [如何让固定比例的 DIV 尽量占满外层元素？](/p/center-div-keep-ratio.md)
 - [如何修复 Readable.fromWeb(response.body) 类型报错？](/p/stream-from-web-fetch.md)
 - [魔改之道 · 以 RPG Maker MZ 为例](/p/fork.md)
