@@ -1,0 +1,13 @@
+diff --git a/lib/feed.js b/lib/feed.js
+index 1c83768a0cba4bd5dc61649d020249a2f416fb9a..308c4b0af7ddb8fe284b5c572989a54dc8e2db0a 100644
+--- a/lib/feed.js
++++ b/lib/feed.js
+@@ -76,7 +76,7 @@ var atom1_default = (ins) => {
+ 				_attributes: { type: "html" },
+ 				_cdata: item.title
+ 			},
+-			id: sanitizeUrl(item.id ?? item.link),
++			id: sanitize(item.id ?? item.link),
+ 			link: [{ _attributes: { href: sanitizeUrl(item.link) } }],
+ 			updated: item.date.toISOString()
+ 		};

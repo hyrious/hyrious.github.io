@@ -1,16 +1,17 @@
 import { type Plugin, createFilter } from 'vite'
-import { readFileSync, statSync, writeFileSync } from 'node:fs'
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { createHash } from 'node:crypto'
-import { join } from 'node:path'
-import { markdownToJs as markdownToJs_, type Parsed } from './markdown-to-js'
+import { dirname, join } from 'node:path'
+import quoteJsString from 'quote-js-string'
 
 interface IPostCache {
-  [id: string]: { hash: string; data: Parsed } | undefined
+  [id: string]: { hash: string; data: import('./markdown-to-js').Parsed } | undefined
 }
 
 export function posts(): Plugin {
   const filter = createFilter(/\.md$/)
-  const cacheFile = join('node_modules', '.posts-cache.json')
+  const cacheFile = join('node_modules', '.cache', 'hyrious-posts.json')
+  const markdownToJs_ = import('./markdown-to-js').then((mod) => mod.markdownToJs)
 
   let cache: IPostCache = {}
   try {
@@ -21,10 +22,11 @@ export function posts(): Plugin {
     let hash = createHash('md5').update(raw).digest('base64')
     let entry = cache[id]
     if (entry?.hash !== hash) {
-      cache[id] = entry = { hash, data: await markdownToJs_(id, raw) }
+      const render = await markdownToJs_
+      cache[id] = entry = { hash, data: await render(id, raw) }
       saveCacheEventually()
     }
-    return `export default /* @__PURE__ */ JSON.parse(${JSON.stringify(JSON.stringify(entry.data))});`
+    return `export default /* @__PURE__ */ JSON.parse(${quoteJsString(JSON.stringify(entry.data))});`
   }
 
   let timer: ReturnType<typeof setTimeout>
@@ -33,6 +35,7 @@ export function posts(): Plugin {
     timer = setTimeout(saveCache, 1000)
   }
   function saveCache() {
+    mkdirSync(dirname(cacheFile), { recursive: true })
     writeFileSync(cacheFile, JSON.stringify(cache))
   }
 

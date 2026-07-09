@@ -5,7 +5,12 @@ configDependencies:
   '@pnpm/plugin-better-defaults': 0.3.0
   '@pnpm/plugin-trusted-deps': 0.3.0-2
 
+minimumReleaseAgeExclude:
+  - html-minifier-next@7.1.0
+
 overrides:
-  html-minifier>commander: npm:noop-package@1.0.0
   katex>commander: npm:noop-package@1.0.0
   sass>@parcel/watcher: npm:noop-package@1.0.0
+
+patchedDependencies:
+  feed: patches/feed.patch

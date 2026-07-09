@@ -36,8 +36,8 @@ function compileTemplates(base: string, raw: { [path: string]: string }) {
 }
 
 async function formatHTML(html: string): Promise<string> {
-  const minifier = await import('html-minifier')
-  return minifier.minify(html, {
+  const minifier = await import('html-minifier-next')
+  return await minifier.minify(html, {
     collapseWhitespace: true,
     caseSensitive: true,
     collapseInlineTagWhitespace: false,
