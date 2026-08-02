@@ -3,6 +3,7 @@
   "extends": "@hyrious/configs/tsconfig.casual.json",
   "compilerOptions": {
     "lib": ["ESNext", "DOM", "DOM.Iterable"],
-    "types": ["vite/client"]
+    "types": ["vite/client"],
+    "allowImportingTsExtensions": true
   }
 }

@@ -2,6 +2,7 @@
   "extends": "@hyrious/configs/tsconfig.casual.json",
   "compilerOptions": {
     "lib": ["DOM", "ES2024"],
-    "types": ["node", "vite/client"]
+    "types": ["node", "vite/client"],
+    "allowImportingTsExtensions": true
   }
 }

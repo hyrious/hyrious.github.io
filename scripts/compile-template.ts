@@ -100,6 +100,10 @@ export function mergeHTML(base: string, code: string): string {
       if (title) {
         base = base.replace(/<title>(.+?)<\/title>/, `<title>${title}</title>`)
       }
+      const link = head_contents.match(/<link([^>]*)>/)?.[0] || ''
+      if (link) {
+        base = base.replace(/<\/title>/, `</title>\n${link}`)
+      }
       // TODO: other meta tags
     }
   }

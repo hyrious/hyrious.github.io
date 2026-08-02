@@ -11,7 +11,7 @@ interface IPostCache {
 export function posts(): Plugin {
   const filter = createFilter(/\.md$/)
   const cacheFile = join('node_modules', '.cache', 'hyrious-posts.json')
-  const markdownToJs_ = import('./markdown-to-js').then((mod) => mod.markdownToJs)
+  const markdownToJs_ = import('./markdown-to-js.ts').then((mod) => mod.markdownToJs)
 
   let cache: IPostCache = {}
   try {
