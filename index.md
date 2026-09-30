@@ -1,5 +1,5 @@
 ## hyrious.log
-> 最后更新于 2026-08-02
+> 最后更新于 2026-09-30
 
 ### 友链
 - [taroxd](https://taroxd.github.io)
@@ -9,6 +9,7 @@
 - [Synth Magic](https://synthesizer.moe)
 
 ### 瞎写
+- [什么时候不用 { __proto__: null }](/p/js-null-proto.md)
 - [匹配每行开头的正则](/p/regex-line-start.md)
 - [如何去除 IRB 启动时打印的 ▽](/p/suppress-irb-width-test.md)
 - [如何让固定比例的 DIV 尽量占满外层元素？](/p/center-div-keep-ratio.md)
