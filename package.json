@@ -9,8 +9,8 @@
   "dependencies": {
     "ap-style-title-case": "^2.0.0",
     "gray-matter": "^4.0.3",
-    "katex": "^0.18.1",
-    "marked": "^18.0.7",
+    "katex": "^0.18.9",
+    "marked": "^18.0.14",
     "marked-gfm-heading-id": "^4.1.4",
     "marked-highlight": "^2.2.4",
     "marked-linkify-it": "^4.0.2",
@@ -20,18 +20,18 @@
   "devDependencies": {
     "@hyrious/configs": "^0.1.6",
     "@hyrious/esbuild-dev": "^0.10.14",
-    "@shikijs/transformers": "^4.4.1",
-    "@shikijs/twoslash": "^4.4.1",
+    "@shikijs/transformers": "^4.4.3",
+    "@shikijs/twoslash": "^4.4.3",
     "@types/katex": "^0.16.8",
-    "@types/node": "^26.1.2",
-    "chalk": "^6.0.0",
+    "@types/node": "^26.6.3",
+    "chalk": "^6.0.1",
     "feed": "^6.0.0",
     "github-slugger": "^2.0.0",
-    "html-minifier-next": "^7.5.2",
+    "html-minifier-next": "^8.7.0",
     "p-queue": "^9.3.3",
     "quick-lru": "^7.3.0",
-    "sass": "^1.102.0",
-    "shiki": "^4.4.1",
-    "vite": "^8.2.0"
+    "sass": "^1.105.0",
+    "shiki": "^4.4.3",
+    "vite": "^8.3.1"
   }
 }
