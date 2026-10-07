@@ -10,6 +10,7 @@ import { bundledLanguages, createHighlighter } from 'shiki'
 import { transformerNotationDiff } from '@shikijs/transformers'
 import { createJavaScriptRegexEngine } from 'shiki/engine/javascript'
 import { rendererRich, transformerTwoslash } from '@shikijs/twoslash'
+import { renderMermaidSVG } from 'beautiful-mermaid'
 
 export interface Parsed {
   id: string
@@ -161,9 +162,12 @@ marked.use({
   pedantic: false,
   extensions: [math, ...footnote],
   renderer: {
-    code({ text, lang }) {
+    code({ raw, lang }) {
       if (lang === 'math') {
-        return `<p class="math">${katex.renderToString(text, { displayMode: true, output: 'html' })}</p>`
+        return `<p class="math">${katex.renderToString(stripCodeFence(raw), { displayMode: true, output: 'html' })}</p>`
+      }
+      if (lang === 'mermaid') {
+        return `<p class="mermaid">${renderMermaidSVG(stripCodeFence(raw), { bg: 'var(--bg-color)', fg: 'var(--text-color)', transparent: true })}</p>`
       }
       return false
     },
@@ -179,6 +183,17 @@ marked.use({
     postprocess: optimizeShiki,
   },
 })
+
+function stripCodeFence(raw: string, i = 0, j = raw.length): string {
+  if (raw.startsWith('```')) {
+    i = raw.indexOf('\n') + 1
+  }
+  if (raw.trimEnd().endsWith('```')) {
+    j = raw.lastIndexOf('\n')
+    if (j < 0) j = raw.length
+  }
+  return raw.slice(i, j)
+}
 
 function optimizeShiki(html: string): string {
   const shikiRegex = /style="--s-[^"]+"/gi
