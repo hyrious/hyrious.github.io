@@ -6,7 +6,7 @@ import { marked, Renderer, type TokenizerAndRendererExtension, type Tokens } fro
 import { gfmHeadingId } from 'marked-gfm-heading-id'
 import { markedHighlight } from 'marked-highlight'
 import { default as markedLinkifyIt } from 'marked-linkify-it'
-import { bundledLanguages, createHighlighter } from 'shiki'
+import { bundledLanguages, createHighlighter, type BundledLanguage } from 'shiki'
 import { transformerNotationDiff } from '@shikijs/transformers'
 import { createJavaScriptRegexEngine } from 'shiki/engine/javascript'
 import { rendererRich, transformerTwoslash } from '@shikijs/twoslash'
@@ -34,7 +34,7 @@ const emptyParsed: Parsed = {
 
 const shiki_p = createHighlighter({
   themes: ['github-dark', 'github-light'],
-  langs: Object.keys(bundledLanguages),
+  langs: [],
   engine: createJavaScriptRegexEngine(),
 })
 
@@ -48,6 +48,7 @@ const highlight = markedHighlight({
     }
     if (lang in bundledLanguages) {
       const shiki = await shiki_p
+      await shiki.loadLanguage(lang as BundledLanguage)
       const html = shiki.codeToHtml(code, {
         lang,
         themes: { light: 'github-light', dark: 'github-dark' },
@@ -216,8 +217,8 @@ function optimizeShiki(html: string): string {
 
 function extractStyle(style: string, map: Map<string, number>, light_: string[], dark_: string[]) {
   if (map.has(style)) return
-  const light: string[] = [],
-    dark: string[] = []
+  const light: string[] = []
+  const dark: string[] = []
   const declarations = style.slice(7, -1).split(';')
   for (const declaration of declarations) {
     const [cssVar, value] = declaration.split(':')
